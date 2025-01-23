@@ -4,16 +4,15 @@
 	"service": "app",
 	"overrideCommand": true,
 	"features": {
-	  "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-	  "ghcr.io/devcontainers/features/go:1": {},
-	  "ghcr.io/devcontainers/features/node:1": { "version": "20" },
-	  "ghcr.io/devcontainers-extra/features/corepack:1": {},
-	  "ghcr.io/devcontainers-extra/features/express-generator:2": {}
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+		"ghcr.io/devcontainers/features/go:1": {},
+		"ghcr.io/devcontainers/features/node:1": { "version": "20" },
+		"ghcr.io/devcontainers-extra/features/corepack:1": {},
+		"ghcr.io/devcontainers-extra/features/express-generator:2": {}
 	},
 	"forwardPorts": [3000, 3306],
 	"postCreateCommand": "yarn install",
 	"remoteUser": "root",
-	"workspaceFolder": "/workspace",
-	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
-  }
-  
+	"workspaceFolder": "/workspace", 
+	"workspaceMount": "source=../,target=/workspace,type=bind"
+}

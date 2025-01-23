@@ -4,7 +4,7 @@ services:
       context: ..
       dockerfile: Dockerfile
     volumes:
-      - .:/workspaces:cached # Ensure this matches the workspaceFolder
+      - ../:/workspace:cached # Match devcontainer.json's workspaceFolder
     ports:
       - 3000:3000
     depends_on:
@@ -14,7 +14,7 @@ services:
       context: ../database
       dockerfile: mysql.Dockerfile
     ports:
-      - 3306:3306 # Correct port mapping
+      - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
 volumes:
