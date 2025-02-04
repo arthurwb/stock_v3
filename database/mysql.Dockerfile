@@ -1,5 +1,5 @@
 # Use the official MySQL image from Docker Hub
-FROM mysql:8.1
+FROM mysql:9.1
 # Explicit version for consistency
 
 # Set environment variables for MySQL

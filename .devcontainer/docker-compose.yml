@@ -9,24 +9,15 @@ services:
       - 3000:3000
     depends_on:
       - mysql
-    env_file:
-      - .env
 
   mysql:
     build:
       context: ../database
       dockerfile: mysql.Dockerfile
-      args: # Pass environment variables as build arguments
-        DATABASE_NAME: ${DATABASE_NAME}
-        DATABASE_ROOTPASSWORD: ${DATABASE_ROOTPASSWORD}
-        DATABASE_USER: ${DATABASE_USER}
-        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - 3306:3306
     volumes:
       - mysql_data:/var/lib/mysql
-    env_file:
-      - .env
 
 volumes:
   mysql_data:

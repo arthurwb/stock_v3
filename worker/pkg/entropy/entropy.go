@@ -7,6 +7,8 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+
+	"exchange.com/m/v3/pkg/database"
 )
 
 // Entropy updates option prices in the tOptions table
@@ -37,12 +39,7 @@ func Entropy(db *sql.DB) {
 		newPrice := strconv.FormatFloat(optionPrice + (rand.Float64() * (10) - 5), 'f', 2, 64)
 
 		// Update the price in the database
-		updateQuery := "UPDATE tOptions SET optionPrice = ? WHERE optionId = ?"
-		historicalPriceInsertQuery := "INSERT INTO tHistoricalPrices (optionId, historicalPrice, historicalPriceStamp) VALUES (?, ?, NOW())"
-		db.Exec(updateQuery, newPrice, optionId)
-		db.Exec(historicalPriceInsertQuery, optionId, newPrice)
-
-		log.Printf("optionId %d new price: %s.\n", optionId, newPrice)
+		database.UpdatePrice(db, optionId, newPrice)
 	}
 
 	// Check for errors after iteration
