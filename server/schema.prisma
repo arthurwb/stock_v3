@@ -12,39 +12,41 @@ generator client {
 }
 
 model tOptions {
-  id               String              @id @default(cuid())
-  optionName       String              @default("")
-  price            Decimal             @mysql.Decimal(10, 2)
-  historicalPrices tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
-  carrots          tCarrots[]          @relation("tCarrots_optionId")
+  id                String              @id @default(cuid())
+  optionName        String              @default("")
+  optionDescription String              @default("")
+  optionPrice       Decimal             @mysql.Decimal(10, 2)
+  historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
+  optionCarrots     tCarrots[]          @relation("tCarrots_optionId")
 }
 
 model tHistoricalPrices {
-  id              String    @id @default(cuid())
-  optionId        tOptions? @relation("tHistoricalPrices_optionId", fields: [optionIdId], references: [id])
-  optionIdId      String?   @map("optionId")
-  historicalPrice Decimal   @mysql.Decimal(10, 2)
-  dateRecorded    DateTime? @default(now())
+  id                   String    @id @default(cuid())
+  optionId             tOptions? @relation("tHistoricalPrices_optionId", fields: [optionIdId], references: [id])
+  optionIdId           String?   @map("optionId")
+  historicalPrice      Decimal   @mysql.Decimal(10, 2)
+  historicalPriceStamp DateTime? @default(now())
 
   @@index([optionIdId])
 }
 
 model tUsers {
-  id       String     @id @default(cuid())
-  username String     @unique @default("")
-  password String
-  wallet   Decimal    @mysql.Decimal(10, 2)
-  carrots  tCarrots[] @relation("tCarrots_userId")
+  id           String     @id @default(cuid())
+  userEmail    String     @unique @default("")
+  userUsername String     @unique @default("")
+  userPassword String
+  userWallet   Decimal    @mysql.Decimal(10, 2)
+  userCarrots  tCarrots[] @relation("tCarrots_userId")
 }
 
 model tCarrots {
-  id            String    @id @default(cuid())
-  userId        tUsers?   @relation("tCarrots_userId", fields: [userIdId], references: [id])
-  userIdId      String?   @map("userId")
-  optionId      tOptions? @relation("tCarrots_optionId", fields: [optionIdId], references: [id])
-  optionIdId    String?   @map("optionId")
-  purchasePrice Decimal   @mysql.Decimal(10, 2)
-  datePurchased DateTime? @default(now())
+  id                  String    @id @default(cuid())
+  userId              tUsers?   @relation("tCarrots_userId", fields: [userIdId], references: [id])
+  userIdId            String?   @map("userId")
+  optionId            tOptions? @relation("tCarrots_optionId", fields: [optionIdId], references: [id])
+  optionIdId          String?   @map("optionId")
+  carrotPurchasePrice Decimal   @mysql.Decimal(10, 2)
+  carrotDatePurchased DateTime? @default(now())
 
   @@index([userIdId])
   @@index([optionIdId])

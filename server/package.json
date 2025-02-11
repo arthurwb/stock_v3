@@ -4,16 +4,21 @@
   "private": true,
   "scripts": {
     "dev": "keystone dev",
+    "seed": "ts-node ./seeding/seed.ts",
     "start": "keystone start",
-    "build": "keystone build",
-    "seed": "ts-node ./seeding/seed.ts"
+    "build": "keystone build"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
+    "keystone": "^4.2.1",
     "typescript": "^5.5.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   }
 }

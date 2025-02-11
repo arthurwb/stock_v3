@@ -3,11 +3,12 @@ package database
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"  // Add this import to generate UUIDs
 	"log"
 )
 
 // UpdatePrice updates the current price of an option and records the historical price.
-func UpdatePrice(db *sql.DB, optionId int, optionPrice string) {
+func UpdatePrice(db *sql.DB, Id string, optionPrice string) {
 	tx, err := db.Begin()
 	if err != nil {
 		log.Printf("Error starting transaction: %v", err)
@@ -15,16 +16,16 @@ func UpdatePrice(db *sql.DB, optionId int, optionPrice string) {
 	}
 
 	// Update the current option price
-	query := "UPDATE tOptions SET optionPrice = ? WHERE optionID = ?"
-	_, err = tx.Exec(query, optionPrice, optionId)
+	query := "UPDATE tOptions SET optionPrice = ? WHERE Id = ?"
+	_, err = tx.Exec(query, optionPrice, Id)
 	if err != nil {
 		tx.Rollback()
-		log.Printf("Error updating option ID %d: %v", optionId, err)
+		log.Printf("Error updating option ID %d: %v", Id, err)
 		return
 	}
 
 	// Record the historical price
-	if err := UpdateHistoricalPrices(tx, optionId, optionPrice); err != nil {
+	if err := UpdateHistoricalPrices(tx, Id, optionPrice); err != nil {
 		tx.Rollback()
 		return
 	}
@@ -32,14 +33,14 @@ func UpdatePrice(db *sql.DB, optionId int, optionPrice string) {
 	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
-		log.Printf("Error committing transaction for option ID %d: %v", optionId, err)
+		log.Printf("Error committing transaction for option ID %d: %v", Id, err)
 		return
 	}
 
-	log.Printf("Updated %d %s", optionId, optionPrice)
+	log.Printf("Updated %d %s", Id, optionPrice)
 }
 
-func UpdateHistoricalPrices(tx *sql.Tx, optionId int, optionPrice string) error {
+func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) error {
 	// Check the total number of rows in tHistoricalPrices
 	var rowCount int
 	countQuery := "SELECT COUNT(*) FROM tHistoricalPrices"
@@ -60,14 +61,16 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId int, optionPrice string) error 
 		log.Println("Oldest historical price record deleted to maintain table size limit.")
 	}
 
-	// Insert the new historical price
-	insertQuery := "INSERT INTO tHistoricalPrices (optionId, historicalPrice, historicalPriceStamp) VALUES (?, ?, NOW())"
-	_, err = tx.Exec(insertQuery, optionId, optionPrice)
+	newId := uuid.New().String()
+
+	insertQuery := "INSERT INTO tHistoricalPrices (id, optionId, historicalPrice, historicalPriceStamp) VALUES (?, ?, ?, NOW())"
+	_, err = tx.Exec(insertQuery, newId, optionId, optionPrice)
 	if err != nil {
 		log.Printf("Error inserting historical price for option ID %d: %v", optionId, err)
 		return err
 	}
-	
+
 	return nil
 }
+
 

@@ -4,11 +4,12 @@
 type tOptions {
   id: ID!
   optionName: String
-  price: Decimal
+  optionDescription: String
+  optionPrice: Decimal
   historicalPrices(where: tHistoricalPricesWhereInput! = {}, orderBy: [tHistoricalPricesOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tHistoricalPricesWhereUniqueInput): [tHistoricalPrices!]
   historicalPricesCount(where: tHistoricalPricesWhereInput! = {}): Int
-  carrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
-  carrotsCount(where: tCarrotsWhereInput! = {}): Int
+  optionCarrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
+  optionCarrotsCount(where: tCarrotsWhereInput! = {}): Int
 }
 
 scalar Decimal
@@ -23,9 +24,10 @@ input tOptionsWhereInput {
   NOT: [tOptionsWhereInput!]
   id: IDFilter
   optionName: StringFilter
-  price: DecimalFilter
+  optionDescription: StringFilter
+  optionPrice: DecimalFilter
   historicalPrices: tHistoricalPricesManyRelationFilter
-  carrots: tCarrotsManyRelationFilter
+  optionCarrots: tCarrotsManyRelationFilter
 }
 
 input IDFilter {
@@ -93,7 +95,8 @@ input tCarrotsManyRelationFilter {
 input tOptionsOrderByInput {
   id: OrderDirection
   optionName: OrderDirection
-  price: OrderDirection
+  optionDescription: OrderDirection
+  optionPrice: OrderDirection
 }
 
 enum OrderDirection {
@@ -103,9 +106,10 @@ enum OrderDirection {
 
 input tOptionsUpdateInput {
   optionName: String
-  price: Decimal
+  optionDescription: String
+  optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForUpdateInput
-  carrots: tCarrotsRelateToManyForUpdateInput
+  optionCarrots: tCarrotsRelateToManyForUpdateInput
 }
 
 input tHistoricalPricesRelateToManyForUpdateInput {
@@ -129,9 +133,10 @@ input tOptionsUpdateArgs {
 
 input tOptionsCreateInput {
   optionName: String
-  price: Decimal
+  optionDescription: String
+  optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForCreateInput
-  carrots: tCarrotsRelateToManyForCreateInput
+  optionCarrots: tCarrotsRelateToManyForCreateInput
 }
 
 input tHistoricalPricesRelateToManyForCreateInput {
@@ -148,7 +153,7 @@ type tHistoricalPrices {
   id: ID!
   optionId: tOptions
   historicalPrice: Decimal
-  dateRecorded: DateTime
+  historicalPriceStamp: DateTime
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -164,7 +169,7 @@ input tHistoricalPricesWhereInput {
   id: IDFilter
   optionId: tOptionsWhereInput
   historicalPrice: DecimalFilter
-  dateRecorded: DateTimeNullableFilter
+  historicalPriceStamp: DateTimeNullableFilter
 }
 
 input DateTimeNullableFilter {
@@ -181,13 +186,13 @@ input DateTimeNullableFilter {
 input tHistoricalPricesOrderByInput {
   id: OrderDirection
   historicalPrice: OrderDirection
-  dateRecorded: OrderDirection
+  historicalPriceStamp: OrderDirection
 }
 
 input tHistoricalPricesUpdateInput {
   optionId: tOptionsRelateToOneForUpdateInput
   historicalPrice: Decimal
-  dateRecorded: DateTime
+  historicalPriceStamp: DateTime
 }
 
 input tOptionsRelateToOneForUpdateInput {
@@ -204,7 +209,7 @@ input tHistoricalPricesUpdateArgs {
 input tHistoricalPricesCreateInput {
   optionId: tOptionsRelateToOneForCreateInput
   historicalPrice: Decimal
-  dateRecorded: DateTime
+  historicalPriceStamp: DateTime
 }
 
 input tOptionsRelateToOneForCreateInput {
@@ -214,11 +219,12 @@ input tOptionsRelateToOneForCreateInput {
 
 type tUsers {
   id: ID!
-  username: String
-  password: PasswordState
-  wallet: Decimal
-  carrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
-  carrotsCount(where: tCarrotsWhereInput! = {}): Int
+  userEmail: String
+  userUsername: String
+  userPassword: PasswordState
+  userWallet: Decimal
+  userCarrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
+  userCarrotsCount(where: tCarrotsWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -227,7 +233,8 @@ type PasswordState {
 
 input tUsersWhereUniqueInput {
   id: ID
-  username: String
+  userEmail: String
+  userUsername: String
 }
 
 input tUsersWhereInput {
@@ -235,22 +242,25 @@ input tUsersWhereInput {
   OR: [tUsersWhereInput!]
   NOT: [tUsersWhereInput!]
   id: IDFilter
-  username: StringFilter
-  wallet: DecimalFilter
-  carrots: tCarrotsManyRelationFilter
+  userEmail: StringFilter
+  userUsername: StringFilter
+  userWallet: DecimalFilter
+  userCarrots: tCarrotsManyRelationFilter
 }
 
 input tUsersOrderByInput {
   id: OrderDirection
-  username: OrderDirection
-  wallet: OrderDirection
+  userEmail: OrderDirection
+  userUsername: OrderDirection
+  userWallet: OrderDirection
 }
 
 input tUsersUpdateInput {
-  username: String
-  password: String
-  wallet: Decimal
-  carrots: tCarrotsRelateToManyForUpdateInput
+  userEmail: String
+  userUsername: String
+  userPassword: String
+  userWallet: Decimal
+  userCarrots: tCarrotsRelateToManyForUpdateInput
 }
 
 input tUsersUpdateArgs {
@@ -259,18 +269,19 @@ input tUsersUpdateArgs {
 }
 
 input tUsersCreateInput {
-  username: String
-  password: String
-  wallet: Decimal
-  carrots: tCarrotsRelateToManyForCreateInput
+  userEmail: String
+  userUsername: String
+  userPassword: String
+  userWallet: Decimal
+  userCarrots: tCarrotsRelateToManyForCreateInput
 }
 
 type tCarrots {
   id: ID!
   userId: tUsers
   optionId: tOptions
-  purchasePrice: Decimal
-  datePurchased: DateTime
+  carrotPurchasePrice: Decimal
+  carrotDatePurchased: DateTime
 }
 
 input tCarrotsWhereUniqueInput {
@@ -284,21 +295,21 @@ input tCarrotsWhereInput {
   id: IDFilter
   userId: tUsersWhereInput
   optionId: tOptionsWhereInput
-  purchasePrice: DecimalFilter
-  datePurchased: DateTimeNullableFilter
+  carrotPurchasePrice: DecimalFilter
+  carrotDatePurchased: DateTimeNullableFilter
 }
 
 input tCarrotsOrderByInput {
   id: OrderDirection
-  purchasePrice: OrderDirection
-  datePurchased: OrderDirection
+  carrotPurchasePrice: OrderDirection
+  carrotDatePurchased: OrderDirection
 }
 
 input tCarrotsUpdateInput {
   userId: tUsersRelateToOneForUpdateInput
   optionId: tOptionsRelateToOneForUpdateInput
-  purchasePrice: Decimal
-  datePurchased: DateTime
+  carrotPurchasePrice: Decimal
+  carrotDatePurchased: DateTime
 }
 
 input tUsersRelateToOneForUpdateInput {
@@ -315,8 +326,8 @@ input tCarrotsUpdateArgs {
 input tCarrotsCreateInput {
   userId: tUsersRelateToOneForCreateInput
   optionId: tOptionsRelateToOneForCreateInput
-  purchasePrice: Decimal
-  datePurchased: DateTime
+  carrotPurchasePrice: Decimal
+  carrotDatePurchased: DateTime
 }
 
 input tUsersRelateToOneForCreateInput {
@@ -355,7 +366,7 @@ type Mutation {
   deletetCarrots(where: tCarrotsWhereUniqueInput!): tCarrots
   deleteCarrotsList(where: [tCarrotsWhereUniqueInput!]!): [tCarrots]
   endSession: Boolean!
-  authenticatetUsersWithPassword(username: String!, password: String!): tUsersAuthenticationWithPasswordResult
+  authenticatetUsersWithPassword(userUsername: String!, userPassword: String!): tUsersAuthenticationWithPasswordResult
 }
 
 union tUsersAuthenticationWithPasswordResult = tUsersAuthenticationWithPasswordSuccess | tUsersAuthenticationWithPasswordFailure

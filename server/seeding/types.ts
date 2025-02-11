@@ -3,22 +3,22 @@ import { Decimal } from '@keystone-6/core/types';
 export type Option = {
     id: string;
     optionName: string;
-    price: Decimal;
+    optionPrice: Decimal;
 }
 export type User = {
     id: string;
-    username: string;
-    password: string;
-    wallet: Decimal;
+    userUsername: string;
+    userPassword: string;
+    userWallet: Decimal;
 }
 export type HistoricalPrice = {
     optionId: string,
     historicalPrice: Decimal,
-    dateRecorded: Date
+    historicalPriceStamp: Date
 }
 export type Carrot = {
     userId: string;
     optionId: string;
-    purchasePrice: Decimal;
-    purchaseDate: Date;
+    carrotPurchasePrice: Decimal;
+    carrotDatePurchased: Date;
 }

@@ -24,17 +24,19 @@ async function seed() {
   // Seed sample users
   const adminUser = await prisma.tUsers.create({
     data: {
-      username: 'admin',
-      password: hashedAdminPassword, // Make sure to hash this in a real scenario
-      wallet: 100000.00,
+      userEmail: 'admin@exchange.com',
+      userUsername: 'admin',
+      userPassword: hashedAdminPassword, // Make sure to hash this in a real scenario
+      userWallet: 100000.00,
     },
   });
 
   const sampleUser = await prisma.tUsers.create({
     data: {
-      username: 'sample',
-      password: hashedSamplePassword, // Hash this in a real scenario
-      wallet: 0.00,
+        userEmail: 'sampleUser@exchange.com',
+        userUsername: 'sample',
+        userPassword: hashedSamplePassword, // Hash this in a real scenario
+        userWallet: 0.00,
     },
   });
 
@@ -42,21 +44,21 @@ async function seed() {
   const googleOption = await prisma.tOptions.create({
     data: {
       optionName: 'google',
-      price: 500,
+      optionPrice: 500,
     },
   });
 
   const microsoftOption = await prisma.tOptions.create({
     data: {
       optionName: 'microsoft',
-      price: 500,
+      optionPrice: 500,
     },
   });
 
   const amazonOption = await prisma.tOptions.create({
     data: {
       optionName: 'amazon',
-      price: 500,
+      optionPrice: 500,
     },
   });
 

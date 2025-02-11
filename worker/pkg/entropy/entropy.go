@@ -17,7 +17,7 @@ func Entropy(db *sql.DB) {
 		log.Fatal("Database connection is nil. Please check your connection.")
 	}
 
-	query := "SELECT optionId, optionName, optionPrice FROM tOptions"
+	query := "SELECT Id, optionName, optionPrice FROM tOptions"
 	rows, err := db.Query(query)
 	if err != nil {
 		log.Fatalf("Failed to execute query: %v", err)
@@ -25,11 +25,11 @@ func Entropy(db *sql.DB) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var optionId int
+		var Id string
 		var optionName string
 		var optionPrice float64
 
-		err := rows.Scan(&optionId, &optionName, &optionPrice)
+		err := rows.Scan(&Id, &optionName, &optionPrice)
 		if err != nil {
 			log.Printf("Failed to scan row: %v", err)
 			continue
@@ -39,7 +39,7 @@ func Entropy(db *sql.DB) {
 		newPrice := strconv.FormatFloat(optionPrice + (rand.Float64() * (10) - 5), 'f', 2, 64)
 
 		// Update the price in the database
-		database.UpdatePrice(db, optionId, newPrice)
+		database.UpdatePrice(db, Id, newPrice)
 	}
 
 	// Check for errors after iteration

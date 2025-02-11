@@ -17,9 +17,10 @@ export const lists = {
     },
     fields: {
       optionName: text({ validation: { isRequired: true } }),
-      price: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
+      optionDescription: text({ validation: { isRequired: true } }),
+      optionPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
       historicalPrices: relationship({ ref: 'tHistoricalPrices.optionId', many: true }),
-      carrots: relationship({ ref: 'tCarrots.optionId', many: true }), 
+      optionCarrots: relationship({ ref: 'tCarrots.optionId', many: true }), 
     },
   }),
 
@@ -31,7 +32,7 @@ export const lists = {
     fields: {
       optionId: relationship({ ref: 'tOptions.historicalPrices' }),
       historicalPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
-      dateRecorded: timestamp({
+      historicalPriceStamp: timestamp({
         defaultValue: { kind: 'now' },
       }),
     },
@@ -43,10 +44,11 @@ export const lists = {
       plural: 'UsersList',
     },
     fields: {
-      username: text({ validation: { isRequired: true }, isIndexed: 'unique' }), 
-      password: password({ validation: { isRequired: true } }),
-      wallet: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
-      carrots: relationship({ ref: 'tCarrots.userId', many: true }),
+      userEmail: text({ validation: { isRequired: true }, isIndexed: 'unique' }), 
+      userUsername: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
+      userPassword: password({ validation: { isRequired: true } }),
+      userWallet: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
+      userCarrots: relationship({ ref: 'tCarrots.userId', many: true }),
     },
   }),
 
@@ -56,10 +58,10 @@ export const lists = {
       plural: 'CarrotsList',
     },
     fields: {
-      userId: relationship({ ref: 'tUsers.carrots' }),
-      optionId: relationship({ ref: 'tOptions.carrots' }),
-      purchasePrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
-      datePurchased: timestamp({
+      userId: relationship({ ref: 'tUsers.userCarrots' }),
+      optionId: relationship({ ref: 'tOptions.optionCarrots' }),
+      carrotPurchasePrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
+      carrotDatePurchased: timestamp({
         defaultValue: { kind: 'now' },
       }),
     },
