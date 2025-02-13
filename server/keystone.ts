@@ -9,7 +9,7 @@ import 'dotenv/config'
 import { config } from '@keystone-6/core'
 import { lists } from './schema'
 import { withAuth, session } from './auth'
-// import { extendExpressApp } from './express/index'
+import { extendExpressApp } from './express/index'
 
 export default 
 withAuth(
@@ -20,5 +20,10 @@ withAuth(
     },
     lists,
     session,
+    server: {
+      cors: { origin: ['http://localhost:3000'], credentials: true },
+      port: Number(process.env.PORT),
+      extendExpressApp
+    },
   })
 )
