@@ -4,10 +4,10 @@ TODO:
 */
 
 import React from 'react';
-// import OptionDisplay from '@/components/OptionDisplay';
-// import optionCommands from '@/utility/commands/OptionCommands';
+import parse from "html-react-parser";
 import utilityCommands from './commands/utilityCommands.tsx';
-// import authCommands from '@/utility/commands/AuthCommands';
+import optionCommands from './commands/optionCommands.tsx';
+import sendCommandToDatabase from './commands/util.ts'
 import Warning from '../components/Warning.tsx';
 
 const commands = [
@@ -17,74 +17,43 @@ const commands = [
   'c', 'clear',
   'help', '--help', '-h',
   'dog'
-]
+];
 
 // The utility function that interprets commands
-export async function interpretCommand(command: string): Promise<React.ReactNode | null> {
+// Modify function signature to accept clearOutputs
+export async function interpretCommand(command: string, clearOutputs: () => void): Promise<React.ReactNode | null> {
   const trimmedCommand = command.trim().toLowerCase();
   const commandArray = trimmedCommand.split(" ");
 
   switch (commandArray[0]) {
-    // case 'get': {
-    //   switch (commandArray[1]) {
-    //     case 'options': {
-    //       return await optionCommands.getOptions();
-    //     }
-    //     default: {
-    //       return (
-    //         <div>
-    //           <Warning message={`Unknown Command: ${trimmedCommand}`}></Warning>
-    //           {utilityCommands.help()}
-    //         </div>
-    //       )
-    //     }
-    //   }
-    //   break;
-    // }
-    // case 'add': {
-    //   switch (commandArray[1]) {
-    //     case 'option': {
-
-    //     }
-    //     default: {
-    //       return (
-    //         <div>
-    //           <Warning message={`Unknown Command: ${trimmedCommand}`}></Warning>
-    //           {utilityCommands.help()}
-    //         </div>
-    //       )
-    //     }
-    //   }
-    //   break;
-    // }
-    // case 'login': {
-    //   authCommands.login();
-    //   return <Warning message={`Redirecting...`}></Warning>;
-    // }
-    // case 'logout': {
-    //   authCommands.logout();
-    //   return <Warning message={`Loggin out...`}></Warning>;
-    // }
     case 'clear':
     case 'c': {
-      return utilityCommands.clear();
+      clearOutputs(); // Directly call clearOutputs to clear the terminal
+      return null; // Return null so nothing gets printed
     }
     case 'help':
     case '--help':
-    case '-h': {
+    case '-h':
+    case 'h': {
       return utilityCommands.help();
     }
     case 'dog': {
       return utilityCommands.dog();
     }
+    case 'get': {
+      switch (commandArray[1]) {
+        case 'options': {
+          return optionCommands.getOptions();
+        }
+        case 'option': {
+          return optionCommands.getOption(commandArray[2]);
+        }
+      }
+    }
     default: {
-      
-      return (
-        <div>
-            <Warning message={`Unknown Command: ${trimmedCommand}`}></Warning>
-            {utilityCommands.help()}
-        </div>
-      );
+      const responseMessage = await sendCommandToDatabase(trimmedCommand);
+      return <>{parse(responseMessage)}</>;
     }
   }
 }
+

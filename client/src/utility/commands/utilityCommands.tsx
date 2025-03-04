@@ -5,15 +5,15 @@ import Warning from "../../components/Warning.tsx";
 type UtilityCommandResponse = React.ReactNode | null;
 
 const utilityCommands = {
-    clear: (): UtilityCommandResponse => {
-        // TODO: add more details for clearing. pop-ups, display text, etc.
+    clear: (clearOutputs: () => void): UtilityCommandResponse => {
+        clearOutputs(); // Clears the terminal
         return null;
     },
     help: () => {
         return (
             <div className="flex flex-row">
-                <div className="row" style={{marginRight: 100}}>
-                    <h1 style={{ color: "red"}}>Utility Commands</h1>
+                <div className="row" style={{ marginRight: 100 }}>
+                    <h1 style={{ color: "red" }}>Utility Commands</h1>
                     <div className="m-4">
                         <p>clear | c</p>
                         <p>help | --help | -h</p>
@@ -31,7 +31,7 @@ const utilityCommands = {
                     <p>get list of users bought options</p>
                 </div>
             </div>
-        )
+        );
     },
     dog: async (): Promise<UtilityCommandResponse> => {
         try {
