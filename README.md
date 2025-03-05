@@ -14,3 +14,4 @@
 * At determined intervals grab the current price of all options and add them to a seperate "daily change" table with FK to the options obv.
 * The data should be displayed with the command "get options -a" which will show daily change for all options, and "get option [option name] -a" which will show the daily change for one option.
 * The data for the daily change should be displayed as a candle chart, which means that the data that is saved when the data is captured will be different than how it is stored in the historical prices table.
+	* https://observablehq.com/@d3/candlestick-chart/2
