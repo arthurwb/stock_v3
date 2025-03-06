@@ -52,7 +52,13 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) err
 
 	// If more than 1000 rows exist, delete the oldest entry
 	if rowCount >= 1000 {
-		deleteQuery := "DELETE FROM tHistoricalPrices WHERE historicalPriceStamp = (SELECT MIN(historicalPriceStamp) FROM tHistoricalPrices)"
+		deleteQuery := `
+			DELETE t1
+			FROM tHistoricalPrices t1
+			JOIN (
+				SELECT MIN(historicalPriceStamp) AS minStamp
+				FROM tHistoricalPrices
+			) t2 ON t1.historicalPriceStamp = t2.minStamp`
 		_, err := tx.Exec(deleteQuery)
 		if err != nil {
 			log.Printf("Error deleting oldest historical price record: %v", err)
@@ -72,5 +78,3 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) err
 
 	return nil
 }
-
-

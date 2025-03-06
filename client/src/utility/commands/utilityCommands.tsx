@@ -11,24 +11,30 @@ const utilityCommands = {
     },
     help: () => {
         return (
-            <div className="flex flex-row">
-                <div className="row" style={{ marginRight: 100 }}>
-                    <h1 style={{ color: "red" }}>Utility Commands</h1>
-                    <div className="m-4">
-                        <p>clear | c</p>
-                        <p>help | --help | -h</p>
-                        <p>dog</p>
+            <div className="p-6 max-w-3xl mx-auto font-mono bg-black text-green-400 rounded-md shadow-lg">
+                {/* Utility Commands Section */}
+                <div className="mb-6">
+                    <h1 className="text-red-500 font-bold mb-2">Utility Commands</h1>
+                    <div className="ml-4 space-y-1">
+                        <pre>clear............................clear terminal</pre>
+                        <pre>help.............................show list of commands</pre>
+                        <pre>dog..............................dog</pre>
                     </div>
-                    <h1 style={{ color: "red" }}>Option Commands</h1>
-                    <p>get options</p>
                 </div>
-                <div className="row">
-                    <br />
-                    <p>clear terminal</p>
-                    <p>show list of commands</p>
-                    <p>dog</p>
-                    <br />
-                    <p>get list of users bought options</p>
+
+                {/* Option Commands Section */}
+                <div className="mb-6">
+                    <h1 className="text-red-500 font-bold mb-2">Option Commands</h1>
+                    <div className="ml-4 space-y-1">
+                        <pre>get option [option name].........show details on given option</pre>
+                    </div>
+                </div>
+
+                <div className="mb-6">
+                    <h1 className="text-red-500 font-bold mb-2">User Commands</h1>
+                    <div className="ml-4 space-y-1">
+                        <pre>login [username] [password]......login with provided credentials</pre>
+                    </div>
                 </div>
             </div>
         );
@@ -36,6 +42,7 @@ const utilityCommands = {
     dog: async (): Promise<UtilityCommandResponse> => {
         try {
             const response = await fetch('http://localhost:8080/dog', {
+                credentials: "include",
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

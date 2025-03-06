@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 
 import sendCommandToDatabase from '../utility/commands/util.ts'
@@ -62,12 +62,33 @@ const OptionChart: React.FC<{ option: string }> = ({ option }) => {
 
     // Scroll to the bottom when new content is fully rendered
     useEffect(() => {
-        setTimeout(() => {
-            if (containerRef.current) {
-                containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        const scrollToBottom = () => {
+            if (!containerRef.current) return;
+    
+            // Find the nearest scrollable parent
+            let scrollableParent: HTMLElement | null = containerRef.current.parentElement;
+            while (scrollableParent && getComputedStyle(scrollableParent).overflowY === "visible") {
+                scrollableParent = scrollableParent.parentElement;
             }
-        }, 50); // Delay allows the DOM to update first
-    }, [optionData, historicalPrices, error]);
+    
+            if (scrollableParent) {
+                console.log("Scrolling parent:", scrollableParent, "ScrollHeight:", scrollableParent.scrollHeight, "ClientHeight:", scrollableParent.clientHeight);
+                scrollableParent.scrollTop = scrollableParent.scrollHeight;
+            } else {
+                console.log("No scrollable parent found.");
+            }
+        };
+    
+        const observer = new ResizeObserver(() => {
+            scrollToBottom();
+        });
+    
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+    
+        return () => observer.disconnect();
+    }, [historicalPrices]);
 
     return (
         <div ref={containerRef} className="overflow-y-auto max-h-[500px] p-4">

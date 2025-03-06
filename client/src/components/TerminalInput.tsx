@@ -44,7 +44,6 @@ export default function TerminalInput({ onCommandOutput, clearOutputs }: Termina
 
     setLoading(true);
     const [command] = inputValue.trim().split(" ");
-
     if (command in utilityCommands) {
       const output = utilityCommands[command](clearOutputs); // Pass clearOutputs
 
@@ -72,7 +71,7 @@ export default function TerminalInput({ onCommandOutput, clearOutputs }: Termina
   };
 
   return (
-    <div className="basis-1/12 flex items-center">
+    <div className="basis-1/12 flex items-center border-1 border-solid">
       <div className="flex flex-row items-center h-full w-full text-white text-2xl">
         <span className="px-2 text-orange">SampleUser$-:</span>
         <div className="flex-1 h-full flex items-center relative">
