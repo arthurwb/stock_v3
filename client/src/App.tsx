@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import BorderedSection from "./components/BorderedSection.tsx";
-import TerminalInput from "./components/TerminalInput.tsx";
+import TerminalInput, { TerminalInputHandle } from "./components/TerminalInput.tsx";
 import TerminalOutput from "./components/TerminalOutput.tsx";
 
 // Define a type for your user data
@@ -18,6 +18,7 @@ function App() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const terminalInputRef = useRef<TerminalInputHandle>(null);
 
   // Function to fetch user data from the server
   const fetchUserData = async () => {
@@ -74,6 +75,11 @@ function App() {
     setCommandOutputs([]);
   };
 
+  // Function to focus the terminal input
+  const focusTerminalInput = () => {
+    terminalInputRef.current?.focus();
+  };
+
   // Initial data fetch when component mounts
   useEffect(() => {
     setLoading(true);
@@ -82,7 +88,7 @@ function App() {
     // Optional: Set up polling to refresh data periodically
     const intervalId = setInterval(() => {
       fetchUserData();
-    }, 5000); // Refresh every second
+    }, 5000); // Refresh every 5 seconds
    
     return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
@@ -105,6 +111,7 @@ function App() {
       <div className="flex flex-col space-y-1">
         <div className="font-semibold">{userData.username}</div>
         <div>{userData.email}</div>
+        <div>Wallet: {userData.wallet}</div>
       </div>
     );
   };
@@ -126,11 +133,18 @@ function App() {
             <div className="basis-6/12"></div>
           </div>
         </div>
-        <div className="flex flex-col basis-10/12 px-2 pt-2 border-green border-x-1 border-t-1 border-solid overflow-hidden">
+        <div 
+          className="flex flex-col basis-10/12 px-2 pt-2 border-green border-x-1 border-t-1 border-solid overflow-hidden"
+          onClick={focusTerminalInput} // Add click handler here
+        >
           {/* Terminal Content (Outputs + Input) */}
           <div className="flex flex-col flex-1 overflow-y-auto">
             <TerminalOutput outputs={commandOutputs} />
-            <TerminalInput onCommandOutput={handleCommandOutput} clearOutputs={clearOutputs} />
+            <TerminalInput 
+              ref={terminalInputRef}
+              onCommandOutput={handleCommandOutput} 
+              clearOutputs={clearOutputs} 
+            />
           </div>
         </div>
       </div>

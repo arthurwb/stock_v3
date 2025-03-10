@@ -54,6 +54,8 @@ const utilityCommands = {
             const data = await response.json();
             const dogURL: string = data.message;
 
+            console.log(dogURL)
+
             return (
                 <Warning message={"dog"}>
                     {/* <Image src={dogURL} alt="Random Dog" width={500} height={500} style={{ width: 'auto', height: 350 }}/> */}

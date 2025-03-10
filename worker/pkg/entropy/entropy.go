@@ -36,7 +36,15 @@ func Entropy(db *sql.DB) {
 		}
 
 		// Calculate the new price
-		newPrice := strconv.FormatFloat(optionPrice + (rand.Float64() * (10) - 5), 'f', 2, 64)
+		lowerLimit := 10.0
+		upperLimit := 20.0
+
+		newPrice := strconv.FormatFloat(optionPrice + (func(lower, upper float64) float64 { 
+			if rand.Intn(2) == 0 { 
+				return -upper + rand.Float64()*(upper-lower) 
+			} 
+			return lower + rand.Float64()*(upper-lower) 
+		}(lowerLimit, upperLimit)), 'f', 2, 64)		
 
 		// Update the price in the database
 		database.UpdatePrice(db, Id, newPrice)
