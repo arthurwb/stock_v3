@@ -58,6 +58,7 @@ export async function extendExpressApp(app: Express, context: Context) {
                     id
                     userUsername
                     userEmail
+                    userWallet
                 `
             });
             
@@ -71,7 +72,8 @@ export async function extendExpressApp(app: Express, context: Context) {
             res.json({
                 username: user.userUsername,
                 email: user.userEmail,
-                userPresent: true
+                userPresent: true,
+                wallet: user.userWallet,
             });
             
         } catch (error) {
