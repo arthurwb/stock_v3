@@ -31,7 +31,7 @@ const commands = {
     },
     getOptions: async () => {
         const options = await prisma.tOptions.findMany()
-        let data: [string] = []
+        let data: string[] = []
         options.forEach(option => {
             data.push(`<div>${option.optionName}: ${option.optionPrice}</div>`)
         });
