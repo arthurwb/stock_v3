@@ -29,6 +29,14 @@ const commands = {
         
         return optionData;
     },
+    getOptions: async () => {
+        const options = await prisma.tOptions.findMany()
+        let data: [string] = []
+        options.forEach(option => {
+            data.push(`<div>${option.optionName}: ${option.optionPrice}</div>`)
+        });
+        return data.join("")
+    },
     login: async (loginDetails: string[], context: Context, req: any) => {
         const username = loginDetails[1];
         const password = loginDetails[2];
@@ -67,11 +75,14 @@ const commands = {
 
 export async function interpretCommands(command: string, context: Context, req: any): Promise<any> {
     const commandArray = command.trim().toLowerCase().split(" ");
+    console.log(commandArray);
     
-    if (commandArray[0] === "get" && commandArray[1] === "option") {
+    if (commandArray[0] === "get") {
         if (commandArray[1] === "option") {
             const optionName = commandArray.slice(2).join(" "); // Extracts the option name
             return commands.getOption(optionName);
+        } else if (commandArray[1] === "options") {
+            return commands.getOptions();
         }
     }
     if (commandArray[0] === "login") {

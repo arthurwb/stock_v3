@@ -27,6 +27,7 @@ const utilityCommands = {
                     <h1 className="text-red-500 font-bold mb-2">Option Commands</h1>
                     <div className="ml-4 space-y-1">
                         <pre>get option [option name].........show details on given option</pre>
+                        <pre>get options......................displays all available options and their current price</pre>
                     </div>
                 </div>
 
