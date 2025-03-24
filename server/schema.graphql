@@ -10,6 +10,8 @@ type tOptions {
   historicalPricesCount(where: tHistoricalPricesWhereInput! = {}): Int
   optionCarrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
   optionCarrotsCount(where: tCarrotsWhereInput! = {}): Int
+  userQueue(where: tUserQueueWhereInput! = {}, orderBy: [tUserQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tUserQueueWhereUniqueInput): [tUserQueue!]
+  userQueueCount(where: tUserQueueWhereInput! = {}): Int
 }
 
 scalar Decimal
@@ -28,6 +30,7 @@ input tOptionsWhereInput {
   optionPrice: DecimalFilter
   historicalPrices: tHistoricalPricesManyRelationFilter
   optionCarrots: tCarrotsManyRelationFilter
+  userQueue: tUserQueueManyRelationFilter
 }
 
 input IDFilter {
@@ -92,6 +95,12 @@ input tCarrotsManyRelationFilter {
   none: tCarrotsWhereInput
 }
 
+input tUserQueueManyRelationFilter {
+  every: tUserQueueWhereInput
+  some: tUserQueueWhereInput
+  none: tUserQueueWhereInput
+}
+
 input tOptionsOrderByInput {
   id: OrderDirection
   optionName: OrderDirection
@@ -110,6 +119,7 @@ input tOptionsUpdateInput {
   optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForUpdateInput
   optionCarrots: tCarrotsRelateToManyForUpdateInput
+  userQueue: tUserQueueRelateToManyForUpdateInput
 }
 
 input tHistoricalPricesRelateToManyForUpdateInput {
@@ -126,6 +136,13 @@ input tCarrotsRelateToManyForUpdateInput {
   connect: [tCarrotsWhereUniqueInput!]
 }
 
+input tUserQueueRelateToManyForUpdateInput {
+  disconnect: [tUserQueueWhereUniqueInput!]
+  set: [tUserQueueWhereUniqueInput!]
+  create: [tUserQueueCreateInput!]
+  connect: [tUserQueueWhereUniqueInput!]
+}
+
 input tOptionsUpdateArgs {
   where: tOptionsWhereUniqueInput!
   data: tOptionsUpdateInput!
@@ -137,6 +154,7 @@ input tOptionsCreateInput {
   optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForCreateInput
   optionCarrots: tCarrotsRelateToManyForCreateInput
+  userQueue: tUserQueueRelateToManyForCreateInput
 }
 
 input tHistoricalPricesRelateToManyForCreateInput {
@@ -147,6 +165,11 @@ input tHistoricalPricesRelateToManyForCreateInput {
 input tCarrotsRelateToManyForCreateInput {
   create: [tCarrotsCreateInput!]
   connect: [tCarrotsWhereUniqueInput!]
+}
+
+input tUserQueueRelateToManyForCreateInput {
+  create: [tUserQueueCreateInput!]
+  connect: [tUserQueueWhereUniqueInput!]
 }
 
 type tHistoricalPrices {
@@ -225,6 +248,8 @@ type tUsers {
   userWallet: Decimal
   userCarrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
   userCarrotsCount(where: tCarrotsWhereInput! = {}): Int
+  userQueue(where: tUserQueueWhereInput! = {}, orderBy: [tUserQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tUserQueueWhereUniqueInput): [tUserQueue!]
+  userQueueCount(where: tUserQueueWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -246,6 +271,7 @@ input tUsersWhereInput {
   userUsername: StringFilter
   userWallet: DecimalFilter
   userCarrots: tCarrotsManyRelationFilter
+  userQueue: tUserQueueManyRelationFilter
 }
 
 input tUsersOrderByInput {
@@ -261,6 +287,7 @@ input tUsersUpdateInput {
   userPassword: String
   userWallet: Decimal
   userCarrots: tCarrotsRelateToManyForUpdateInput
+  userQueue: tUserQueueRelateToManyForUpdateInput
 }
 
 input tUsersUpdateArgs {
@@ -274,6 +301,7 @@ input tUsersCreateInput {
   userPassword: String
   userWallet: Decimal
   userCarrots: tCarrotsRelateToManyForCreateInput
+  userQueue: tUserQueueRelateToManyForCreateInput
 }
 
 type tCarrots {
@@ -335,6 +363,70 @@ input tUsersRelateToOneForCreateInput {
   connect: tUsersWhereUniqueInput
 }
 
+type tUserQueue {
+  id: ID!
+  uqType: String
+  uqOptionId: tOptions
+  uqUserId: tUsers
+  uqPurchaseCount: Int
+  uqDatePurchased: DateTime
+}
+
+input tUserQueueWhereUniqueInput {
+  id: ID
+}
+
+input tUserQueueWhereInput {
+  AND: [tUserQueueWhereInput!]
+  OR: [tUserQueueWhereInput!]
+  NOT: [tUserQueueWhereInput!]
+  id: IDFilter
+  uqType: StringFilter
+  uqOptionId: tOptionsWhereInput
+  uqUserId: tUsersWhereInput
+  uqPurchaseCount: IntNullableFilter
+  uqDatePurchased: DateTimeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input tUserQueueOrderByInput {
+  id: OrderDirection
+  uqType: OrderDirection
+  uqPurchaseCount: OrderDirection
+  uqDatePurchased: OrderDirection
+}
+
+input tUserQueueUpdateInput {
+  uqType: String
+  uqOptionId: tOptionsRelateToOneForUpdateInput
+  uqUserId: tUsersRelateToOneForUpdateInput
+  uqPurchaseCount: Int
+  uqDatePurchased: DateTime
+}
+
+input tUserQueueUpdateArgs {
+  where: tUserQueueWhereUniqueInput!
+  data: tUserQueueUpdateInput!
+}
+
+input tUserQueueCreateInput {
+  uqType: String
+  uqOptionId: tOptionsRelateToOneForCreateInput
+  uqUserId: tUsersRelateToOneForCreateInput
+  uqPurchaseCount: Int
+  uqDatePurchased: DateTime
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -365,6 +457,12 @@ type Mutation {
   updateCarrotsList(data: [tCarrotsUpdateArgs!]!): [tCarrots]
   deletetCarrots(where: tCarrotsWhereUniqueInput!): tCarrots
   deleteCarrotsList(where: [tCarrotsWhereUniqueInput!]!): [tCarrots]
+  createtUserQueue(data: tUserQueueCreateInput!): tUserQueue
+  createUserQueueList(data: [tUserQueueCreateInput!]!): [tUserQueue]
+  updatetUserQueue(where: tUserQueueWhereUniqueInput!, data: tUserQueueUpdateInput!): tUserQueue
+  updateUserQueueList(data: [tUserQueueUpdateArgs!]!): [tUserQueue]
+  deletetUserQueue(where: tUserQueueWhereUniqueInput!): tUserQueue
+  deleteUserQueueList(where: [tUserQueueWhereUniqueInput!]!): [tUserQueue]
   endSession: Boolean!
   authenticatetUsersWithPassword(userUsername: String!, userPassword: String!): tUsersAuthenticationWithPasswordResult
 }
@@ -393,6 +491,9 @@ type Query {
   tCarrots(where: tCarrotsWhereUniqueInput!): tCarrots
   carrotsList(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
   carrotsListCount(where: tCarrotsWhereInput! = {}): Int
+  tUserQueue(where: tUserQueueWhereUniqueInput!): tUserQueue
+  userQueueList(where: tUserQueueWhereInput! = {}, orderBy: [tUserQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tUserQueueWhereUniqueInput): [tUserQueue!]
+  userQueueListCount(where: tUserQueueWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

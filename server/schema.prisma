@@ -18,6 +18,7 @@ model tOptions {
   optionPrice       Decimal             @mysql.Decimal(10, 2)
   historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
   optionCarrots     tCarrots[]          @relation("tCarrots_optionId")
+  userQueue         tUserQueue[]        @relation("tUserQueue_uqOptionId")
 }
 
 model tHistoricalPrices {
@@ -31,12 +32,13 @@ model tHistoricalPrices {
 }
 
 model tUsers {
-  id           String     @id @default(cuid())
-  userEmail    String     @unique @default("")
-  userUsername String     @unique @default("")
+  id           String       @id @default(cuid())
+  userEmail    String       @unique @default("")
+  userUsername String       @unique @default("")
   userPassword String
-  userWallet   Decimal    @mysql.Decimal(10, 2)
-  userCarrots  tCarrots[] @relation("tCarrots_userId")
+  userWallet   Decimal      @mysql.Decimal(10, 2)
+  userCarrots  tCarrots[]   @relation("tCarrots_userId")
+  userQueue    tUserQueue[] @relation("tUserQueue_uqUserId")
 }
 
 model tCarrots {
@@ -50,4 +52,18 @@ model tCarrots {
 
   @@index([userIdId])
   @@index([optionIdId])
+}
+
+model tUserQueue {
+  id              String    @id @default(cuid())
+  uqType          String    @default("")
+  uqOptionId      tOptions? @relation("tUserQueue_uqOptionId", fields: [uqOptionIdId], references: [id])
+  uqOptionIdId    String?   @map("uqOptionId")
+  uqUserId        tUsers?   @relation("tUserQueue_uqUserId", fields: [uqUserIdId], references: [id])
+  uqUserIdId      String?   @map("uqUserId")
+  uqPurchaseCount Int?      @default(1)
+  uqDatePurchased DateTime? @default(now())
+
+  @@index([uqOptionIdId])
+  @@index([uqUserIdId])
 }

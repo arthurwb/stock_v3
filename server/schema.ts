@@ -8,7 +8,6 @@ import {
   timestamp,
   decimal,
 } from '@keystone-6/core/fields';
-
 export const lists = {
   tOptions: list({
     access: allowAll,
@@ -20,10 +19,10 @@ export const lists = {
       optionDescription: text({ validation: { isRequired: true } }),
       optionPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
       historicalPrices: relationship({ ref: 'tHistoricalPrices.optionId', many: true }),
-      optionCarrots: relationship({ ref: 'tCarrots.optionId', many: true }), 
+      optionCarrots: relationship({ ref: 'tCarrots.optionId', many: true }),
+      userQueue: relationship({ ref: 'tUserQueue.uqOptionId', many: true }),
     },
   }),
-
   tHistoricalPrices: list({
     access: allowAll,
     graphql: {
@@ -37,21 +36,20 @@ export const lists = {
       }),
     },
   }),
-
   tUsers: list({
     access: allowAll,
     graphql: {
       plural: 'UsersList',
     },
     fields: {
-      userEmail: text({ validation: { isRequired: true }, isIndexed: 'unique' }), 
+      userEmail: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       userUsername: text({ validation: { isRequired: true }, isIndexed: 'unique' }),
       userPassword: password({ validation: { isRequired: true } }),
       userWallet: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
       userCarrots: relationship({ ref: 'tCarrots.userId', many: true }),
+      userQueue: relationship({ ref: 'tUserQueue.uqUserId', many: true }),
     },
   }),
-
   tCarrots: list({
     access: allowAll,
     graphql: {
@@ -66,4 +64,25 @@ export const lists = {
       }),
     },
   }),
+  tUserQueue: list({
+    access: allowAll,
+    graphql: {
+      plural: 'UserQueueList',
+    },
+    fields: {
+      uqType: text({ validation: { isRequired: true } }),
+      uqOptionId: relationship({ 
+        ref: 'tOptions.userQueue'
+      }),
+      uqUserId: relationship({
+        ref: 'tUsers.userQueue'
+      }),
+      uqPurchaseCount: integer({
+        defaultValue: 1
+      }),
+      uqDatePurchased: timestamp({
+        defaultValue: { kind: 'now' },
+      })
+    }
+  })
 };
