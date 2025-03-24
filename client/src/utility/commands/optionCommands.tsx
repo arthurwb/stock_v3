@@ -21,6 +21,10 @@ const optionCommands = {
     },
     sellOption: async (option) => {
         return "test";
+    },
+    myOptions: async () => {
+        const res = await sendCommandToDatabase("my options");
+        return (<>{parse(res.message)}</>);
     }
 }
 

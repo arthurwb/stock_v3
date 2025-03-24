@@ -60,7 +60,11 @@ export async function interpretCommand(command: string, clearOutputs: () => void
           return optionCommands.getOption(commandArray[2]);
         }
         default: {
-          return (<>Get command missing 1 argument</>)
+          if (commandArray[1]) {
+            return (<>Incorrect get command: {commandArray[1]}</>);
+          } else {
+            return (<>Get command missing 1 argument</>);
+          }
         }
       }
     }
@@ -75,16 +79,38 @@ export async function interpretCommand(command: string, clearOutputs: () => void
       switch (commandArray[1]) {
         case 'op':
         case 'option': {
-          const res = await optionCommands.buyOption(commandArray[2])
+          const res = await optionCommands.buyOption(commandArray[2]);
           return (<>{res.message}</>);
         }
         default: {
-          return (<>Buy command missing 1 argument</>)
+          if (commandArray[1]) {
+            return (<>Incorrect buy command: {commandArray[1]}</>);
+          } else {
+            return (<>Buy command missing 1 argument</>);
+          }
         }
       }
     case 'bop': {
-      const res = await optionCommands.buyOption(commandArray[1])
-      return (<>{res.message}</>);
+      const res = await optionCommands.buyOption(commandArray[1]);
+      return (<>{res.message}</>);;
+    }
+    case 'my': {
+      switch (commandArray[1]) {
+        case 'op':
+        case 'options': {
+          return optionCommands.myOptions();
+        }
+        default: {
+          if (commandArray[1]) {
+            return (<>Incorrect my command: {commandArray[1]}</>);
+          } else {
+            return (<>My command missing 1 argument</>);
+          }
+        }
+      }
+    }
+    case 'mop': {
+      return optionCommands.myOptions();
     }
     case 'login': {
       return userCommands.login(commandArray[1], commandArray[2]);

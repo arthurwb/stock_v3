@@ -131,6 +131,60 @@ const commands = {
     sellOption: async (optionName?: string) => {
         return optionName;
     },
+    myOptions: async (username: string) => {
+        try {
+            // Find the user by username
+            const user = await prisma.tUsers.findFirst({
+            where: { userUsername: username }
+            });
+        
+            // Check if user exists
+            if (!user) {
+            return "User not found";
+            }
+        
+            // Get all carrots (purchased options) for this user
+            const userCarrots = await prisma.tCarrots.findMany({
+            where: { userIdId: user.id },
+            include: {
+                optionId: true // Include the related option details
+            },
+            orderBy: {
+                carrotDatePurchased: 'desc' // Sort by purchase date, newest first
+            }
+            });
+        
+            // Check if user has any options
+            if (userCarrots.length === 0) {
+            return "You don't have any options in your account.";
+            }
+        
+            // Format the results
+            const formattedOptions = userCarrots.map(carrot => {
+            // Format the date and time
+            const purchaseDatetime = carrot.carrotDatePurchased 
+                ? new Date(carrot.carrotDatePurchased).toLocaleString() // Changed to toLocaleString() to include time
+                : 'Unknown date/time';
+        
+            // Format the price with 2 decimal places
+            const formattedPrice = carrot.carrotPurchasePrice 
+                ? `$${parseFloat(carrot.carrotPurchasePrice.toString()).toFixed(2)}` 
+                : 'Unknown price';
+        
+            // Get the option name
+            const optionName = carrot.optionId?.optionName || 'Unknown option';
+        
+            // Return formatted string
+            return `${optionName} | ${formattedPrice} | ${purchaseDatetime}`;
+            });
+        
+            // Join all options with newlines
+            return formattedOptions.join('\n');
+        } catch (error) {
+            console.error("Error retrieving user options:", error);
+            return "An error occurred while retrieving your options.";
+        }
+    },
     login: async (loginDetails: string[], context: Context, req: any) => {
         const username = loginDetails[1];
         const password = loginDetails[2];
@@ -192,6 +246,13 @@ export async function interpretCommands(command: string, context: Context, req: 
         const optionName = commandArray.slice(2).join(" ");
         console.log(req.session.user);
         return commands.sellOption(optionName);
+    }
+    if (commandArray[0] === "my" && commandArray[1] === "options") {
+        if (req.session.user == undefined) {
+            return "Unable to get user options while not logged in.";
+        } else {
+            return commands.myOptions();
+        }
     }
     if (commandArray[0] === "login") {
         return commands.login(commandArray, context, req);
