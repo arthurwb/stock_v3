@@ -370,6 +370,7 @@ type tUserQueue {
   uqUserId: tUsers
   uqPurchaseCount: Int
   uqDatePurchased: DateTime
+  uqComplete: Boolean
 }
 
 input tUserQueueWhereUniqueInput {
@@ -386,6 +387,7 @@ input tUserQueueWhereInput {
   uqUserId: tUsersWhereInput
   uqPurchaseCount: IntNullableFilter
   uqDatePurchased: DateTimeNullableFilter
+  uqComplete: BooleanFilter
 }
 
 input IntNullableFilter {
@@ -399,11 +401,17 @@ input IntNullableFilter {
   not: IntNullableFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input tUserQueueOrderByInput {
   id: OrderDirection
   uqType: OrderDirection
   uqPurchaseCount: OrderDirection
   uqDatePurchased: OrderDirection
+  uqComplete: OrderDirection
 }
 
 input tUserQueueUpdateInput {
@@ -412,6 +420,7 @@ input tUserQueueUpdateInput {
   uqUserId: tUsersRelateToOneForUpdateInput
   uqPurchaseCount: Int
   uqDatePurchased: DateTime
+  uqComplete: Boolean
 }
 
 input tUserQueueUpdateArgs {
@@ -425,6 +434,7 @@ input tUserQueueCreateInput {
   uqUserId: tUsersRelateToOneForCreateInput
   uqPurchaseCount: Int
   uqDatePurchased: DateTime
+  uqComplete: Boolean
 }
 
 """

@@ -37,6 +37,43 @@ const commands = {
         });
         return data.join("")
     },
+    buyOption: async (optionName: string, username: string) => {
+        const option: any = await prisma.tOptions.findFirst({
+            where: {
+                optionName: optionName
+            }
+        });
+        const optionId = option?.id ?? "";
+        const user: any = await prisma.tUsers.findFirst({
+            where: {
+                userUsername: username
+            }
+        });
+        const userId = user?.id ?? "";
+        if (userId == "") {
+            return "Unable to find option data";
+        } else if (optionId == "") {
+            return "Unable to find option data";
+        }
+        const queueItem = await prisma.tUserQueue.create({
+            data: {
+                uqType: "buy",
+                uqOptionId: {
+                    connect: { id: optionId }
+                },
+                uqUserId: {
+                    connect: { id: userId }
+                },
+                uqPurchaseCount: 1,
+                uqDatePurchased: new Date()
+            }
+        });
+        console.log(queueItem);
+        return "buy processed";
+    },
+    sellOption: async (optionName?: string) => {
+        return optionName;
+    },
     login: async (loginDetails: string[], context: Context, req: any) => {
         const username = loginDetails[1];
         const password = loginDetails[2];
@@ -84,6 +121,20 @@ export async function interpretCommands(command: string, context: Context, req: 
         } else if (commandArray[1] === "options") {
             return commands.getOptions();
         }
+    }
+    if (commandArray[0] === "buy" && commandArray[1] == "option") {
+        console.log(req.session.user);
+        const optionName = commandArray.slice(2).join(" ");
+        if (req.session.user == undefined) {
+            return "Unable to buy options while not logged in.";
+        } else {
+            return commands.buyOption(optionName, req.session.user.username);
+        }
+    }
+    if (commandArray[0] === "sell" && commandArray[1] === "option") {
+        const optionName = commandArray.slice(2).join(" ");
+        console.log(req.session.user);
+        return commands.sellOption(optionName);
     }
     if (commandArray[0] === "login") {
         return commands.login(commandArray, context, req);

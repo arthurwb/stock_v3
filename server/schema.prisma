@@ -63,6 +63,7 @@ model tUserQueue {
   uqUserIdId      String?   @map("uqUserId")
   uqPurchaseCount Int?      @default(1)
   uqDatePurchased DateTime? @default(now())
+  uqComplete      Boolean   @default(false)
 
   @@index([uqOptionIdId])
   @@index([uqUserIdId])

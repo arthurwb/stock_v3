@@ -60,6 +60,18 @@ export async function interpretCommand(command: string, clearOutputs: () => void
         }
       }
     }
+    case 'b':
+    case 'buy':
+      switch (commandArray[1]) {
+        case 'op':
+        case 'option': {
+          const res = await optionCommands.buyOption(commandArray[2])
+          return (<>{res.message}</>);
+        }
+        default: {
+          return (<>Buy command missing 1 argument</>)
+        }
+      }
     case 'login': {
       return userCommands.login(commandArray[1], commandArray[2]);
     }

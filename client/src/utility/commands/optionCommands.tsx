@@ -6,25 +6,21 @@ import OptionChart from "../../components/OptionChart.tsx";
 
 const optionCommands = {
     getOptions: async () => {
-        const data = await sendCommandToDatabase("get options");
-        // const response = await fetch('http://localhost:8080/command', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        // });
-        // if (!response.ok) {
-        //     throw new Error('Network response was not ok');
-        // }
-        // console.log( await response)
-        // const data = await response.json();
-        // console.log(data)
-        return (<>{parse(data.message)}</>);
+        const res = await sendCommandToDatabase("get options");
+        return (<>{parse(res.message)}</>);
     },
     getOption: async (option) => {
         return (
             <OptionChart option={option}></OptionChart>
         )
+    },
+    buyOption: async (option) => {
+        const res = await sendCommandToDatabase(`buy option ${option}`);
+        console.log(res);
+        return res;
+    },
+    sellOption: async (option) => {
+        return "test";
     }
 }
 

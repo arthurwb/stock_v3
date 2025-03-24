@@ -7,6 +7,7 @@ import {
   password,
   timestamp,
   decimal,
+  checkbox,
 } from '@keystone-6/core/fields';
 export const lists = {
   tOptions: list({
@@ -71,7 +72,7 @@ export const lists = {
     },
     fields: {
       uqType: text({ validation: { isRequired: true } }),
-      uqOptionId: relationship({ 
+      uqOptionId: relationship({
         ref: 'tOptions.userQueue'
       }),
       uqUserId: relationship({
@@ -82,7 +83,10 @@ export const lists = {
       }),
       uqDatePurchased: timestamp({
         defaultValue: { kind: 'now' },
-      })
+      }),
+      uqComplete: checkbox({
+        defaultValue: false
+      }),
     }
   })
 };
