@@ -55,8 +55,10 @@ export async function interpretCommand(command: string, clearOutputs: () => void
         case 'op': {
           return optionCommands.getOption(commandArray[2]);
         }
+        default: {
+          return (<>Get command missing 1 argument</>)
+        }
       }
-      break;
     }
     case 'login': {
       return userCommands.login(commandArray[1], commandArray[2]);
@@ -66,7 +68,7 @@ export async function interpretCommand(command: string, clearOutputs: () => void
     }
     default: {
       const responseMessage = await sendCommandToDatabase(trimmedCommand);
-      return <>{parse(responseMessage)}</>;
+      return (<>{parse(responseMessage.message)}</>);
     }
   }
 }
