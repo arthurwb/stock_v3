@@ -38,23 +38,30 @@ const commands = {
         return data.join("")
     },
     buyOption: async (optionName: string, username: string) => {
+        // Find the option by name
         const option: any = await prisma.tOptions.findFirst({
             where: {
                 optionName: optionName
             }
         });
         const optionId = option?.id ?? "";
+        
+        // Find the user by username
         const user: any = await prisma.tUsers.findFirst({
             where: {
                 userUsername: username
             }
         });
         const userId = user?.id ?? "";
-        if (userId == "") {
-            return "Unable to find option data";
-        } else if (optionId == "") {
+        
+        // Validate option and user exist
+        if (userId === "") {
+            return "Unable to find user data";
+        } else if (optionId === "") {
             return "Unable to find option data";
         }
+        
+        // Create the queue item
         const queueItem = await prisma.tUserQueue.create({
             data: {
                 uqType: "buy",
@@ -68,8 +75,58 @@ const commands = {
                 uqDatePurchased: new Date()
             }
         });
-        console.log(queueItem);
-        return "buy processed";
+        
+        console.log("Created queue item:", queueItem);
+        
+        // Poll the queue item until it's processed or timeout
+        const queueItemId = queueItem.id;
+        const maxAttempts = 30; // Maximum polling attempts
+        const pollingInterval = 500; // Polling interval in milliseconds
+        
+        // Define a function to wait between polling attempts
+        const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        
+        // Poll the queue item
+        let attempts = 0;
+        while (attempts < maxAttempts) {
+            // Get the latest queue item state
+            const updatedQueueItem = await prisma.tUserQueue.findUnique({
+                where: {
+                    id: queueItemId
+                }
+            });
+            
+            // If the queue item is complete, check if the carrot was created
+            if (updatedQueueItem?.uqComplete) {
+                // Verify the carrot was created by checking the tCarrots table
+                const carrot = await prisma.tCarrots.findFirst({
+                    where: {
+                        userIdId: userId,
+                        optionIdId: optionId,
+                        carrotDatePurchased: {
+                            // Look for carrots created in the last minute
+                            gte: new Date(Date.now() - 60000)
+                        }
+                    },
+                    orderBy: {
+                        carrotDatePurchased: 'desc'
+                    }
+                });
+                
+                if (carrot) {
+                    return `Buy processed: ${optionName} purchased for ${carrot.carrotPurchasePrice}`;
+                }
+                
+                return "Buy processed";
+            }
+            
+            // Wait before next polling attempt
+            await wait(pollingInterval);
+            attempts++;
+        }
+        
+        // If we've reached here, the queue item hasn't been processed within our timeout
+        return "Buy request submitted, but processing is taking longer than expected. Please check your purchases later.";
     },
     sellOption: async (optionName?: string) => {
         return optionName;

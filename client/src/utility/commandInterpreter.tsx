@@ -20,6 +20,10 @@ dog
 get, g
   options, os,
   option, op
+buy, b
+  option, op
+sell, s
+  option, op
 login
 logout
 */
