@@ -64,6 +64,12 @@ export async function interpretCommand(command: string, clearOutputs: () => void
         }
       }
     }
+    case 'gop': {
+      return optionCommands.getOption(commandArray[1]);
+    }
+    case 'gos': {
+      return optionCommands.getOptions();
+    }
     case 'b':
     case 'buy':
       switch (commandArray[1]) {
@@ -76,6 +82,10 @@ export async function interpretCommand(command: string, clearOutputs: () => void
           return (<>Buy command missing 1 argument</>)
         }
       }
+    case 'bop': {
+      const res = await optionCommands.buyOption(commandArray[1])
+      return (<>{res.message}</>);
+    }
     case 'login': {
       return userCommands.login(commandArray[1], commandArray[2]);
     }
