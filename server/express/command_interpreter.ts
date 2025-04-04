@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Context } from ".keystone/types";
 import bcrypt from 'bcryptjs';  
+import keystone from '../keystone';
 
 const prisma = new PrismaClient();
 
@@ -218,11 +219,73 @@ const commands = {
     logout: async (req: any) => {
         req.session.user = {}
         req.session.save();
+    },
+    createUser: async (loginDetails: string[]) => {
+        const username = loginDetails[2];
+        const email = loginDetails[3];
+        const password = loginDetails[4];
+        
+        // Input validation
+        if (username === "undefined") {
+            return "Username not provided";
+        } else if (email === "undefined") {
+            return "Email not provided";
+        } else if (password === "undefined") {
+            return "Password not provided";
+        }
+        
+        // Email format validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            return "Invalid email format";
+        }
+        
+        // Password complexity validation
+        const uppercaseRegex = /[A-Z]/;
+        const numberRegex = /[0-9]/;
+        
+        if (!uppercaseRegex.test(password)) {
+            return "Password must contain at least one uppercase letter";
+        }
+        
+        if (!numberRegex.test(password)) {
+            return "Password must contain at least one number";
+        }
+        
+        // Check if user already exists
+        const userDetails = await prisma.tUsers.findFirst({
+            where: { userUsername: username }
+        });
+        
+        if (userDetails) {
+            return "Username already taken!";
+        }
+        
+        try {
+            // Hash the password with bcrypt
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            
+            // Create user with the hashed password
+            const user = await prisma.tUsers.create({
+                data: {
+                    userEmail: email,
+                    userUsername: username,
+                    userPassword: hashedPassword,
+                    userWallet: 0
+                }
+            });
+            
+            return `Created user ${user.userUsername}`;
+        } catch (error: any) {
+            console.error('Error creating user:', error);
+            return `Failed to create user: ${error.message}`;
+        }
     }
 };
 
 export async function interpretCommands(command: string, context: Context, req: any): Promise<any> {
-    const commandArray = command.trim().toLowerCase().split(" ");
+    const commandArray = command.trim().split(" ");
     console.log(commandArray);
     
     if (commandArray[0] === "get") {
@@ -259,6 +322,11 @@ export async function interpretCommands(command: string, context: Context, req: 
     }
     if (commandArray[0] === "logout") {
         return commands.logout(req);
+    }
+    if (commandArray[0] === "create") {
+        if (commandArray[1] == "user") {
+            return commands.createUser(commandArray);
+        }
     }
 
     return `Unknown command: ${command}`;

@@ -1,0 +1,1 @@
+Start command `go run src/main.go`
