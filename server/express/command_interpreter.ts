@@ -72,8 +72,8 @@ const commands = {
                 uqUserId: {
                     connect: { id: userId }
                 },
-                uqPurchaseCount: 1,
-                uqDatePurchased: new Date()
+                uqCount: 1,
+                uqTransactionDate: new Date()
             }
         });
         
@@ -129,8 +129,107 @@ const commands = {
         // If we've reached here, the queue item hasn't been processed within our timeout
         return "Buy request submitted, but processing is taking longer than expected. Please check your purchases later.";
     },
-    sellOption: async (optionName?: string) => {
-        return optionName;
+    sellOption: async (optionName: string, username: string) => {
+        // Find the option by name
+        const option: any = await prisma.tOptions.findFirst({
+            where: {
+                optionName: optionName
+            }
+        });
+        const optionId = option?.id ?? "";
+        
+        // Find the user by username
+        const user: any = await prisma.tUsers.findFirst({
+            where: {
+                userUsername: username
+            }
+        });
+        const userId = user?.id ?? "";
+        
+        // Validate option and user exist
+        if (userId === "") {
+            return "Unable to find user data";
+        } else if (optionId === "") {
+            return "Unable to find option data";
+        }
+        
+        // Verify user owns the carrot they're trying to sell
+        const carrotOwned = await prisma.tCarrots.findFirst({
+            where: {
+                userId: { id: userId },
+                optionId: { id: optionId }
+            }
+        });
+        
+        if (!carrotOwned) {
+            return "You don't own this option to sell";
+        }
+        
+        // Create the queue item
+        const queueItem = await prisma.tUserQueue.create({
+            data: {
+                uqType: "sell",
+                uqOptionId: {
+                    connect: { id: optionId }
+                },
+                uqUserId: {
+                    connect: { id: userId }
+                },
+                uqCount: 1,
+                uqTransactionDate: new Date(),
+                uqComplete: false
+            }
+        });
+        
+        console.log("Created queue item:", queueItem);
+        
+        // Poll the queue item until it's processed or timeout
+        const queueItemId = queueItem.id;
+        const maxAttempts = 30; // Maximum polling attempts
+        const pollingInterval = 500; // Polling interval in milliseconds
+        
+        // Define a function to wait between polling attempts
+        const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        
+        // Poll the queue item
+        let attempts = 0;
+        while (attempts < maxAttempts) {
+            // Get the latest queue item state
+            const updatedQueueItem = await prisma.tUserQueue.findUnique({
+                where: {
+                    id: queueItemId
+                }
+            });
+            
+            // If the queue item is complete, check if the carrot was sold
+            if (updatedQueueItem?.uqComplete) {
+                // Check if the carrot has been removed
+                const carrotStillOwned = await prisma.tCarrots.findFirst({
+                    where: {
+                        userId: { id: userId },
+                        optionId: { id: optionId }
+                    }
+                });
+                
+                if (!carrotStillOwned || carrotStillOwned.id !== carrotOwned.id) {
+                    // Check for updated wallet balance
+                    const updatedUser = await prisma.tUsers.findUnique({
+                        where: { id: userId }
+                    });
+                    
+                    return `Sell processed: ${optionName} sold for ${option.optionPrice}`;
+                }
+                
+                return "Sell processed";
+            }
+            
+            // Wait before next polling attempt
+            await wait(pollingInterval);
+            attempts++;
+        }
+        
+        // If we've reached here, the queue item hasn't been processed within our timeout
+        return "Sell request submitted, but processing is taking longer than expected. Please check your transactions later.";
     },
     myOptions: async (username: string) => {
         try {
@@ -171,7 +270,7 @@ const commands = {
             const result = Object.entries(optionGroups).map(([optionName, prices]) => {
                 const total = prices.reduce((sum, p) => sum + p, 0);
                 const average = total / prices.length;
-                return `${optionName} | Avg Price: $${average.toFixed(2)}`;
+                return `${optionName} | Avg Price: $${average.toFixed(2)} | Purchases: ${prices.length}`;
             });
     
             return result.join('\n');
