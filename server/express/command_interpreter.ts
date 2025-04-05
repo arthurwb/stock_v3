@@ -135,12 +135,12 @@ const commands = {
         try {
             // Find the user by username
             const user = await prisma.tUsers.findFirst({
-            where: { userUsername: username }
+                where: { userUsername: username }
             });
         
             // Check if user exists
             if (!user) {
-            return "User not found";
+                return "User not found";
             }
         
             // Get all carrots (purchased options) for this user
@@ -236,6 +236,7 @@ export async function interpretCommands(command: string, context: Context, req: 
     if (commandArray[0] === "buy" && commandArray[1] == "option") {
         console.log(req.session.user);
         const optionName = commandArray.slice(2).join(" ");
+        // console.log(req.session.user);
         if (req.session.user == undefined) {
             return "Unable to buy options while not logged in.";
         } else {
@@ -251,7 +252,7 @@ export async function interpretCommands(command: string, context: Context, req: 
         if (req.session.user == undefined) {
             return "Unable to get user options while not logged in.";
         } else {
-            return commands.myOptions();
+            return commands.myOptions(req.session.user.username);
         }
     }
     if (commandArray[0] === "login") {

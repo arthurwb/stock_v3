@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// load environment variables
-	godotenv.Load("./.env")
+	godotenv.Load("../.env")
 
 	// Open a connection to the database
 	db := database.DatabaseConnect()

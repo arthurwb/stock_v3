@@ -28,6 +28,8 @@ const utilityCommands = {
                     <div className="ml-4 space-y-1">
                         <pre>get option [option name].........show details on given option</pre>
                         <pre>get options......................displays all available options and their current price</pre>
+                        <pre>buy option [option name].........purchase an option at its current price</pre>
+                        <pre>my options.......................display a list of all user owned options</pre>
                     </div>
                 </div>
 
