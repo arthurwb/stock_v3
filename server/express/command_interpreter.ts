@@ -136,56 +136,50 @@ const commands = {
         try {
             // Find the user by username
             const user = await prisma.tUsers.findFirst({
-            where: { userUsername: username }
+                where: { userUsername: username }
             });
-        
-            // Check if user exists
+    
             if (!user) {
-            return "User not found";
+                return "User not found";
             }
-        
-            // Get all carrots (purchased options) for this user
+    
+            // Get all carrots for the user, including option details
             const userCarrots = await prisma.tCarrots.findMany({
-            where: { userIdId: user.id },
-            include: {
-                optionId: true // Include the related option details
-            },
-            orderBy: {
-                carrotDatePurchased: 'desc' // Sort by purchase date, newest first
-            }
+                where: { userIdId: user.id },
+                include: {
+                    optionId: true
+                }
             });
-        
-            // Check if user has any options
+    
             if (userCarrots.length === 0) {
-            return "You don't have any options in your account.";
+                return "You don't have any options in your account.";
             }
-        
-            // Format the results
-            const formattedOptions = userCarrots.map(carrot => {
-            // Format the date and time
-            const purchaseDatetime = carrot.carrotDatePurchased 
-                ? new Date(carrot.carrotDatePurchased).toLocaleString() // Changed to toLocaleString() to include time
-                : 'Unknown date/time';
-        
-            // Format the price with 2 decimal places
-            const formattedPrice = carrot.carrotPurchasePrice 
-                ? `$${parseFloat(carrot.carrotPurchasePrice.toString()).toFixed(2)}` 
-                : 'Unknown price';
-        
-            // Get the option name
-            const optionName = carrot.optionId?.optionName || 'Unknown option';
-        
-            // Return formatted string
-            return `${optionName} | ${formattedPrice} | ${purchaseDatetime}`;
+    
+            // Group by option name and calculate average
+            const optionGroups: { [optionName: string]: number[] } = {};
+    
+            for (const carrot of userCarrots) {
+                const optionName = carrot.optionId?.optionName || 'Unknown option';
+                const price = parseFloat(carrot.carrotPurchasePrice?.toString() || '0');
+                if (!optionGroups[optionName]) {
+                    optionGroups[optionName] = [];
+                }
+                optionGroups[optionName].push(price);
+            }
+    
+            // Format the output with average prices
+            const result = Object.entries(optionGroups).map(([optionName, prices]) => {
+                const total = prices.reduce((sum, p) => sum + p, 0);
+                const average = total / prices.length;
+                return `${optionName} | Avg Price: $${average.toFixed(2)}`;
             });
-        
-            // Join all options with newlines
-            return formattedOptions.join('\n');
+    
+            return result.join('\n');
         } catch (error) {
             console.error("Error retrieving user options:", error);
             return "An error occurred while retrieving your options.";
         }
-    },
+    },    
     login: async (loginDetails: string[], context: Context, req: any) => {
         const username = loginDetails[1];
         const password = loginDetails[2];
