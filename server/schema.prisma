@@ -55,15 +55,15 @@ model tCarrots {
 }
 
 model tUserQueue {
-  id              String    @id @default(cuid())
-  uqType          String    @default("")
-  uqOptionId      tOptions? @relation("tUserQueue_uqOptionId", fields: [uqOptionIdId], references: [id])
-  uqOptionIdId    String?   @map("uqOptionId")
-  uqUserId        tUsers?   @relation("tUserQueue_uqUserId", fields: [uqUserIdId], references: [id])
-  uqUserIdId      String?   @map("uqUserId")
-  uqPurchaseCount Int?      @default(1)
-  uqDatePurchased DateTime? @default(now())
-  uqComplete      Boolean   @default(false)
+  id                String    @id @default(cuid())
+  uqType            String    @default("")
+  uqOptionId        tOptions? @relation("tUserQueue_uqOptionId", fields: [uqOptionIdId], references: [id])
+  uqOptionIdId      String?   @map("uqOptionId")
+  uqUserId          tUsers?   @relation("tUserQueue_uqUserId", fields: [uqUserIdId], references: [id])
+  uqUserIdId        String?   @map("uqUserId")
+  uqCount           Int?      @default(1)
+  uqTransactionDate DateTime? @default(now())
+  uqComplete        Boolean   @default(false)
 
   @@index([uqOptionIdId])
   @@index([uqUserIdId])

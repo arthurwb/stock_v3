@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Context } from ".keystone/types";
 import bcrypt from 'bcryptjs';  
+import keystone from '../keystone';
 
 const prisma = new PrismaClient();
 
@@ -71,8 +72,8 @@ const commands = {
                 uqUserId: {
                     connect: { id: userId }
                 },
-                uqPurchaseCount: 1,
-                uqDatePurchased: new Date()
+                uqCount: 1,
+                uqTransactionDate: new Date()
             }
         });
         
@@ -128,8 +129,107 @@ const commands = {
         // If we've reached here, the queue item hasn't been processed within our timeout
         return "Buy request submitted, but processing is taking longer than expected. Please check your purchases later.";
     },
-    sellOption: async (optionName?: string) => {
-        return optionName;
+    sellOption: async (optionName: string, username: string) => {
+        // Find the option by name
+        const option: any = await prisma.tOptions.findFirst({
+            where: {
+                optionName: optionName
+            }
+        });
+        const optionId = option?.id ?? "";
+        
+        // Find the user by username
+        const user: any = await prisma.tUsers.findFirst({
+            where: {
+                userUsername: username
+            }
+        });
+        const userId = user?.id ?? "";
+        
+        // Validate option and user exist
+        if (userId === "") {
+            return "Unable to find user data";
+        } else if (optionId === "") {
+            return "Unable to find option data";
+        }
+        
+        // Verify user owns the carrot they're trying to sell
+        const carrotOwned = await prisma.tCarrots.findFirst({
+            where: {
+                userId: { id: userId },
+                optionId: { id: optionId }
+            }
+        });
+        
+        if (!carrotOwned) {
+            return "You don't own this option to sell";
+        }
+        
+        // Create the queue item
+        const queueItem = await prisma.tUserQueue.create({
+            data: {
+                uqType: "sell",
+                uqOptionId: {
+                    connect: { id: optionId }
+                },
+                uqUserId: {
+                    connect: { id: userId }
+                },
+                uqCount: 1,
+                uqTransactionDate: new Date(),
+                uqComplete: false
+            }
+        });
+        
+        console.log("Created queue item:", queueItem);
+        
+        // Poll the queue item until it's processed or timeout
+        const queueItemId = queueItem.id;
+        const maxAttempts = 30; // Maximum polling attempts
+        const pollingInterval = 500; // Polling interval in milliseconds
+        
+        // Define a function to wait between polling attempts
+        const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        
+        // Poll the queue item
+        let attempts = 0;
+        while (attempts < maxAttempts) {
+            // Get the latest queue item state
+            const updatedQueueItem = await prisma.tUserQueue.findUnique({
+                where: {
+                    id: queueItemId
+                }
+            });
+            
+            // If the queue item is complete, check if the carrot was sold
+            if (updatedQueueItem?.uqComplete) {
+                // Check if the carrot has been removed
+                const carrotStillOwned = await prisma.tCarrots.findFirst({
+                    where: {
+                        userId: { id: userId },
+                        optionId: { id: optionId }
+                    }
+                });
+                
+                if (!carrotStillOwned || carrotStillOwned.id !== carrotOwned.id) {
+                    // Check for updated wallet balance
+                    const updatedUser = await prisma.tUsers.findUnique({
+                        where: { id: userId }
+                    });
+                    
+                    return `Sell processed: ${optionName} sold for ${option.optionPrice}`;
+                }
+                
+                return "Sell processed";
+            }
+            
+            // Wait before next polling attempt
+            await wait(pollingInterval);
+            attempts++;
+        }
+        
+        // If we've reached here, the queue item hasn't been processed within our timeout
+        return "Sell request submitted, but processing is taking longer than expected. Please check your transactions later.";
     },
     myOptions: async (username: string) => {
         try {
@@ -137,54 +237,48 @@ const commands = {
             const user = await prisma.tUsers.findFirst({
                 where: { userUsername: username }
             });
-        
-            // Check if user exists
+    
             if (!user) {
                 return "User not found";
             }
-        
-            // Get all carrots (purchased options) for this user
+    
+            // Get all carrots for the user, including option details
             const userCarrots = await prisma.tCarrots.findMany({
-            where: { userIdId: user.id },
-            include: {
-                optionId: true // Include the related option details
-            },
-            orderBy: {
-                carrotDatePurchased: 'desc' // Sort by purchase date, newest first
-            }
+                where: { userIdId: user.id },
+                include: {
+                    optionId: true
+                }
             });
-        
-            // Check if user has any options
+    
             if (userCarrots.length === 0) {
-            return "You don't have any options in your account.";
+                return "You don't have any options in your account.";
             }
-        
-            // Format the results
-            const formattedOptions = userCarrots.map(carrot => {
-            // Format the date and time
-            const purchaseDatetime = carrot.carrotDatePurchased 
-                ? new Date(carrot.carrotDatePurchased).toLocaleString() // Changed to toLocaleString() to include time
-                : 'Unknown date/time';
-        
-            // Format the price with 2 decimal places
-            const formattedPrice = carrot.carrotPurchasePrice 
-                ? `$${parseFloat(carrot.carrotPurchasePrice.toString()).toFixed(2)}` 
-                : 'Unknown price';
-        
-            // Get the option name
-            const optionName = carrot.optionId?.optionName || 'Unknown option';
-        
-            // Return formatted string
-            return `${optionName} | ${formattedPrice} | ${purchaseDatetime}`;
+    
+            // Group by option name and calculate average
+            const optionGroups: { [optionName: string]: number[] } = {};
+    
+            for (const carrot of userCarrots) {
+                const optionName = carrot.optionId?.optionName || 'Unknown option';
+                const price = parseFloat(carrot.carrotPurchasePrice?.toString() || '0');
+                if (!optionGroups[optionName]) {
+                    optionGroups[optionName] = [];
+                }
+                optionGroups[optionName].push(price);
+            }
+    
+            // Format the output with average prices
+            const result = Object.entries(optionGroups).map(([optionName, prices]) => {
+                const total = prices.reduce((sum, p) => sum + p, 0);
+                const average = total / prices.length;
+                return `${optionName} | Avg Price: $${average.toFixed(2)} | Purchases: ${prices.length}`;
             });
-        
-            // Join all options with newlines
-            return formattedOptions.join('\n');
+    
+            return result.join('\n');
         } catch (error) {
             console.error("Error retrieving user options:", error);
             return "An error occurred while retrieving your options.";
         }
-    },
+    },    
     login: async (loginDetails: string[], context: Context, req: any) => {
         const username = loginDetails[1];
         const password = loginDetails[2];
@@ -218,11 +312,73 @@ const commands = {
     logout: async (req: any) => {
         req.session.user = {}
         req.session.save();
+    },
+    createUser: async (loginDetails: string[]) => {
+        const username = loginDetails[2];
+        const email = loginDetails[3];
+        const password = loginDetails[4];
+        
+        // Input validation
+        if (username === "undefined") {
+            return "Username not provided";
+        } else if (email === "undefined") {
+            return "Email not provided";
+        } else if (password === "undefined") {
+            return "Password not provided";
+        }
+        
+        // Email format validation
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) {
+            return "Invalid email format";
+        }
+        
+        // Password complexity validation
+        const uppercaseRegex = /[A-Z]/;
+        const numberRegex = /[0-9]/;
+        
+        if (!uppercaseRegex.test(password)) {
+            return "Password must contain at least one uppercase letter";
+        }
+        
+        if (!numberRegex.test(password)) {
+            return "Password must contain at least one number";
+        }
+        
+        // Check if user already exists
+        const userDetails = await prisma.tUsers.findFirst({
+            where: { userUsername: username }
+        });
+        
+        if (userDetails) {
+            return "Username already taken!";
+        }
+        
+        try {
+            // Hash the password with bcrypt
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            
+            // Create user with the hashed password
+            const user = await prisma.tUsers.create({
+                data: {
+                    userEmail: email,
+                    userUsername: username,
+                    userPassword: hashedPassword,
+                    userWallet: 0
+                }
+            });
+            
+            return `Created user ${user.userUsername}`;
+        } catch (error: any) {
+            console.error('Error creating user:', error);
+            return `Failed to create user: ${error.message}`;
+        }
     }
 };
 
 export async function interpretCommands(command: string, context: Context, req: any): Promise<any> {
-    const commandArray = command.trim().toLowerCase().split(" ");
+    const commandArray = command.trim().split(" ");
     console.log(commandArray);
     
     if (commandArray[0] === "get") {
@@ -260,6 +416,11 @@ export async function interpretCommands(command: string, context: Context, req: 
     }
     if (commandArray[0] === "logout") {
         return commands.logout(req);
+    }
+    if (commandArray[0] === "create") {
+        if (commandArray[1] == "user") {
+            return commands.createUser(commandArray);
+        }
     }
 
     return `Unknown command: ${command}`;

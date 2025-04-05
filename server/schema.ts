@@ -78,10 +78,10 @@ export const lists = {
       uqUserId: relationship({
         ref: 'tUsers.userQueue'
       }),
-      uqPurchaseCount: integer({
+      uqCount: integer({
         defaultValue: 1
       }),
-      uqDatePurchased: timestamp({
+      uqTransactionDate: timestamp({
         defaultValue: { kind: 'now' },
       }),
       uqComplete: checkbox({

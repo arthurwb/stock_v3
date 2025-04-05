@@ -20,7 +20,8 @@ const optionCommands = {
         return res;
     },
     sellOption: async (option) => {
-        return "test";
+        const res = await sendCommandToDatabase(`sell option ${option}`);
+        return res
     },
     myOptions: async () => {
         const res = await sendCommandToDatabase("my options");

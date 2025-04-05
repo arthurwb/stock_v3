@@ -368,8 +368,8 @@ type tUserQueue {
   uqType: String
   uqOptionId: tOptions
   uqUserId: tUsers
-  uqPurchaseCount: Int
-  uqDatePurchased: DateTime
+  uqCount: Int
+  uqTransactionDate: DateTime
   uqComplete: Boolean
 }
 
@@ -385,8 +385,8 @@ input tUserQueueWhereInput {
   uqType: StringFilter
   uqOptionId: tOptionsWhereInput
   uqUserId: tUsersWhereInput
-  uqPurchaseCount: IntNullableFilter
-  uqDatePurchased: DateTimeNullableFilter
+  uqCount: IntNullableFilter
+  uqTransactionDate: DateTimeNullableFilter
   uqComplete: BooleanFilter
 }
 
@@ -409,8 +409,8 @@ input BooleanFilter {
 input tUserQueueOrderByInput {
   id: OrderDirection
   uqType: OrderDirection
-  uqPurchaseCount: OrderDirection
-  uqDatePurchased: OrderDirection
+  uqCount: OrderDirection
+  uqTransactionDate: OrderDirection
   uqComplete: OrderDirection
 }
 
@@ -418,8 +418,8 @@ input tUserQueueUpdateInput {
   uqType: String
   uqOptionId: tOptionsRelateToOneForUpdateInput
   uqUserId: tUsersRelateToOneForUpdateInput
-  uqPurchaseCount: Int
-  uqDatePurchased: DateTime
+  uqCount: Int
+  uqTransactionDate: DateTime
   uqComplete: Boolean
 }
 
@@ -432,8 +432,8 @@ input tUserQueueCreateInput {
   uqType: String
   uqOptionId: tOptionsRelateToOneForCreateInput
   uqUserId: tUsersRelateToOneForCreateInput
-  uqPurchaseCount: Int
-  uqDatePurchased: DateTime
+  uqCount: Int
+  uqTransactionDate: DateTime
   uqComplete: Boolean
 }
 
