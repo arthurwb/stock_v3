@@ -16,9 +16,9 @@ const utilityCommands = {
                 <div className="mb-6">
                     <h1 className="text-red-500 font-bold mb-2">Utility Commands</h1>
                     <div className="ml-4 space-y-1">
-                        <pre>clear............................clear terminal</pre>
-                        <pre>help.............................show list of commands</pre>
-                        <pre>dog..............................dog</pre>
+                        <pre>clear........................................clear terminal</pre>
+                        <pre>help.........................................show list of commands</pre>
+                        <pre>dog..........................................dog</pre>
                     </div>
                 </div>
 
@@ -26,17 +26,19 @@ const utilityCommands = {
                 <div className="mb-6">
                     <h1 className="text-red-500 font-bold mb-2">Option Commands</h1>
                     <div className="ml-4 space-y-1">
-                        <pre>get option [option name].........show details on given option</pre>
-                        <pre>get options......................displays all available options and their current price</pre>
-                        <pre>buy option [option name].........purchase an option at its current price</pre>
-                        <pre>my options.......................display a list of all user owned options</pre>
+                        <pre>get option [option name].....................show details on given option</pre>
+                        <pre>get options..................................displays all available options and their current price</pre>
+                        <pre>buy option [option name].....................purchase an option at its current price</pre>
+                        <pre>my options...................................display a list of all user owned options</pre>
                     </div>
                 </div>
 
                 <div className="mb-6">
                     <h1 className="text-red-500 font-bold mb-2">User Commands</h1>
                     <div className="ml-4 space-y-1">
-                        <pre>login [username] [password]......login with provided credentials</pre>
+                        <pre>login [username] [password]..................login with provided credentials</pre>
+                        <pre>logout.......................................logout of currently logged in account</pre>
+                        <pre>create user [username] [email] [password]....create new user</pre>
                     </div>
                 </div>
             </div>

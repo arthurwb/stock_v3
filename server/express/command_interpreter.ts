@@ -402,7 +402,7 @@ export async function interpretCommands(command: string, context: Context, req: 
     if (commandArray[0] === "sell" && commandArray[1] === "option") {
         const optionName = commandArray.slice(2).join(" ");
         console.log(req.session.user);
-        return commands.sellOption(optionName);
+        return commands.sellOption(optionName, req.session.user.username);
     }
     if (commandArray[0] === "my" && commandArray[1] === "options") {
         if (req.session.user == undefined) {
