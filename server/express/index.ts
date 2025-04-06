@@ -3,32 +3,49 @@ import type { Express } from "express";
 import expressSession from 'express-session';
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch"; // Ensure you have this if you're using fetch in Node.js
-
+import fetch from "node-fetch";
 import { interpretCommands } from "./command_interpreter";
+
+// Get the Railway-provided URL or fall back to localhost
+const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
 
 export async function extendExpressApp(app: Express, context: Context) {
     app.use(express.json());
-
+    
+    // Update CORS settings to match keystone.ts
     app.use(cors({
-        origin: ['http://localhost:3000'],  // React client URL
-        credentials: true,  // Allow sending cookies with the request
+        origin: [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            appUrl,
+            // Allow any Railway subdomains
+            /\.up\.railway\.app$/
+        ],
+        credentials: true,
     }));
-
+    
+    // Use a more secure session secret from environment variables
     app.use(expressSession({
-        secret: 'testtesttesttesttesttesttesttest',  // Secure session key
+        secret: process.env.SESSION_SECRET || 'testtesttesttesttesttesttesttest',
         resave: false,
         saveUninitialized: false,
         cookie: {
-            httpOnly: true,  // Only accessible via HTTP (not JavaScript)
+            httpOnly: true,
             maxAge: 60 * 60 * 24 * 1000,  // 1 day
-            secure: false,
-            sameSite: 'lax' // This helps with cross-origin requests
+            // Set secure to true if using HTTPS
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
         }
     }));
-
+    
     app.get("/status", (_, res: any) => res.send("Ready"));
-
+    
+    // Health check endpoint for Railway
+    app.get('/health', (req, res) => {
+        res.status(200).send({ status: 'ok' });
+    });
+    
+    // Rest of your routes...
     app.get("/dog", async (req: any, res: any) => {
         try {
             const dogResponse = await fetch('https://dog.ceo/api/breeds/image/random');
@@ -42,7 +59,7 @@ export async function extendExpressApp(app: Express, context: Context) {
             res.status(500).send('Internal Server Error');
         }
     });
-
+    
     app.get("/user-data", async (req: any, res: any) => {
         try {
             if (!req.session.user) {
@@ -50,7 +67,7 @@ export async function extendExpressApp(app: Express, context: Context) {
                     userPresent: false
                 });
             }
-            
+           
             const username = req.session.user.username;
             const user = await context.query.tUsers.findOne({
                 where: { userUsername: username },
@@ -61,13 +78,13 @@ export async function extendExpressApp(app: Express, context: Context) {
                     userWallet
                 `
             });
-            
+           
             if (!user) {
                 return res.json({
                     userPresent: false
                 });
             }
-            
+           
             // Return the user data
             res.json({
                 username: user.userUsername,
@@ -75,16 +92,16 @@ export async function extendExpressApp(app: Express, context: Context) {
                 userPresent: true,
                 wallet: user.userWallet,
             });
-            
+           
         } catch (error) {
             console.error("Error fetching user data:", error);
-            res.status(500).json({ 
-                error: "Internal Server Error", 
-                details: (error as Error).message 
+            res.status(500).json({
+                error: "Internal Server Error",
+                details: (error as Error).message
             });
         }
     });
-
+    
     // Change to POST instead of GET
     app.post("/command", async (req: any, res: any) => {
         try {
@@ -95,6 +112,7 @@ export async function extendExpressApp(app: Express, context: Context) {
             res.send({ message: response });
         } catch (error) {
             console.error("Error during login or command interpretation:", error);
-            res.status(500).send({ error: "Internal Server Error", details: (error as Error).message });        }
+            res.status(500).send({ error: "Internal Server Error", details: (error as Error).message });
+        }
     });
 }
