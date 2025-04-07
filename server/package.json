@@ -8,7 +8,7 @@
     "seed-clear": "ts-node ./seeding/clearDatabase.ts",
     "start": "keystone start",
     "add-admin": "ts-node ./seeding/createAdmin.ts user@example.com",
-    "build": "keystone build"
+    "build": "keystone build && npm run seed"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
