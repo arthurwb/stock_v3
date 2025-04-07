@@ -12,6 +12,8 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function seed() {
+  console.log("starting seeding process...");
+
   // Clear existing data (optional, for testing)
   if (prisma.tCarrots) { await prisma.tCarrots.deleteMany({}); }
   if (prisma.tHistoricalPrices) { await prisma.tHistoricalPrices.deleteMany({}); }
