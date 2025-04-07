@@ -6,7 +6,7 @@
     "dev": "keystone dev",
     "seed": "ts-node ./seeding/seed.ts",
     "seed-clear": "ts-node ./seeding/clearDatabase.ts",
-    "start": "keystone start",
+    "start": "keystone start && npm run seed",
     "add-admin": "ts-node ./seeding/createAdmin.ts user@example.com",
     "build": "keystone build"
   },
