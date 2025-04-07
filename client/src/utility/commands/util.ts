@@ -1,6 +1,6 @@
 export default async function sendCommandToDatabase(command: string): Promise<any> {
   try {
-    const response = await fetch("http://localhost:8080/command", {
+    const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:8080", {
       credentials: "include",  // Ensure credentials (cookies) are included
       method: "POST",
       headers: {

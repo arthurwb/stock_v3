@@ -46,7 +46,7 @@ const utilityCommands = {
     },
     dog: async (): Promise<UtilityCommandResponse> => {
         try {
-            const response = await fetch('http://localhost:8080/dog', {
+            const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:8080", {
                 credentials: "include",
                 method: 'GET',
                 headers: {
