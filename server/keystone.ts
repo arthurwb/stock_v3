@@ -10,9 +10,6 @@ import { lists } from './schema'
 import { withAuth, session } from './auth'
 import { extendExpressApp } from './express/index'
 
-// Get the Railway-provided URL or fall back to localhost
-const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
-
 export default
 withAuth(
   config({
@@ -28,7 +25,6 @@ withAuth(
         origin: [
           'http://localhost:3000', 
           'http://127.0.0.1:3000',
-          appUrl,
           // Allow any Railway subdomains
           /\.up\.railway\.app$/
         ], 
