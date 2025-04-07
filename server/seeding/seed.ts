@@ -13,10 +13,10 @@ const prisma = new PrismaClient();
 
 async function seed() {
   // Clear existing data (optional, for testing)
-  await prisma.tCarrots.deleteMany({});
-  await prisma.tHistoricalPrices.deleteMany({});
-  await prisma.tOptions.deleteMany({});
-  await prisma.tUsers.deleteMany({});
+  if (prisma.tCarrots) { await prisma.tCarrots.deleteMany({}); }
+  if (prisma.tHistoricalPrices) { await prisma.tHistoricalPrices.deleteMany({}); }
+  if (prisma.tOptions) { await prisma.tOptions.deleteMany({}); }
+  if (prisma.tUsers) { await prisma.tUsers.deleteMany({}); }
 
   const hashedAdminPassword = await bcrypt.hash('admin123', 10);
   const hashedSamplePassword = await bcrypt.hash('password', 10);
