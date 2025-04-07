@@ -15,10 +15,22 @@ async function seed() {
   console.log("starting seeding process...");
 
   // Clear existing data (optional, for testing)
-  if (prisma.tCarrots) { await prisma.tCarrots.deleteMany({}); }
-  if (prisma.tHistoricalPrices) { await prisma.tHistoricalPrices.deleteMany({}); }
-  if (prisma.tOptions) { await prisma.tOptions.deleteMany({}); }
-  if (prisma.tUsers) { await prisma.tUsers.deleteMany({}); }
+  if (prisma.tCarrots) { 
+    console.log("Deleting carrots table");
+    await prisma.tCarrots.deleteMany({}); 
+  }
+  if (prisma.tHistoricalPrices) { 
+    console.log("Deleting historical prices table");
+    await prisma.tHistoricalPrices.deleteMany({}); 
+  }
+  if (prisma.tOptions) { 
+    console.log("Deleting options table");
+    await prisma.tOptions.deleteMany({}); 
+  }
+  if (prisma.tUsers) { 
+    console.log("Deleting users table");
+    await prisma.tUsers.deleteMany({});
+  }
 
   const hashedAdminPassword = await bcrypt.hash('admin123', 10);
   const hashedSamplePassword = await bcrypt.hash('password', 10);
