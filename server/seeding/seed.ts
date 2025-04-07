@@ -11,37 +11,29 @@ const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient();
 
-async function tableExists(tableName: string): Promise<boolean> {
-  const result = await prisma.$queryRaw<
-    Array<{ exists: boolean }>
-  >`SELECT EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'public' 
-    AND table_name = ${tableName}
-  ) AS exists;`;
-
-  return result[0]?.exists ?? false;
-}
-
 async function seed() {
   console.log("starting seeding process...");
 
   // Clear existing data (optional, for testing)
-  if (await tableExists("tCarrots")) { 
-    console.log("Deleting carrots table");
-    await prisma.tCarrots.deleteMany({}); 
-  }
-  if (await tableExists("tHistoricalPrices")) { 
-    console.log("Deleting historical prices table");
-    await prisma.tHistoricalPrices.deleteMany({}); 
-  }
-  if (await tableExists("tOptions")) { 
-    console.log("Deleting options table");
-    await prisma.tOptions.deleteMany({}); 
-  }
-  if (await tableExists("tUsers")) { 
-    console.log("Deleting users table");
-    await prisma.tUsers.deleteMany({});
+  try {
+    if (prisma.tCarrots) { 
+      console.log("Deleting carrots table");
+      await prisma.tCarrots.deleteMany({}); 
+    }
+    if (prisma.tHistoricalPrices) { 
+      console.log("Deleting historical prices table");
+      await prisma.tHistoricalPrices.deleteMany({}); 
+    }
+    if (prisma.tOptions) { 
+      console.log("Deleting options table");
+      await prisma.tOptions.deleteMany({}); 
+    }
+    if (prisma.tUsers) { 
+      console.log("Deleting users table");
+      await prisma.tUsers.deleteMany({});
+    }
+  } catch {
+    console.log("unable to delete tables, moving on...")
   }
 
   const hashedAdminPassword = await bcrypt.hash('admin123', 10);
