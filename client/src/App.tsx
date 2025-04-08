@@ -32,6 +32,8 @@ function App() {
         }
       });
 
+      console.log(response)
+
       // KEY FIX: Reset userData to null if user is not authenticated
       if (response.status === 401 || response.status === 404) {
         setUserData(null);
@@ -43,6 +45,8 @@ function App() {
       }
 
       const data = await response.json();
+
+      console.log(`data: ${data}`)
       
       // If user is not present, set userData to null
       if (!data.userPresent) {
