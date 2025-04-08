@@ -3,9 +3,12 @@ import Loading from "./Loading.tsx";
 import { interpretCommand } from "../utility/commandInterpreter.tsx";
 import utilityCommands from "../utility/commands/utilityCommands.tsx";
 
+import { UserData } from "../types/UserData.tsx";
+
 interface TerminalInputProps {
   onCommandOutput: (output: React.ReactNode) => void;
   clearOutputs: () => void;
+  userData: UserData | null
 }
 
 export interface TerminalInputHandle {
@@ -13,7 +16,7 @@ export interface TerminalInputHandle {
 }
 
 const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
-  ({ onCommandOutput, clearOutputs }, ref) => {
+  ({ onCommandOutput, clearOutputs, userData }, ref) => {
     const [inputValue, setInputValue] = useState("");
     const [isBarVisible, setIsBarVisible] = useState(true);
     const [caretPosition, setCaretPosition] = useState(0);
@@ -52,6 +55,18 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
       }
     };
 
+    const renderUserData = () => {
+      if (loading && !userData) {
+        return <div>Loading user data...</div>;
+      }
+  
+      if (!userData) {
+        return "anonymous";
+      }
+     
+      return userData.username;
+    };
+
     const handleSubmit = async () => {
       if (!inputValue.trim()) return;
       setLoading(true);
@@ -62,7 +77,7 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
         if (command !== "clear") {
           onCommandOutput(
             <div>
-              <p className="text-green-400">SampleUser$-: {inputValue}</p>
+              <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>
               <div>{await output}</div>
             </div>
           );
@@ -71,7 +86,7 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
         const commandOutput = await interpretCommand(inputValue, clearOutputs);
         onCommandOutput(
           <div>
-            <p className="text-green-400">SampleUser$-: {inputValue}</p>
+            <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>
             <div>{commandOutput}</div>
           </div>
         );
@@ -84,7 +99,7 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
     return (
       <div className="basis-1/12 flex items-center border-1 border-solid">
         <div className="flex flex-row items-center h-full w-full text-white text-2xl">
-          <span className="px-2 text-orange">SampleUser$-:</span>
+          <span className="px-2 text-orange">{renderUserData()}$-:</span>
           <div className="flex-1 h-full flex items-center relative">
             <input
               ref={inputRef}

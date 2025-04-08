@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import React, { useEffect, useState, useRef, useLayoutEffect, FC } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, DotProps, Dot } from "recharts";
 
 import sendCommandToDatabase from '../utility/commands/util.ts'
 
@@ -26,6 +26,12 @@ const OptionChart: React.FC<{ option: string }> = ({ option }) => {
     const [error, setError] = useState<string | null>(null);
 
     const containerRef = useRef<HTMLDivElement>(null); // Reference to the container
+
+    const HideDot: FC<DotProps> = ({ cx, cy }) => {
+        return (
+          <Dot cx={cx} cy={cy} fill="red" r={0} />
+        )
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -106,7 +112,7 @@ const OptionChart: React.FC<{ option: string }> = ({ option }) => {
                                 <YAxis />
                                 <Tooltip />
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <Line type="monotone" dataKey="price" stroke="#8884d8" strokeWidth={2} />
+                                <Line type="monotone" dataKey="price" stroke="#07e349" strokeWidth={2} dot={<HideDot/>}/>
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

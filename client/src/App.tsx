@@ -4,14 +4,7 @@ import BorderedSection from "./components/BorderedSection.tsx";
 import TerminalInput, { TerminalInputHandle } from "./components/TerminalInput.tsx";
 import TerminalOutput from "./components/TerminalOutput.tsx";
 
-// Define a type for your user data
-interface UserData {
-  username: string;
-  email: string;
-  wallet: string;
-  otherData?: string;
-  // Add other fields as needed
-}
+import { UserData } from "./types/UserData.tsx";
 
 function App() {
   const [commandOutputs, setCommandOutputs] = useState<React.ReactNode[]>([]);
@@ -149,6 +142,7 @@ function App() {
             <TerminalOutput outputs={commandOutputs} />
             <TerminalInput 
               ref={terminalInputRef}
+              userData={userData} 
               onCommandOutput={handleCommandOutput} 
               clearOutputs={clearOutputs} 
             />
