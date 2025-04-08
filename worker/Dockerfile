@@ -1,18 +1,12 @@
-FROM golang:1.21-alpine
+FROM golang:1.21 AS builder
 
 WORKDIR /app
-
-# Copy go.mod and go.sum files
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
-
-# Copy the source code
 COPY . .
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -o worker .
 
-# Build the application
-RUN go build -o worker src/main.go
-
-# Command to run the executable
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/worker .
 CMD ["./worker"]
