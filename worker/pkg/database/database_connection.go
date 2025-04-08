@@ -13,7 +13,7 @@ func env(enVar string) string {
 }
 
 func DatabaseConnect() (*sql.DB) {
-	dsn := fmt.Sprintf("%s:%s@tcp(stock_v3_devcontainer-mysql-1:3306)/%s?parseTime=true", env("DATABASE_ROOTUSER"), env("DATABASE_ROOTPASSWORD"), env("DATABASE_NAME"))
+	dsn := fmt.Sprintf(env("DATABASE_URL"))
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
