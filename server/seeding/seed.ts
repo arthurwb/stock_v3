@@ -26,57 +26,8 @@ async function tableExists(tableName: string): Promise<boolean> {
   return result[0]?.count > 0;
 }
 
-// Create a table if it doesn't exist
-async function createTable(tableName: string) {
-  console.log(`Creating table: ${tableName}`);
-  if (tableName === 'tCarrots') {
-    await prisma.$queryRaw`
-      CREATE TABLE tCarrots (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        quantity INT NOT NULL
-      );
-    `;
-  } else if (tableName === 'tHistoricalPrices') {
-    await prisma.$queryRaw`
-      CREATE TABLE tHistoricalPrices (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        price DECIMAL(10, 2) NOT NULL,
-        date DATE NOT NULL
-      );
-    `;
-  } else if (tableName === 'tOptions') {
-    await prisma.$queryRaw`
-      CREATE TABLE tOptions (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        optionName VARCHAR(255) NOT NULL,
-        optionPrice DECIMAL(10, 2) NOT NULL
-      );
-    `;
-  } else if (tableName === 'tUsers') {
-    await prisma.$queryRaw`
-      CREATE TABLE tUsers (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        userEmail VARCHAR(255) NOT NULL,
-        userUsername VARCHAR(255) NOT NULL,
-        userPassword VARCHAR(255) NOT NULL,
-        userWallet DECIMAL(10, 2) NOT NULL
-      );
-    `;
-  }
-}
-
 async function seed() {
   console.log("starting seeding process...");
-
-  // Check if tables exist and create them if not
-  const tablesToCheck = ['tCarrots', 'tHistoricalPrices', 'tOptions', 'tUsers'];
-
-  for (const table of tablesToCheck) {
-    if (!(await tableExists(table))) {
-      await createTable(table);
-    }
-  }
 
   // Clear existing data (optional, for testing)
   if (await tableExists("tCarrots")) { 
