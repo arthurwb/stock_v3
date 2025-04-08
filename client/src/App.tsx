@@ -17,7 +17,6 @@ function App() {
   const fetchUserData = async () => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
-      console.log(process.env.REACT_APP_API_URL)
       const response = await fetch(`${apiUrl}/user-data`, {
         method: 'GET',
         credentials: 'include', // Important for including session cookies
@@ -25,8 +24,6 @@ function App() {
           'Content-Type': 'application/json'
         }
       });
-
-      console.log(response)
 
       // KEY FIX: Reset userData to null if user is not authenticated
       if (response.status === 401 || response.status === 404) {
@@ -39,8 +36,6 @@ function App() {
       }
 
       const data = await response.json();
-
-      console.log(`data: ${data}`)
       
       // If user is not present, set userData to null
       if (!data.userPresent) {
