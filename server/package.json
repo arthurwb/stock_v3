@@ -8,8 +8,9 @@
     "seed-clear": "ts-node ./seeding/clearDatabase.ts",
     "start": "keystone start",
     "add-admin": "ts-node ./seeding/createAdmin.ts user@example.com",
-    "build": "keystone build && yarn migrate",
-    "migrate": "keystone prisma migrate dev"
+    "build": "keystone build && yarn migrate-deploy",
+    "migrate-dev": "keystone prisma migrate dev",
+    "migrate-deploy": "keystone prisma migrate deploy"
   },
   "dependencies": {
     "@keystone-6/auth": "^8.0.0",
