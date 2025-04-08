@@ -9,6 +9,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <html lang="en" />
         <title>The Exchange</title>
         <meta name="description" content="The Exchange" />
+        <link rel="icon" href="./exchange-logo.svg" />
       </Helmet>
 
       {/* Main Layout */}
