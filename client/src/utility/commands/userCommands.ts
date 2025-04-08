@@ -6,7 +6,11 @@ const userCommands = {
         if (typeof data.message == "string") {
             return data.message;
         }
-        return `Logged in as ${data.message.userUsername}`;
+        if (data.message != undefined) {
+            return `Logged in as ${data.message.userUsername}`;
+        } else {
+            return "Incorrect login information"
+        }
     },
     logout: async () => {
         const data = await sendCommandToDatabase(`logout`);

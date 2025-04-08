@@ -23,8 +23,9 @@ function App() {
   // Function to fetch user data from the server
   const fetchUserData = async () => {
     try {
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
       console.log(process.env.REACT_APP_API_URL)
-      const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:8080", {
+      const response = await fetch(`${apiUrl}/user-data`, {
         method: 'GET',
         credentials: 'include', // Important for including session cookies
         headers: {
