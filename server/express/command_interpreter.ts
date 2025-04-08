@@ -280,6 +280,7 @@ const commands = {
         }
     },    
     login: async (loginDetails: string[], context: Context, req: any) => {
+        console.log("login start");
         const username = loginDetails[1];
         const password = loginDetails[2];
     
@@ -293,6 +294,8 @@ const commands = {
         const userDetails = await prisma.tUsers.findFirst({
             where: { userUsername: username }
         });
+
+        console.log(userDetails)
     
         if (!userDetails) {
             return "User not found";
@@ -304,6 +307,8 @@ const commands = {
         if (!isPasswordValid) {
             return "Incorrect password";
         }
+
+        console.log(req.session.user)
         
         req.session.user = { username }
         req.session.save();
