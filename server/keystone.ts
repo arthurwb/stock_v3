@@ -25,6 +25,7 @@ withAuth(
         origin: [
           'http://localhost:3000', 
           'http://127.0.0.1:3000',
+          'https://exchange.up.railway.app',
           // Allow any Railway subdomains
           /\.up\.railway\.app$/
         ], 

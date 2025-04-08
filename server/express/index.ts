@@ -14,8 +14,15 @@ export async function extendExpressApp(app: Express, context: Context) {
     
     // Update CORS settings to match keystone.ts
     app.use(cors({
-        origin: '*',
-        credentials: false,
+        origin: [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://exchange.up.railway.app',
+            appUrl,
+            // Allow any Railway subdomains
+            /\.up\.railway\.app$/
+        ],
+        credentials: true,
     }));
     
     // Use a more secure session secret from environment variables
