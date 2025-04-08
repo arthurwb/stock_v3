@@ -129,9 +129,10 @@ function App() {
           <div className="basis-5/12 m-2">
             <p>--help: show commands</p>
           </div>
-          <BorderedSection label="Logo" className="basis-2/12 m-2">
-            image
-          </BorderedSection>
+          <div className="basis-2/12 m-2 text-center">
+            <img src="/exchange-logo.svg" className="mx-auto" style={{ width: 100, height: 100 }}></img>
+            <span className="font-bold underline">The Exchange</span>
+          </div>
           <div className="flex flex-col basis-5/12 m-2">
             <div className="flex flex-col basis-6/12 text-center">
               {renderUserData()}
