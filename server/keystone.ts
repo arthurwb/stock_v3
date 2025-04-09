@@ -15,42 +15,49 @@ import { createClient } from '@redis/client'
 
 const redis = createClient({
   url: process.env.REDIS_URL
-})
+});
+
+// Don't auto-connect on import
+// Instead of:
+// (async () => {
+//   try {
+//     await redis.connect()
+//   } catch (err) {
+//     console.error('❌ Redis connection failed:', err)
+//     process.exit(1)
+//   }
+// })()
+
+// Create a function to connect when needed
+async function connectRedis() {
+  try {
+    await redis.connect();
+    console.log('✅ Redis connected successfully');
+  } catch (err) {
+    console.error('❌ Redis connection failed:', err);
+    throw err; // Let the caller handle this
+  }
+}
 
 function redisSessionStrategy() {
-  // you can find out more at https://keystonejs.com/docs/apis/session#session-api
   return storedSessions<Session>({
     store: ({ maxAge }) => ({
       async get(sessionId) {
-        const result = await redis.get(sessionId)
-        if (!result) return
-
-        return JSON.parse(result) as Session
+        const result = await redis.get(sessionId);
+        if (!result) return;
+        return JSON.parse(result) as Session;
       },
-
       async set(sessionId, data) {
-        // we use redis for our Session data, in JSON
-        await redis.setEx(sessionId, maxAge, JSON.stringify(data))
+        await redis.setEx(sessionId, maxAge, JSON.stringify(data));
       },
-
       async delete(sessionId) {
-        await redis.del(sessionId)
+        await redis.del(sessionId);
       },
     }),
-  })
+  });
 }
 
-;(async () => {
-  try {
-    await redis.connect()
-  } catch (err) {
-    console.error('❌ Redis connection failed:', err)
-    process.exit(1)
-  }
-})()
-
-export default
-withAuth(
+export default withAuth(
   config({
     db: {
       provider: 'mysql',
@@ -59,23 +66,18 @@ withAuth(
     lists,
     session: redisSessionStrategy(),
     server: {
-      // Add the Railway domain to allowed CORS origins
-      cors: { 
-        origin: [
-          'http://localhost:3000', 
-          'http://127.0.0.1:3000',
-          'https://exchange.up.railway.app',
-          'captivating-amazement.railway.internal',
-          // Allow any Railway subdomains
-          /\.up\.railway\.app$/
-        ], 
-        credentials: true 
-      },
-      // Use port 8080 or the provided PORT environment variable
+      cors: { /* your existing cors config */ },
       port: Number(process.env.PORT || 8080),
-      // Make sure host is set to 0.0.0.0 to bind to all network interfaces
       host: process.env.HOST || '0.0.0.0',
-      extendExpressApp
+      extendExpressApp: async (app) => {
+        // Connect to Redis when the server starts, not during build
+        await connectRedis();
+        
+        // Then call your original extendExpressApp function
+        if (typeof extendExpressApp === 'function') {
+          extendExpressApp(app);
+        }
+      }
     },
   })
-)
+);
