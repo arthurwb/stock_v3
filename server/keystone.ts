@@ -14,7 +14,7 @@ import { Session } from 'express-session'
 import { createClient } from '@redis/client'
 
 const redis = createClient({
-  url: "redis://redis:6379"
+  url: process.env.REDIS_URL
 })
 
 function redisSessionStrategy() {
