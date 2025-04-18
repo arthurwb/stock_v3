@@ -11,7 +11,7 @@ import { withAuth, session } from './auth'
 import { extendExpressApp } from './express/index'
 import { storedSessions } from '@keystone-6/core/session'
 import { Session } from 'express-session'
-import { createClient } from '@redis/client'
+// import { createClient } from '@redis/client'
 
 // const redis = createClient({
 //   url: process.env.REDIS_URL, // Use your Redis connection URL from env

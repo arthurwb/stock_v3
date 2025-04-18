@@ -3,10 +3,10 @@ import { config, list } from '@keystone-6/core';
 import { text, password, checkbox } from '@keystone-6/core/fields';
 import { createAuth } from '@keystone-6/auth';
 // import { createRedisSessionStore } from '@keystone-6/session-store-redis';
-import Redis from 'ioredis';
+// import Redis from 'ioredis';
 
 // Initialize your Redis client
-const redisClient = new Redis(process.env.REDIS_URL!);
+// const redisClient = new Redis(process.env.REDIS_URL!);
 
 const { withAuth } = createAuth({
   // Required options

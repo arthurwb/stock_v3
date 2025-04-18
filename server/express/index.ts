@@ -2,15 +2,15 @@ import type { Context } from ".keystone/types";
 import type { Express } from "express";
 import expressSession from 'express-session';
 import express from "express";
-import Redis from "ioredis";
+// import Redis from "ioredis";
 import cors from "cors";
 import fetch from "node-fetch";
 import { interpretCommands } from "./command_interpreter";
 
 import session from "express-session";
-import redis from "redis";
+// import redis from "redis";
 
-import connectRedis from 'connect-redis';
+// import connectRedis from 'connect-redis';
 // const { RedisStore } = connectRedis
 
 // let redisClient: Redis;
