@@ -20,7 +20,6 @@ func main() {
 	for 1 > 0 {
 		database.CheckUserQueue(db)
 		entropy.Entropy(db)
-		log.Println("Snooze...")
 		time.Sleep(2 * time.Second)
 	}
 }

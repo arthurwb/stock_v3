@@ -176,7 +176,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
     err = tx.QueryRow(priceQuery, optionId).Scan(&optionPrice)
     if err != nil {
         tx.Rollback()
-        log.Printf("Error getting option price for %s: %v", optionId, err)
         return err
     }
     
@@ -203,7 +202,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         if err := rows.Scan(&carrotId); err != nil {
             rows.Close()
             tx.Rollback()
-            log.Printf("Error scanning carrot ID: %v", err)
             return err
         }
         carrots = append(carrots, carrotId)

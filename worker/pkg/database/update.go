@@ -36,8 +36,6 @@ func UpdatePrice(db *sql.DB, Id string, optionPrice string) {
 		log.Printf("Error committing transaction for option ID %d: %v", Id, err)
 		return
 	}
-
-	log.Printf("Updated %d %s", Id, optionPrice)
 }
 
 func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) error {
@@ -64,7 +62,6 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) err
 			log.Printf("Error deleting oldest historical price record: %v", err)
 			return err
 		}
-		log.Println("Oldest historical price record deleted to maintain table size limit.")
 	}
 
 	newId := uuid.New().String()
