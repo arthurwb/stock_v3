@@ -2,7 +2,6 @@ import type { Context } from ".keystone/types";
 import type { Express } from "express";
 import expressSession from 'express-session';
 import express from "express";
-// import Redis from "ioredis";
 import cors from "cors";
 import fetch from "node-fetch";
 import { interpretCommands } from "./command_interpreter";
