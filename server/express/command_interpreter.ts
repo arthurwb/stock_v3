@@ -311,6 +311,7 @@ const commands = {
         console.log(req.session.user)
         
         req.session.user = { username }
+        console.log(req.session.user)
         req.session.save();
         return userDetails;
     },
