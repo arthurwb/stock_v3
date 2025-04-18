@@ -11,44 +11,6 @@ import { withAuth, session } from './auth'
 import { extendExpressApp } from './express/index'
 import { storedSessions } from '@keystone-6/core/session'
 import { Session } from 'express-session'
-// import { createClient } from '@redis/client'
-
-// const redis = createClient({
-//   url: process.env.REDIS_URL, // Use your Redis connection URL from env
-// });
-
-// function redisSessionStrategy() {
-//   return storedSessions<Session>({
-//     store: ({ maxAge }) => ({
-//       async get(sessionId) {
-//         try {
-//           const result = await redis.get(sessionId);
-//           if (!result) return;
-//           return JSON.parse(result) as Session;
-//         } catch (error) {
-//           console.error('Error getting session from Redis:', error);
-//           return undefined; // Or handle the error as needed
-//         }
-//       },
-//       async set(sessionId, data) {
-//         try {
-//           await redis.setEx(sessionId, maxAge / 1000, JSON.stringify(data)); // maxAge is in milliseconds
-//         } catch (error) {
-//           console.error('Error setting session in Redis:', error);
-//         }
-//       },
-//       async delete(sessionId) {
-//         try {
-//           await redis.del(sessionId);
-//         } catch (error) {
-//           console.error('Error deleting session from Redis:', error);
-//         }
-//       },
-//     }),
-//   });
-// }
-
-// const session = redisSessionStrategy();
 
 export default withAuth(
   config({

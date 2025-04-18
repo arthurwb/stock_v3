@@ -7,21 +7,6 @@ import fetch from "node-fetch";
 import { interpretCommands } from "./command_interpreter";
 
 import session from "express-session";
-// import redis from "redis";
-
-// import connectRedis from 'connect-redis';
-// const { RedisStore } = connectRedis
-
-// let redisClient: Redis;
-
-// if (process.env.REDIS_URL) {
-//     redisClient = new Redis(process.env.REDIS_URL);
-// } else {
-//     console.warn("REDIS_URL environment variable not set. Using default Redis connection (localhost:6379).");
-//     redisClient = new Redis(); // Connects to localhost:6379 by default
-//     // You might want to configure different defaults here if needed
-//     // redisClient = new Redis({ host: 'localhost', port: 6379 });
-// }
 
 // Get the Railway-provided URL or fall back to localhost
 const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
