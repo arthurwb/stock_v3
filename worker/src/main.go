@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"exchange.com/m/v3/pkg/database"
