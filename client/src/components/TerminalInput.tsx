@@ -98,9 +98,9 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
 
     return (
       <div className="basis-1/12 flex items-center border-1 border-solid">
-        <div className="flex flex-row items-center h-full w-full text-white text-2xl">
+        <div className="flex flex-row items-center h-full w-full text-white lg:text-2xl md:text-sm overflow-x-auto">
           <span className="px-2 text-orange">{renderUserData()}$-:</span>
-          <div className="flex-1 h-full flex items-center relative">
+          <div className="flex-1 h-12 flex items-center relative">
             <input
               ref={inputRef}
               type="text"
@@ -114,7 +114,9 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
               autoComplete="off"
               autoFocus
             />
-            <span className="whitespace-pre-wrap">{inputValue}</span>
+            <span className="text-transparent">
+              {inputValue}
+            </span>
             {isBarVisible && caretPosition === 0 && (
               <span className="blinking-bar bg-white w-[8px] h-[24px]" />
             )}
