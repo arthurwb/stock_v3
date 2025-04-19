@@ -66,8 +66,6 @@ func Entropy(db *sql.DB) {
 			}
 		}(lowerLimit, upperLimit)), 'f', 2, 64)
 
-		log.Printf("%f --> %s", optionPrice, newPrice)
-
 		// Update the price in the database
 		database.UpdatePrice(db, Id, newPrice)
 	}
