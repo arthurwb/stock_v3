@@ -1,6 +1,7 @@
 import React from "react";
 
 import Warning from "../../components/Warning.tsx";
+import sendCommandToDatabase from "./util.ts";
 
 type UtilityCommandResponse = React.ReactNode | null;
 
@@ -19,6 +20,7 @@ const utilityCommands = {
                         <pre>clear........................................clear terminal</pre>
                         <pre>help.........................................show list of commands</pre>
                         <pre>dog..........................................dog</pre>
+                        <pre>market type..................................view the current market type</pre>
                     </div>
                 </div>
 
@@ -71,6 +73,14 @@ const utilityCommands = {
         } catch (error) {
             console.error('Fetch error:', error);
             return <Warning message={`Error fetching dog image: ${error instanceof Error ? error.message : 'Unknown error'}`}></Warning>;
+        }
+    },
+    marketType: async (): Promise<UtilityCommandResponse> => {
+        const data = await sendCommandToDatabase(`market type`);
+        if (typeof data.message == "string") {
+            return `market type: ${data.message}`;
+        } else {
+            return "error in getting market type"
         }
     }
 };

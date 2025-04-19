@@ -380,6 +380,10 @@ const commands = {
             console.error('Error creating user:', error);
             return `Failed to create user: ${error.message}`;
         }
+    },
+    marketType: async () => {
+        const marketDetails = await prisma.tMarket.findFirst()
+        return marketDetails?.mType
     }
 };
 
@@ -427,6 +431,9 @@ export async function interpretCommands(command: string, context: Context, req: 
         if (commandArray[1] == "user") {
             return commands.createUser(commandArray);
         }
+    }
+    if (commandArray[0] === "market" && commandArray[1] === "type") {
+        return commands.marketType();
     }
 
     return `Unknown command: ${command}`;

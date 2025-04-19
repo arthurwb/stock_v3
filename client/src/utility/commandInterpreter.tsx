@@ -36,6 +36,26 @@ const commandRegistry: Record<string, CommandDefinition> = {
   '--help': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
   '-h': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
   'h': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
+
+  // Utility commands
+  'market': { 
+    handler: (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
+      if (!subcommand) {
+        return <>Market command missing 1 argument</>;
+      }
+      
+      const subcommandDef = commandRegistry['market'].subcommands?.[subcommand];
+      if (!subcommandDef) {
+        return <>Incorrect get command: {subcommand}</>;
+      }
+      
+      return subcommandDef.handler(clearOutputs, ...args);
+    },
+    subcommands: {
+      'type': { handler: (clearOutputs: ClearOutputs) => utilityCommands.marketType() },
+    },
+  },
+  'mt': { handler: (clearOutputs: ClearOutputs) => utilityCommands.marketType() },
   
   // Fun commands
   'dog': { handler: (clearOutputs: ClearOutputs) => utilityCommands.dog() },
