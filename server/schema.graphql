@@ -12,6 +12,8 @@ type tOptions {
   optionCarrotsCount(where: tCarrotsWhereInput! = {}): Int
   userQueue(where: tUserQueueWhereInput! = {}, orderBy: [tUserQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tUserQueueWhereUniqueInput): [tUserQueue!]
   userQueueCount(where: tUserQueueWhereInput! = {}): Int
+  eventQueue(where: tEventQueueWhereInput! = {}, orderBy: [tEventQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tEventQueueWhereUniqueInput): [tEventQueue!]
+  eventQueueCount(where: tEventQueueWhereInput! = {}): Int
 }
 
 scalar Decimal
@@ -31,6 +33,7 @@ input tOptionsWhereInput {
   historicalPrices: tHistoricalPricesManyRelationFilter
   optionCarrots: tCarrotsManyRelationFilter
   userQueue: tUserQueueManyRelationFilter
+  eventQueue: tEventQueueManyRelationFilter
 }
 
 input IDFilter {
@@ -101,6 +104,12 @@ input tUserQueueManyRelationFilter {
   none: tUserQueueWhereInput
 }
 
+input tEventQueueManyRelationFilter {
+  every: tEventQueueWhereInput
+  some: tEventQueueWhereInput
+  none: tEventQueueWhereInput
+}
+
 input tOptionsOrderByInput {
   id: OrderDirection
   optionName: OrderDirection
@@ -120,6 +129,7 @@ input tOptionsUpdateInput {
   historicalPrices: tHistoricalPricesRelateToManyForUpdateInput
   optionCarrots: tCarrotsRelateToManyForUpdateInput
   userQueue: tUserQueueRelateToManyForUpdateInput
+  eventQueue: tEventQueueRelateToManyForUpdateInput
 }
 
 input tHistoricalPricesRelateToManyForUpdateInput {
@@ -143,6 +153,13 @@ input tUserQueueRelateToManyForUpdateInput {
   connect: [tUserQueueWhereUniqueInput!]
 }
 
+input tEventQueueRelateToManyForUpdateInput {
+  disconnect: [tEventQueueWhereUniqueInput!]
+  set: [tEventQueueWhereUniqueInput!]
+  create: [tEventQueueCreateInput!]
+  connect: [tEventQueueWhereUniqueInput!]
+}
+
 input tOptionsUpdateArgs {
   where: tOptionsWhereUniqueInput!
   data: tOptionsUpdateInput!
@@ -155,6 +172,7 @@ input tOptionsCreateInput {
   historicalPrices: tHistoricalPricesRelateToManyForCreateInput
   optionCarrots: tCarrotsRelateToManyForCreateInput
   userQueue: tUserQueueRelateToManyForCreateInput
+  eventQueue: tEventQueueRelateToManyForCreateInput
 }
 
 input tHistoricalPricesRelateToManyForCreateInput {
@@ -170,6 +188,11 @@ input tCarrotsRelateToManyForCreateInput {
 input tUserQueueRelateToManyForCreateInput {
   create: [tUserQueueCreateInput!]
   connect: [tUserQueueWhereUniqueInput!]
+}
+
+input tEventQueueRelateToManyForCreateInput {
+  create: [tEventQueueCreateInput!]
+  connect: [tEventQueueWhereUniqueInput!]
 }
 
 type tHistoricalPrices {
@@ -437,6 +460,140 @@ input tUserQueueCreateInput {
   uqComplete: Boolean
 }
 
+type tEventQueue {
+  id: ID!
+  eqType: String
+  eqEffects: String
+  eqEfectedOptionIds(where: tOptionsWhereInput! = {}, orderBy: [tOptionsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tOptionsWhereUniqueInput): [tOptions!]
+  eqEfectedOptionIdsCount(where: tOptionsWhereInput! = {}): Int
+  eqStartDate: DateTime
+  eqCreationData: DateTime
+  eqComplete: Boolean
+}
+
+input tEventQueueWhereUniqueInput {
+  id: ID
+}
+
+input tEventQueueWhereInput {
+  AND: [tEventQueueWhereInput!]
+  OR: [tEventQueueWhereInput!]
+  NOT: [tEventQueueWhereInput!]
+  id: IDFilter
+  eqType: StringFilter
+  eqEffects: StringFilter
+  eqEfectedOptionIds: tOptionsManyRelationFilter
+  eqStartDate: DateTimeFilter
+  eqCreationData: DateTimeFilter
+  eqComplete: BooleanFilter
+}
+
+input tOptionsManyRelationFilter {
+  every: tOptionsWhereInput
+  some: tOptionsWhereInput
+  none: tOptionsWhereInput
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input tEventQueueOrderByInput {
+  id: OrderDirection
+  eqType: OrderDirection
+  eqEffects: OrderDirection
+  eqStartDate: OrderDirection
+  eqCreationData: OrderDirection
+  eqComplete: OrderDirection
+}
+
+input tEventQueueUpdateInput {
+  eqType: String
+  eqEffects: String
+  eqEfectedOptionIds: tOptionsRelateToManyForUpdateInput
+  eqStartDate: DateTime
+  eqCreationData: DateTime
+  eqComplete: Boolean
+}
+
+input tOptionsRelateToManyForUpdateInput {
+  disconnect: [tOptionsWhereUniqueInput!]
+  set: [tOptionsWhereUniqueInput!]
+  create: [tOptionsCreateInput!]
+  connect: [tOptionsWhereUniqueInput!]
+}
+
+input tEventQueueUpdateArgs {
+  where: tEventQueueWhereUniqueInput!
+  data: tEventQueueUpdateInput!
+}
+
+input tEventQueueCreateInput {
+  eqType: String
+  eqEffects: String
+  eqEfectedOptionIds: tOptionsRelateToManyForCreateInput
+  eqStartDate: DateTime
+  eqCreationData: DateTime
+  eqComplete: Boolean
+}
+
+input tOptionsRelateToManyForCreateInput {
+  create: [tOptionsCreateInput!]
+  connect: [tOptionsWhereUniqueInput!]
+}
+
+type tMarket {
+  id: ID!
+  mName: String
+  mType: String
+  mActiveEvent: String
+}
+
+input tMarketWhereUniqueInput {
+  id: ID
+}
+
+input tMarketWhereInput {
+  AND: [tMarketWhereInput!]
+  OR: [tMarketWhereInput!]
+  NOT: [tMarketWhereInput!]
+  id: IDFilter
+  mName: StringFilter
+  mType: StringFilter
+  mActiveEvent: StringFilter
+}
+
+input tMarketOrderByInput {
+  id: OrderDirection
+  mName: OrderDirection
+  mType: OrderDirection
+  mActiveEvent: OrderDirection
+}
+
+input tMarketUpdateInput {
+  mName: String
+  mType: String
+  mActiveEvent: String
+}
+
+input tMarketUpdateArgs {
+  where: tMarketWhereUniqueInput!
+  data: tMarketUpdateInput!
+}
+
+input tMarketCreateInput {
+  mName: String
+  mType: String
+  mActiveEvent: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -473,6 +630,18 @@ type Mutation {
   updateUserQueueList(data: [tUserQueueUpdateArgs!]!): [tUserQueue]
   deletetUserQueue(where: tUserQueueWhereUniqueInput!): tUserQueue
   deleteUserQueueList(where: [tUserQueueWhereUniqueInput!]!): [tUserQueue]
+  createtEventQueue(data: tEventQueueCreateInput!): tEventQueue
+  createEventQueueList(data: [tEventQueueCreateInput!]!): [tEventQueue]
+  updatetEventQueue(where: tEventQueueWhereUniqueInput!, data: tEventQueueUpdateInput!): tEventQueue
+  updateEventQueueList(data: [tEventQueueUpdateArgs!]!): [tEventQueue]
+  deletetEventQueue(where: tEventQueueWhereUniqueInput!): tEventQueue
+  deleteEventQueueList(where: [tEventQueueWhereUniqueInput!]!): [tEventQueue]
+  createtMarket(data: tMarketCreateInput!): tMarket
+  createMarketList(data: [tMarketCreateInput!]!): [tMarket]
+  updatetMarket(where: tMarketWhereUniqueInput!, data: tMarketUpdateInput!): tMarket
+  updateMarketList(data: [tMarketUpdateArgs!]!): [tMarket]
+  deletetMarket(where: tMarketWhereUniqueInput!): tMarket
+  deleteMarketList(where: [tMarketWhereUniqueInput!]!): [tMarket]
   endSession: Boolean!
   authenticatetUsersWithPassword(userUsername: String!, userPassword: String!): tUsersAuthenticationWithPasswordResult
 }
@@ -504,6 +673,12 @@ type Query {
   tUserQueue(where: tUserQueueWhereUniqueInput!): tUserQueue
   userQueueList(where: tUserQueueWhereInput! = {}, orderBy: [tUserQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tUserQueueWhereUniqueInput): [tUserQueue!]
   userQueueListCount(where: tUserQueueWhereInput! = {}): Int
+  tEventQueue(where: tEventQueueWhereUniqueInput!): tEventQueue
+  eventQueueList(where: tEventQueueWhereInput! = {}, orderBy: [tEventQueueOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tEventQueueWhereUniqueInput): [tEventQueue!]
+  eventQueueListCount(where: tEventQueueWhereInput! = {}): Int
+  tMarket(where: tMarketWhereUniqueInput!): tMarket
+  marketList(where: tMarketWhereInput! = {}, orderBy: [tMarketOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tMarketWhereUniqueInput): [tMarket!]
+  marketListCount(where: tMarketWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

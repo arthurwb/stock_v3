@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"math/rand"
+	"os"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -24,6 +25,8 @@ func Entropy(db *sql.DB) {
 	}
 	defer rows.Close()
 
+	market := database.GetMarketDetails(db)
+
 	for rows.Next() {
 		var Id string
 		var optionName string
@@ -36,15 +39,34 @@ func Entropy(db *sql.DB) {
 		}
 
 		// Calculate the new price
-		lowerLimit := 10.0
-		upperLimit := 20.0
+		lowerLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_LOWER"), 64)
+		upperLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_UPPER"), 64)
 
 		newPrice := strconv.FormatFloat(optionPrice + (func(lower, upper float64) float64 { 
-			if rand.Intn(2) == 0 { 
-				return -upper + rand.Float64()*(upper-lower) 
-			} 
-			return lower + rand.Float64()*(upper-lower) 
-		}(lowerLimit, upperLimit)), 'f', 2, 64)		
+			if (market["mType"] == "bear") {
+				if rand.Intn(4) <= 3 { 
+					return -(lower + rand.Float64()*(upper-lower))
+				} 
+				return lower + rand.Float64()*(upper-lower) 
+			} else if (market["mType"] == "bull") {
+				if rand.Intn(4) >= 3 { 
+					return -(lower + rand.Float64()*(upper-lower))
+				} 
+				return lower + rand.Float64()*(upper-lower) 
+			} else if (market["mType"] == "dragon") {
+				if rand.Intn(2) == 0 { 
+					return -(lower + rand.Float64()*(upper-lower))
+				} 
+				return (lower + rand.Float64()*(upper-lower)) * 3
+			} else {
+				if rand.Intn(2) == 0 { 
+					return -(lower + rand.Float64()*(upper-lower))
+				} 
+				return lower + rand.Float64()*(upper-lower) 
+			}
+		}(lowerLimit, upperLimit)), 'f', 2, 64)
+
+		log.Printf("%f --> %s", optionPrice, newPrice)
 
 		// Update the price in the database
 		database.UpdatePrice(db, Id, newPrice)

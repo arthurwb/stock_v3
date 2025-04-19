@@ -1,11 +1,14 @@
 package database
 
 import (
-    "database/sql"
-    _ "github.com/go-sql-driver/mysql"
-    "fmt"
-    "os"
-    "strings"
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 )
 
 func DatabaseConnect() (*sql.DB) {
@@ -53,6 +56,27 @@ func DatabaseConnect() (*sql.DB) {
 		fmt.Errorf("error connecting to the database: %v", err)
         return nil
     }
+
+    tx, err := db.Begin()
+
+	query := "SELECT mName FROM tMarket"
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatalf("Failed get market: %v", err)
+	}
+	defer rows.Close()
+    if !rows.Next() {
+        marketId := uuid.New().String()
+        marketQuery := `INSERT INTO tMarket 
+                        (id, mName, mType) 
+                        VALUES (?, ?, ?)`
+        _, err = tx.Exec(marketQuery, marketId, "current", "squirrel")
+        if err != nil {
+            log.Println("Error in market configuration")
+        }
+    }
+
+    tx.Commit()
     
     fmt.Println("Successfully connected to the database!")
     return db

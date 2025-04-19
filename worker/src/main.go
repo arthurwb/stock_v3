@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"strconv"
 	"time"
 
 	"exchange.com/m/v3/pkg/database"
@@ -16,9 +18,12 @@ func main() {
 	db := database.DatabaseConnect()
 	defer db.Close()
 
+	rate, _ := strconv.Atoi(os.Getenv("RATE"))
+
 	for 1 > 0 {
 		database.CheckUserQueue(db)
+		database.CheckEventQueue(db)
 		entropy.Entropy(db)
-		time.Sleep(2 * time.Second)
+		time.Sleep(time.Duration(rate) * time.Second)
 	}
 }

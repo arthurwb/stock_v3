@@ -19,6 +19,7 @@ model tOptions {
   historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
   optionCarrots     tCarrots[]          @relation("tCarrots_optionId")
   userQueue         tUserQueue[]        @relation("tUserQueue_uqOptionId")
+  eventQueue        tEventQueue[]       @relation("tEventQueue_eqEfectedOptionIds")
 }
 
 model tHistoricalPrices {
@@ -67,4 +68,21 @@ model tUserQueue {
 
   @@index([uqOptionIdId])
   @@index([uqUserIdId])
+}
+
+model tEventQueue {
+  id                 String     @id @default(cuid())
+  eqType             String     @default("")
+  eqEffects          String     @default("")
+  eqEfectedOptionIds tOptions[] @relation("tEventQueue_eqEfectedOptionIds")
+  eqStartDate        DateTime
+  eqCreationData     DateTime   @default(now())
+  eqComplete         Boolean    @default(false)
+}
+
+model tMarket {
+  id           String @id @default(cuid())
+  mName        String @default("")
+  mType        String @default("")
+  mActiveEvent String @default("")
 }

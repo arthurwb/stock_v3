@@ -8,6 +8,7 @@ import {
   timestamp,
   decimal,
   checkbox,
+  calendarDay,
 } from '@keystone-6/core/fields';
 export const lists = {
   tOptions: list({
@@ -22,6 +23,7 @@ export const lists = {
       historicalPrices: relationship({ ref: 'tHistoricalPrices.optionId', many: true }),
       optionCarrots: relationship({ ref: 'tCarrots.optionId', many: true }),
       userQueue: relationship({ ref: 'tUserQueue.uqOptionId', many: true }),
+      eventQueue: relationship({ ref: 'tEventQueue.eqEfectedOptionIds', many: true }),
     },
   }),
   tHistoricalPrices: list({
@@ -87,6 +89,39 @@ export const lists = {
       uqComplete: checkbox({
         defaultValue: false
       }),
+    }
+  }),
+  tEventQueue: list({
+    access: allowAll,
+    graphql: {
+      plural: 'EventQueueList',
+    },
+    fields: {
+      eqType: text({ validation: { isRequired: true } }),
+      eqEffects: text({ validation: { isRequired: true } }),
+      eqEfectedOptionIds: relationship({
+        ref: 'tOptions.eventQueue',
+        many: true,
+      }),
+      eqStartDate: timestamp({ validation: { isRequired: true } }),
+      eqCreationData: timestamp({ 
+        validation: { isRequired: true },
+        defaultValue: { kind: 'now' },
+      }),
+      eqComplete: checkbox({
+        defaultValue: false
+      }),
+    }
+  }),
+  tMarket: list({
+    access: allowAll,
+    graphql: {
+      plural: 'MarketList',
+    },
+    fields: {
+      mName: text({ validation: { isRequired: true }}),
+      mType: text({ validation: { isRequired: true }}),
+      mActiveEvent: text({ validation: { isRequired: false }}),
     }
   })
 };
