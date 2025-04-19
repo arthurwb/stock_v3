@@ -98,6 +98,13 @@ export async function extendExpressApp(app: Express, context: Context) {
             });
         }
     });
+
+    app.get("/news", async (req: any, res: any) => {
+        console.log("news...")
+        res.status(300).json({
+            details: "GOOD NEWS!"
+        })
+    })
     
     // Change to POST instead of GET
     app.post("/command", async (req: any, res: any) => {

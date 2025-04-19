@@ -1,7 +1,7 @@
 import React from "react";
 
 import Warning from "../../components/Warning.tsx";
-import sendCommandToDatabase from "./util.ts";
+import sendCommandToDatabase, { getNews } from "./util.ts";
 
 type UtilityCommandResponse = React.ReactNode | null;
 
@@ -77,6 +77,7 @@ const utilityCommands = {
     },
     marketType: async (): Promise<UtilityCommandResponse> => {
         const data = await sendCommandToDatabase(`market type`);
+        console.log(data);
         if (typeof data.message == "string") {
             return `market type: ${data.message}`;
         } else {

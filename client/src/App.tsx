@@ -5,6 +5,7 @@ import TerminalInput, { TerminalInputHandle } from "./components/TerminalInput.t
 import TerminalOutput from "./components/TerminalOutput.tsx";
 
 import { UserData } from "./types/UserData.tsx";
+import NewsTicker from "./components/Ticker.tsx";
 
 function App() {
   const [commandOutputs, setCommandOutputs] = useState<React.ReactNode[]>([]);
@@ -120,6 +121,7 @@ function App() {
           <div className="basis-2/12 m-2 text-center">
             <img src="/exchange-logo.svg" className="mx-auto" style={{ width: 100, height: 100 }}></img>
             <span className="font-bold underline">The Exchange</span>
+            <NewsTicker></NewsTicker>
           </div>
           <div className="flex flex-col basis-5/12 m-2">
             <div className="flex flex-col basis-6/12 text-center">

@@ -29,3 +29,18 @@ export default async function sendCommandToDatabase(command: string): Promise<an
     return "Error processing command.";
   }
 }
+
+export async function getNews() {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const response = await fetch(`${apiUrl}/news`, {
+    credentials: "include",  // Ensure credentials (cookies) are included
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log(response.status);
+  const data = await response.json();
+  return data;
+}
