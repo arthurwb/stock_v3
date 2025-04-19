@@ -114,7 +114,7 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
               autoComplete="off"
               autoFocus
             />
-            <span className="text-transparent">
+            <span className="whitespace-pre-wrap text-transparent">
               {inputValue}
             </span>
             {isBarVisible && caretPosition === 0 && (

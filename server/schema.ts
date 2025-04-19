@@ -18,6 +18,7 @@ export const lists = {
     },
     fields: {
       optionName: text({ validation: { isRequired: true } }),
+      optionShort: text({ validation: { isRequired: true } }),
       optionDescription: text({ validation: { isRequired: true } }),
       optionPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
       historicalPrices: relationship({ ref: 'tHistoricalPrices.optionId', many: true }),

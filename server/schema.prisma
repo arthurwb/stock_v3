@@ -14,6 +14,7 @@ generator client {
 model tOptions {
   id                String              @id @default(cuid())
   optionName        String              @default("")
+  optionShort       String              @default("")
   optionDescription String              @default("")
   optionPrice       Decimal             @mysql.Decimal(10, 2)
   historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")

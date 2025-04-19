@@ -114,6 +114,7 @@ function App() {
   return (
     <main>
       <div className="relative flex flex-col px-4 w-screen h-screen bg-black text-white">
+        <NewsTicker></NewsTicker>
         <div className="flex flex-row basis-2/12 p-2">
           <div className="basis-5/12 m-2">
             <p>--help: show commands</p>
@@ -121,7 +122,6 @@ function App() {
           <div className="basis-2/12 m-2 text-center">
             <img src="/exchange-logo.svg" className="mx-auto" style={{ width: 100, height: 100 }}></img>
             <span className="font-bold underline">The Exchange</span>
-            <NewsTicker></NewsTicker>
           </div>
           <div className="flex flex-col basis-5/12 m-2">
             <div className="flex flex-col basis-6/12 text-center">

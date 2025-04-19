@@ -99,12 +99,21 @@ export async function extendExpressApp(app: Express, context: Context) {
         }
     });
 
-    app.get("/news", async (req: any, res: any) => {
-        console.log("news...")
-        res.status(300).json({
-            details: "GOOD NEWS!"
-        })
-    })
+    app.get("/news", async (req, res) => {
+        const market = await context.prisma.tMarket.findFirst();
+        const options = await context.prisma.tOptions.findMany();
+        console.log(market);
+        var optionPrices: string[] = [];
+        options.forEach(option => {
+            optionPrices.push(`${option.optionShort}: ${option.optionPrice}`)
+        });
+        var returnArray = ["THE HAND GIVES"];
+        returnArray.push(...optionPrices);
+        returnArray.push("THE HAND TAKES");
+        returnArray.push(`market type: ${market?.mType}`);
+        returnArray.push("THE HAND IS FEELING CLAMMY");
+        res.status(200).json(returnArray);
+    });
     
     // Change to POST instead of GET
     app.post("/command", async (req: any, res: any) => {

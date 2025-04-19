@@ -4,6 +4,7 @@
 type tOptions {
   id: ID!
   optionName: String
+  optionShort: String
   optionDescription: String
   optionPrice: Decimal
   historicalPrices(where: tHistoricalPricesWhereInput! = {}, orderBy: [tHistoricalPricesOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tHistoricalPricesWhereUniqueInput): [tHistoricalPrices!]
@@ -28,6 +29,7 @@ input tOptionsWhereInput {
   NOT: [tOptionsWhereInput!]
   id: IDFilter
   optionName: StringFilter
+  optionShort: StringFilter
   optionDescription: StringFilter
   optionPrice: DecimalFilter
   historicalPrices: tHistoricalPricesManyRelationFilter
@@ -113,6 +115,7 @@ input tEventQueueManyRelationFilter {
 input tOptionsOrderByInput {
   id: OrderDirection
   optionName: OrderDirection
+  optionShort: OrderDirection
   optionDescription: OrderDirection
   optionPrice: OrderDirection
 }
@@ -124,6 +127,7 @@ enum OrderDirection {
 
 input tOptionsUpdateInput {
   optionName: String
+  optionShort: String
   optionDescription: String
   optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForUpdateInput
@@ -167,6 +171,7 @@ input tOptionsUpdateArgs {
 
 input tOptionsCreateInput {
   optionName: String
+  optionShort: String
   optionDescription: String
   optionPrice: Decimal
   historicalPrices: tHistoricalPricesRelateToManyForCreateInput
