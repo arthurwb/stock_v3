@@ -59,7 +59,6 @@ export async function extendExpressApp(app: Express, context: Context) {
     
     app.get("/user-data", async (req: any, res: any) => {
         try {
-            console.log("user data");
             if (!req.session || !req.session.user) {
                 return res.json({
                     userPresent: false

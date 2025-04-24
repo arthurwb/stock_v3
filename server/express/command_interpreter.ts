@@ -6,13 +6,18 @@ import keystone from '../keystone';
 const prisma = new PrismaClient();
 
 const commands = {
-    getOption: async (optionName?: string) => {
-        if (!optionName) {
+    getOption: async (input?: string) => {
+        if (!input) {
             return "Error: No option name provided.";
         }
 
         const option = await prisma.tOptions.findFirst({
-            where: { optionName }
+            where: { 
+                OR: [
+                    { optionName: input },
+                    { optionShort: input }
+                ]
+            }
         });
 
         const optionHistory = await prisma.tHistoricalPrices.findMany({
@@ -20,7 +25,7 @@ const commands = {
         })
 
         if (!option) {
-            return `Error: Option "${optionName}" not found.`;
+            return `Error: Option "${input}" not found.`;
         }
 
         const optionData = {
@@ -38,11 +43,14 @@ const commands = {
         });
         return data.join("")
     },
-    buyOption: async (optionName: string, username: string) => {
+    buyOption: async (input: string, username: string) => {
         // Find the option by name
-        const option: any = await prisma.tOptions.findFirst({
-            where: {
-                optionName: optionName
+        const option = await prisma.tOptions.findFirst({
+            where: { 
+                OR: [
+                    { optionName: input },
+                    { optionShort: input }
+                ]
             }
         });
         const optionId = option?.id ?? "";
@@ -115,7 +123,7 @@ const commands = {
                 });
                 
                 if (carrot) {
-                    return `Buy processed: ${optionName} purchased for ${carrot.carrotPurchasePrice}`;
+                    return `Buy processed: ${input} purchased for ${carrot.carrotPurchasePrice}`;
                 }
                 
                 return "Buy processed";
@@ -129,11 +137,14 @@ const commands = {
         // If we've reached here, the queue item hasn't been processed within our timeout
         return "Buy request submitted, but processing is taking longer than expected. Please check your purchases later.";
     },
-    sellOption: async (optionName: string, username: string) => {
+    sellOption: async (input: string, username: string) => {
         // Find the option by name
         const option: any = await prisma.tOptions.findFirst({
-            where: {
-                optionName: optionName
+            where: { 
+                OR: [
+                    { optionName: input },
+                    { optionShort: input }
+                ]
             }
         });
         const optionId = option?.id ?? "";
@@ -217,7 +228,7 @@ const commands = {
                         where: { id: userId }
                     });
                     
-                    return `Sell processed: ${optionName} sold for ${option.optionPrice}`;
+                    return `Sell processed: ${input} sold for ${option.optionPrice}`;
                 }
                 
                 return "Sell processed";
