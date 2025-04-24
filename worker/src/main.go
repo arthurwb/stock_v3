@@ -12,7 +12,9 @@ import (
 
 func main() {
 	// load environment variables
-	godotenv.Load("./.env")
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		godotenv.Load(".env") // Only for local
+	}
 
 	// Open a connection to the database
 	db := database.DatabaseConnect()
