@@ -11,6 +11,8 @@
    inkscape:export-filename="exchange-logo.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
+   sodipodi:docname="exchange-logo.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,20 +26,24 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     showgrid="false" /><defs
+     showgrid="false"
+     inkscape:zoom="1.2387554"
+     inkscape:cx="342.27904"
+     inkscape:cy="342.27904"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" /><defs
      id="defs2" /><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-14.545456,-14.545456)"><circle
-       style="fill:none;stroke:#24b62d;stroke-width:8;stroke-dasharray:none;stroke-opacity:1"
-       id="path3089"
-       cx="105"
-       cy="105"
-       r="86.454544" /><g
+     transform="translate(-14.545456,-14.545456)"><g
        style="fill:#24b62d;fill-opacity:1;stroke:none;stroke-opacity:1"
        id="g3467-4"
-       transform="matrix(-0.19637229,1.9269966e-4,8.6536351e-5,-0.17543807,159.50917,126.52452)"><g
+       transform="matrix(6.04838e-4,-0.19637145,0.17543627,7.9905057e-4,84.779046,160.91204)"><g
          id="g3458-7"
          style="fill:#24b62d;fill-opacity:1;stroke:none;stroke-opacity:1">
 	<path
@@ -47,7 +53,7 @@
 </g></g><g
        style="fill:#24b62d;fill-opacity:1"
        id="g3467"
-       transform="matrix(0.19637229,-1.9269966e-4,-8.6536351e-5,0.17543807,50.530903,86.484807)"><g
+       transform="matrix(-6.04838e-4,0.19637145,-0.17543627,-7.9905057e-4,125.26103,52.097287)"><g
          id="g3458"
          style="fill:#24b62d;fill-opacity:1">
 	<path
