@@ -383,7 +383,6 @@ const commands = {
     },
     marketType: async () => {
         const marketDetails = await prisma.tMarket.findFirst()
-        console.log(marketDetails)
         return marketDetails?.mType
     }
 };

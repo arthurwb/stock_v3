@@ -59,6 +59,7 @@ export async function extendExpressApp(app: Express, context: Context) {
     
     app.get("/user-data", async (req: any, res: any) => {
         try {
+            console.log("user data");
             if (!req.session || !req.session.user) {
                 return res.json({
                     userPresent: false
@@ -99,10 +100,24 @@ export async function extendExpressApp(app: Express, context: Context) {
         }
     });
 
+    app.get("/event-update", async (req: any, res: any) => {
+        const events = await context.prisma.tEventQueue.findMany()
+        events.forEach(event => {
+            if (Math.abs(Date.now() - event.eqStartDate.getTime()) <= 5000) {
+                res.status(200).json({
+                    eventName: event.eqType,
+                    eventDetails: event.eqType,
+                    eventType: event.eqType,
+                })
+            } else {
+                res.status(204);
+            }
+        });
+    });
+
     app.get("/news", async (req, res) => {
         const market = await context.prisma.tMarket.findFirst();
         const options = await context.prisma.tOptions.findMany();
-        console.log(market);
         var optionPrices: string[] = [];
         options.forEach(option => {
             optionPrices.push(`${option.optionShort}: ${option.optionPrice}`)

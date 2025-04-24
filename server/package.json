@@ -16,12 +16,14 @@
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/core": "^6.0.0",
     "@keystone-6/fields-document": "^9.0.0",
+    "@types/ws": "^8.18.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express-session": "^1.18.1",
     "keystone": "^4.2.1",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

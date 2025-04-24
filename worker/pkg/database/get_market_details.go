@@ -11,7 +11,6 @@ func GetMarketDetails(db *sql.DB) map[string]string {
 	if err != nil {
 		log.Fatalf("Failed get market: %v", err)
 	}
-	defer rows.Close()
 	var id, mName, mType string
     for rows.Next() {
 		err := rows.Scan(&id, &mName, &mType)
@@ -19,6 +18,7 @@ func GetMarketDetails(db *sql.DB) map[string]string {
 			log.Println("Error in getting market details")
 		}
 	}
+	defer rows.Close()
 	return map[string]string {
 		"id": id,
 		"mName": mName,
