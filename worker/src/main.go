@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"strconv"
 	"syscall"
 	"time"
@@ -38,11 +39,35 @@ func main() {
     signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
     
     ticker := time.NewTicker(time.Duration(rate) * time.Second)
+
+	defer func() {
+        if r := recover(); r != nil {
+            log.Printf("PANIC RECOVERED: %v", r)
+            // You can also print the stack trace if needed
+            debug.PrintStack()
+        }
+    }()
+
     defer ticker.Stop()
     
     for {
         select {
         case <-ticker.C:
+			if err := db.Ping(); err != nil {
+				log.Printf("Database connection check failed: %v", err)
+				// Attempt to reconnect
+				newDb, reconnectErr := database.DatabaseConnect()
+				if reconnectErr != nil {
+					log.Printf("Failed to reconnect to database: %v", reconnectErr)
+				} else {
+					// Close old connection and replace with new one
+					if db != nil {
+						db.Close()
+					}
+					db = newDb
+					log.Println("Successfully reconnected to database")
+				}
+			}
             if err := database.CheckUserQueue(db); err != nil {
                 log.Printf("Error checking user queue: %v", err)
             }
