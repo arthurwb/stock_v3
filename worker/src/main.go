@@ -16,9 +16,9 @@ import (
 
 func main() {
     // load environment variables
-    if err := godotenv.Load("../.env"); err != nil {
-        log.Printf("Warning: Error loading .env file: %v", err)
-    }
+    if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		godotenv.Load(".env") // Only for local
+	}
     
     // Open a connection to the database
     db, err := database.DatabaseConnect()
