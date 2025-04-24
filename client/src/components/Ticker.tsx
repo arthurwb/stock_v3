@@ -11,7 +11,8 @@ const Ticker = () => {
   // Fetch data and store in ref
   const fetchAndQueueNext = async () => {
     try {
-      const res = await fetch("http://localhost:8080/news");
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+      const res = await fetch(apiUrl + "/news");
       const data = await res.json();
       const newItems = Array.isArray(data) ? data : data.details;
       nextItemsRef.current = newItems;

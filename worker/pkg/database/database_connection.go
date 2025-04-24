@@ -59,6 +59,9 @@ func DatabaseConnect() (*sql.DB) {
 
     tx, err := db.Begin()
 
+    db.SetMaxOpenConns(10)
+    db.SetMaxIdleConns(20)
+
 	query := "SELECT mName FROM tMarket"
 	rows, err := db.Query(query)
 	if err != nil {
