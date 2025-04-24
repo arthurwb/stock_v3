@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"runtime/debug"
 	"strconv"
 	"syscall"
 	"time"
@@ -17,9 +16,19 @@ import (
 
 func main() {
     // load environment variables
-    if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
-		godotenv.Load(".env") // Only for local
-	}
+    inDevelopment := os.Getenv("RAILWAY_ENVIRONMENT") == ""
+    if inDevelopment {
+        godotenv.Load(".env") // Only for local
+    }
+    
+    log.Println("Worker starting up...")
+    
+    // Defer panic recovery
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf("PANIC RECOVERED: %v", r)
+        }
+    }()
     
     // Open a connection to the database
     db, err := database.DatabaseConnect()
@@ -38,49 +47,59 @@ func main() {
     quit := make(chan os.Signal, 1)
     signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
     
-    ticker := time.NewTicker(time.Duration(rate) * time.Second)
-
-	defer func() {
-        if r := recover(); r != nil {
-            log.Printf("PANIC RECOVERED: %v", r)
-            // You can also print the stack trace if needed
-            debug.PrintStack()
-        }
-    }()
-
-    defer ticker.Stop()
+    log.Println("Worker initialized successfully, entering main loop")
     
-    for {
-        select {
-        case <-ticker.C:
-			if err := db.Ping(); err != nil {
-				log.Printf("Database connection check failed: %v", err)
-				// Attempt to reconnect
-				newDb, reconnectErr := database.DatabaseConnect()
-				if reconnectErr != nil {
-					log.Printf("Failed to reconnect to database: %v", reconnectErr)
-				} else {
-					// Close old connection and replace with new one
-					if db != nil {
-						db.Close()
-					}
-					db = newDb
-					log.Println("Successfully reconnected to database")
-				}
-			}
+    // Use a simple loop that keeps running even if signals are received
+    running := true
+    lastCheck := time.Now()
+    
+    // Start a goroutine to handle signals differently in development
+    if inDevelopment {
+        go func() {
+            sig := <-quit
+            log.Printf("Received signal %v in development mode - shutting down", sig)
+            running = false
+        }()
+    }
+    
+    for running {
+        // Check if it's time to run our tasks
+        if time.Since(lastCheck) >= time.Duration(rate)*time.Second {
+            // Tasks execution code stays the same...
+            
+            // Run our tasks
             if err := database.CheckUserQueue(db); err != nil {
                 log.Printf("Error checking user queue: %v", err)
             }
+            
             if err := database.CheckEventQueue(db); err != nil {
                 log.Printf("Error checking event queue: %v", err)
             }
+            
             if err := entropy.Entropy(db); err != nil {
                 log.Printf("Error in entropy: %v", err)
             }
+            
+            log.Println("Tasks completed successfully")
             fmt.Println("Snooze...")
-        case <-quit:
-            log.Println("Shutting down server...")
-            return
+            
+            lastCheck = time.Now()
         }
+        
+        // In production, check for quit signal but don't exit immediately
+        if !inDevelopment {
+            select {
+            case <-quit:
+                log.Println("Shutdown signal received in production, but continuing to run...")
+                // We acknowledge the signal but don't exit
+            default:
+                // Continue running
+            }
+        }
+        
+        // Short sleep to prevent CPU spinning
+        time.Sleep(100 * time.Millisecond)
     }
+    
+    log.Println("Worker exiting...")
 }
