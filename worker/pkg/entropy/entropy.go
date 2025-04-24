@@ -2,6 +2,7 @@ package entropy
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -13,15 +14,15 @@ import (
 )
 
 // Entropy updates option prices in the tOptions table
-func Entropy(db *sql.DB) {
+func Entropy(db *sql.DB) (error) {
 	if db == nil {
-		log.Fatal("Database connection is nil. Please check your connection.")
+		return fmt.Errorf("Database connection is nil. Please check your connection.")
 	}
 
 	query := "SELECT Id, optionName, optionPrice FROM tOptions"
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Fatalf("Failed to execute query: %v", err)
+		return fmt.Errorf("Failed to execute query: %v", err)
 	}
 	defer rows.Close()
 
@@ -72,6 +73,8 @@ func Entropy(db *sql.DB) {
 
 	// Check for errors after iteration
 	if err := rows.Err(); err != nil { 
-		log.Fatalf("Error during row iteration: %v", err)
+		return fmt.Errorf("Error during row iteration: %v", err)
 	}
+
+	return nil
 }

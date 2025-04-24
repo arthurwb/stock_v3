@@ -1,14 +1,16 @@
 package database
 
 import (
-    "database/sql"
-    "errors"
-    "log"
-    "github.com/google/uuid"
-    _ "github.com/go-sql-driver/mysql"
+	"database/sql"
+	"errors"
+	"fmt"
+	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 )
 
-func CheckUserQueue(db *sql.DB) {
+func CheckUserQueue(db *sql.DB) (error) {
     // Query to select all incomplete user queue entries ordered by transaction date (oldest first)
     query := `SELECT id, uqType, uqOptionId, uqUserId, uqCount,
               uqTransactionDate, uqComplete FROM tUserQueue 
@@ -17,8 +19,7 @@ func CheckUserQueue(db *sql.DB) {
     
     rows, err := db.Query(query)
     if err != nil {
-        log.Printf("Error querying user queue: %v", err)
-        return
+        return fmt.Errorf("Error querying user queue: %v", err)
     }
     defer rows.Close()
     
@@ -71,6 +72,8 @@ func CheckUserQueue(db *sql.DB) {
     if err = rows.Err(); err != nil {
         log.Printf("Error iterating over user queue rows: %v", err)
     }
+
+    return nil
 }
 
 func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseCount sql.NullInt32) error {

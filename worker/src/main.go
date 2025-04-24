@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 	"time"
 
 	"exchange.com/m/v3/pkg/database"
@@ -11,19 +15,47 @@ import (
 )
 
 func main() {
-	// load environment variables
-	godotenv.Load("./.env")
-
-	// Open a connection to the database
-	db := database.DatabaseConnect()
-	defer db.Close()
-
-	rate, _ := strconv.Atoi(os.Getenv("RATE"))
-
-	for 1 > 0 {
-		database.CheckUserQueue(db)
-		database.CheckEventQueue(db)
-		entropy.Entropy(db)
-		time.Sleep(time.Duration(rate) * time.Second)
-	}
+    // load environment variables
+    if err := godotenv.Load("./.env"); err != nil {
+        log.Printf("Warning: Error loading .env file: %v", err)
+    }
+    
+    // Open a connection to the database
+    db, err := database.DatabaseConnect()
+    if err != nil {
+        log.Fatalf("Failed to connect to database: %v", err)
+    }
+    defer db.Close()
+    
+    rate, err := strconv.Atoi(os.Getenv("RATE"))
+    if err != nil {
+        log.Printf("Invalid RATE environment variable, using default of 5 seconds")
+        rate = 5
+    }
+    
+    // Add a cancellation mechanism
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+    
+    ticker := time.NewTicker(time.Duration(rate) * time.Second)
+    defer ticker.Stop()
+    
+    for {
+        select {
+        case <-ticker.C:
+            if err := database.CheckUserQueue(db); err != nil {
+                log.Printf("Error checking user queue: %v", err)
+            }
+            if err := database.CheckEventQueue(db); err != nil {
+                log.Printf("Error checking event queue: %v", err)
+            }
+            if err := entropy.Entropy(db); err != nil {
+                log.Printf("Error in entropy: %v", err)
+            }
+            fmt.Println("Snooze...")
+        case <-quit:
+            log.Println("Shutting down server...")
+            return
+        }
+    }
 }

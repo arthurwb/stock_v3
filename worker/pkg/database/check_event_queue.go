@@ -2,11 +2,12 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	// "os"
 )
 
-func CheckEventQueue(db *sql.DB) {
+func CheckEventQueue(db *sql.DB) (error) {
 	query := `SELECT eq.id, eq.eqType, o.id AS effectedOptionId, eq.eqEffects, eq.eqStartDate, eq.eqCreationData, eq.eqComplete 
 				FROM tEventQueue eq 
 				LEFT JOIN _tEventQueue_eqEfectedOptionIds m 
@@ -18,8 +19,7 @@ func CheckEventQueue(db *sql.DB) {
 
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Printf("Error querying event queue: %v", err)
-		return
+		return fmt.Errorf("Error querying event queue: %v", err)
 	}
 	defer rows.Close()
 
@@ -70,6 +70,8 @@ func CheckEventQueue(db *sql.DB) {
 		}
 		tx.Commit()
 	}
+
+	return nil
 }
 
 func updateMarket(tx *sql.Tx, marketType string) {

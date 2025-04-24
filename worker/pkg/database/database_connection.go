@@ -6,16 +6,16 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
-func DatabaseConnect() (*sql.DB) {
+func DatabaseConnect() (*sql.DB, error) {
     dbURL := os.Getenv("DATABASE_URL")
     if dbURL == "" {
-		fmt.Errorf("DATABASE_URL environment variable is not set")
-        return nil
+        return nil, fmt.Errorf("DATABASE_URL environment variable is not set")
     }
     
     // Convert from mysql:// format to username:password@tcp(host:port)/dbname format
@@ -25,8 +25,7 @@ func DatabaseConnect() (*sql.DB) {
     // Split the URL into user:pass@host:port/dbname
     parts := strings.Split(dbURL, "@")
     if len(parts) != 2 {
-		fmt.Errorf("invalid database URL format")
-        return nil
+        return nil, fmt.Errorf("invalid database URL format")
     }
     
     credentials := parts[0]
@@ -35,8 +34,7 @@ func DatabaseConnect() (*sql.DB) {
     // Split host:port/dbname
     hostDBParts := strings.Split(hostAndDB, "/")
     if len(hostDBParts) != 2 {
-		fmt.Errorf("invalid database URL format")
-        return nil
+        return nil, fmt.Errorf("invalid database URL format")
     }
     
     host := hostDBParts[0]
@@ -47,26 +45,26 @@ func DatabaseConnect() (*sql.DB) {
     
     db, err := sql.Open("mysql", dsn)
     if err != nil {
-		fmt.Errorf("error opening database connection: %v", err)
-        return nil
+        return nil, fmt.Errorf("error opening database connection: %v", err)
     }
     
     // Test the database connection
     if err := db.Ping(); err != nil {
-		fmt.Errorf("error connecting to the database: %v", err)
-        return nil
+        return nil, fmt.Errorf("error opening database connection: %v", err)
     }
 
     tx, err := db.Begin()
 
     db.SetMaxOpenConns(10)
-    db.SetMaxIdleConns(20)
+    db.SetMaxIdleConns(5)
+    db.SetConnMaxLifetime(time.Minute * 3)
 
 	query := "SELECT mName FROM tMarket"
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Fatalf("Failed get market: %v", err)
-	}
+        return nil, fmt.Errorf("error connecting to the database: %v", err)
+    }
+    defer tx.Rollback()
 	defer rows.Close()
     if !rows.Next() {
         marketId := uuid.New().String()
@@ -79,8 +77,10 @@ func DatabaseConnect() (*sql.DB) {
         }
     }
 
-    tx.Commit()
+    if err := tx.Commit(); err != nil {
+        return nil, fmt.Errorf("error committing transaction: %v", err)
+    }
     
     fmt.Println("Successfully connected to the database!")
-    return db
+    return db, nil
 }
