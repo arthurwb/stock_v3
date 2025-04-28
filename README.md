@@ -37,6 +37,14 @@
     		* Family?
       		* People on reddit?
         	* Linked in? (Probably wont really provide useful insight but posting stuff on there is good.)
+   
+## **Small Things**
+* Refactor
+	* Move routes to new file.
+ 	* Break server commands into different files based on what they do. Keep the command interpreter but have it point to different functions. Maybe move the command case interpreter but have it point to different files so that each command can have its own function, that makes the most sense.
+  	* Get rid of all the comments, it makes it look AI generated.
+* Small features
+	* Add some ASCII art that pops up when you open the page or refresh.
 
 ## **User Purchase**
 * The code for this should already be in the repo, just unused. 
