@@ -6,6 +6,7 @@ import (
 )
 
 func GetMarketDetails(db *sql.DB) map[string]string {
+	log.Println("starting market details")
 	query := "SELECT id, mName, mType FROM tMarket WHERE mName = 'current'"
 	rows, err := db.Query(query)
 	if err != nil {
@@ -19,6 +20,7 @@ func GetMarketDetails(db *sql.DB) map[string]string {
 		}
 	}
 	defer rows.Close()
+	log.Println("end market details")
 	return map[string]string {
 		"id": id,
 		"mName": mName,
