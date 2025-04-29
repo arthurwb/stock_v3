@@ -8,7 +8,7 @@ import (
 )
 
 func CheckEventQueue(db *sql.DB) (error) {
-	fmt.Println("Starting event queue")
+	log.Println("Starting event queue")
 	query := `SELECT eq.id, eq.eqType, o.id AS effectedOptionId, eq.eqEffects, eq.eqStartDate, eq.eqCreationData, eq.eqComplete 
 				FROM tEventQueue eq 
 				LEFT JOIN _tEventQueue_eqEfectedOptionIds m 
@@ -72,7 +72,7 @@ func CheckEventQueue(db *sql.DB) (error) {
 		tx.Commit()
 	}
 
-	fmt.Println("Finished event queue")
+	log.Println("Finished event queue")
 	return nil
 }
 

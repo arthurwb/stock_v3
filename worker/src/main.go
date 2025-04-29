@@ -53,7 +53,7 @@ func main() {
 			log.Printf("Error in entropy: %v", err)
 		}
 		
-		fmt.Printf("Snooze for %d seconds...", rate)
+		log.Printf("Snooze for %d seconds...", rate)
 		time.Sleep(time.Duration(rate) * time.Second)
 	}
 }

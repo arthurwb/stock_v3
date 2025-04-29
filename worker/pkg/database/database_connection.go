@@ -81,6 +81,6 @@ func DatabaseConnect() (*sql.DB, error) {
         return nil, fmt.Errorf("error committing transaction: %v", err)
     }
     
-    fmt.Println("Successfully connected to the database!")
+    log.Println("Successfully connected to the database!")
     return db, nil
 }
