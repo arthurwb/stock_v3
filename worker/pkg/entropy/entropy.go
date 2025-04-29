@@ -15,6 +15,7 @@ import (
 
 // Entropy updates option prices in the tOptions table
 func Entropy(db *sql.DB) (error) {
+	fmt.Println("Starting entropy")
 	if db == nil {
 		return fmt.Errorf("Database connection is nil. Please check your connection.")
 	}
@@ -76,5 +77,6 @@ func Entropy(db *sql.DB) (error) {
 		return fmt.Errorf("Error during row iteration: %v", err)
 	}
 
+	fmt.Println("Finished entropy")
 	return nil
 }
