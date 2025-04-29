@@ -19,13 +19,6 @@ func main() {
 	}
 	
 	log.Println("Worker starting up...")
-	
-	// Open a connection to the database
-	db, err := database.DatabaseConnect()
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	rate, err := strconv.Atoi(os.Getenv("RATE"))
  
@@ -38,6 +31,10 @@ func main() {
 
 	// Main loop
 	for {
+		db, err := database.DatabaseConnect()
+		if err != nil {
+			log.Fatalf("Failed to connect to database: %v", err)
+		}
 		log.Println("Starting scheduled tasks...")
 		
 		if err := database.CheckUserQueue(db); err != nil {
@@ -53,6 +50,7 @@ func main() {
 		}
 		
 		log.Printf("Snooze for %d seconds...", rate)
+		db.Close()
 		time.Sleep(time.Duration(rate) * time.Second)
 	}
 }

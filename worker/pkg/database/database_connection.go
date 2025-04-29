@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -54,10 +53,6 @@ func DatabaseConnect() (*sql.DB, error) {
     }
 
     tx, err := db.Begin()
-
-    db.SetMaxOpenConns(10)
-    db.SetMaxIdleConns(5)
-    db.SetConnMaxLifetime(time.Minute * 3)
 
 	query := "SELECT mName FROM tMarket"
 	rows, err := db.Query(query)

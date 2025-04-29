@@ -9,6 +9,10 @@ func GetMarketDetails(db *sql.DB) map[string]string {
 	log.Println("starting market details")
 	query := "SELECT id, mName, mType FROM tMarket WHERE mName = 'current'"
 	rows, err := db.Query(query)
+	if err != nil {
+		log.Println("Query error:", err)
+		return nil
+	}
 	log.Println("after market query")
 	if err != nil {
 		log.Printf("Failed get market: %v", err)
