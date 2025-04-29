@@ -9,7 +9,7 @@ func GetMarketDetails(db *sql.DB) map[string]string {
 	query := "SELECT id, mName, mType FROM tMarket WHERE mName = 'current'"
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Fatalf("Failed get market: %v", err)
+		log.Printf("Failed get market: %v", err)
 	}
 	var id, mName, mType string
     for rows.Next() {
