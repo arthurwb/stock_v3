@@ -1,14 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"strconv"
-	"syscall"
-	"time"
 	
 	"exchange.com/m/v3/pkg/database"
 	"exchange.com/m/v3/pkg/entropy"
