@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	
+	"strconv"
+	"time"
+
 	"exchange.com/m/v3/pkg/database"
 	"exchange.com/m/v3/pkg/entropy"
 	"github.com/joho/godotenv"
@@ -25,6 +27,13 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
+
+	rate, err := strconv.Atoi(os.Getenv("RATE"))
+ 
+    if err != nil {
+		log.Printf("Invalid RATE environment variable, using default of 5 seconds")
+		rate = 5
+    }
 	
 	log.Println("Worker initialized successfully, entering main loop")
 
@@ -45,5 +54,6 @@ func main() {
 		}
 		
 		fmt.Println("Snooze...")
+		time.Sleep(rate * time.Second)
 	}
 }
