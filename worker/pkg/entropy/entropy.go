@@ -29,6 +29,8 @@ func Entropy(db *sql.DB) (error) {
 
 	market := database.GetMarketDetails(db)
 
+	fmt.Println("Got market details")
+
 	for rows.Next() {
 		var Id string
 		var optionName string
@@ -39,6 +41,8 @@ func Entropy(db *sql.DB) (error) {
 			log.Printf("Failed to scan row: %v", err)
 			continue
 		}
+
+		fmt.Printf("Start Entropy Option: %s", optionName)
 
 		// Calculate the new price
 		lowerLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_LOWER"), 64)
@@ -70,6 +74,7 @@ func Entropy(db *sql.DB) (error) {
 
 		// Update the price in the database
 		database.UpdatePrice(db, Id, newPrice)
+		fmt.Printf("End Entropy Option: %s", optionName)
 	}
 
 	// Check for errors after iteration
