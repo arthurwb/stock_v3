@@ -21,12 +21,12 @@ function App() {
   const terminalInputRef = useRef<TerminalInputHandle>(null);
 
   // replace with env url later
-  const { data, sseError } = useSSE('http://localhost:8080/events', setShowWarning)
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const { data, sseError } = useSSE(`${apiUrl}/events`, setShowWarning)
 
   // Function to fetch user data from the server
   const fetchUserData = async () => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
       const response = await fetch(`${apiUrl}/user-data`, {
         method: 'GET',
         credentials: 'include', // Important for including session cookies
