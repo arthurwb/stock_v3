@@ -27,7 +27,7 @@ const optionCommands = {
         return {
             type: "output",
             message: "",
-            content: res
+            content: <>{parse(res.message)}</>
         };
     },
     sellOption: async (option): Promise<CommandResponse> => {
@@ -35,7 +35,7 @@ const optionCommands = {
         return {
             type: "output",
             message: "",
-            content: res
+            content: <>{parse(res.message)}</>
         };
     },
     myOptions: async (): Promise<CommandResponse> => {
