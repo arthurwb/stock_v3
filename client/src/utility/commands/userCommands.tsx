@@ -9,7 +9,7 @@ const userCommands = {
             return {
                 type: "output",
                 message: "",
-                content: <>data.message</>
+                content: <>{data.message}</>
             };
         }
         if (data.message !== undefined) {
@@ -32,7 +32,7 @@ const userCommands = {
             return {
                 type: "output",
                 message: "",
-                content: <>data.message</>
+                content: <>{data.message}</>
             };
         }
         return {
@@ -47,7 +47,7 @@ const userCommands = {
             return {
                 type: "output",
                 message: "",
-                content: <>data.message</>
+                content: <>{data.message}</>
             };
         } else {
             return {
