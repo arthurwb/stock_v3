@@ -38,6 +38,11 @@ SOLUTION: Too many connections in go sql thing, needed to start and kill the con
     		* Family?
       		* People on reddit?
         	* Linked in? (Probably wont really provide useful insight but posting stuff on there is good.)
+	* Current Bugs
+ 		* When you get a warning, then run the clear command, you cannot close the warning window.
+   			* If I were to guess this is beacuse the link for between the modal and the rest of the terminal is servered, if possible you will have to try and set whatever the isDisplayed code to false whenever the clear command is run. Maybe catch it somewhere further along the data stream? I know that the clear command goes further back than it probably should.
+      		* Ticker has some weird clipping when the screen gets small.
+        		* Likey more issues with the way that the ticker library works. It just generates a bunch of extra text off out of the viewpoint and scrolls the rest across, since the viewpoint is so small it might be freaking out and displaying the text either too early or removing the previous text too early. There is no space where there is no text, its just that the previous text is getting replaced too soon.
    
 ## **Small Things**
 * Refactor
@@ -46,6 +51,8 @@ SOLUTION: Too many connections in go sql thing, needed to start and kill the con
   	* Get rid of all the comments, it makes it look AI generated.
 * Small features
 	* Add some ASCII art that pops up when you open the page or refresh.
+* Obersvability
+	* [https://docs.fluentd.org/]
 
 ## **User Purchase**
 * The code for this should already be in the repo, just unused. 
