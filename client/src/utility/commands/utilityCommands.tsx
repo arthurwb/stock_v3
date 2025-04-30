@@ -3,15 +3,19 @@ import React from "react";
 import Warning from "../../components/Warning.tsx";
 import sendCommandToDatabase, { getNews } from "./util.ts";
 
-type UtilityCommandResponse = React.ReactNode | null;
+import { CommandResponse } from "../../types/CommandResponse.tsx";
 
 const utilityCommands = {
-    clear: (clearOutputs: () => void): UtilityCommandResponse => {
+    clear: (clearOutputs: () => void): CommandResponse => {
         clearOutputs(); // Clears the terminal
-        return null;
+        return {
+            type: "output",
+            message: "",
+            content: null
+        };
     },
-    help: () => {
-        return (
+    help: (): CommandResponse => {
+        const output = (
             <div className="p-6 max-w-3xl mx-auto font-mono bg-black text-green-400 rounded-md shadow-lg">
                 {/* Utility Commands Section */}
                 <div className="mb-6">
@@ -44,9 +48,14 @@ const utilityCommands = {
                     </div>
                 </div>
             </div>
-        );
+        )
+        return {
+            type: "output",
+            message: "",
+            content: output
+        };
     },
-    dog: async (): Promise<UtilityCommandResponse> => {
+    dog: async (): Promise<CommandResponse> => {
         try {
             const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080";
             const response = await fetch(`${apiUrl}/dog`, {
@@ -64,24 +73,35 @@ const utilityCommands = {
 
             console.log(dogURL)
 
-            return (
-                <Warning message={"dog"}>
-                    {/* <Image src={dogURL} alt="Random Dog" width={500} height={500} style={{ width: 'auto', height: 350 }}/> */}
-                    <img src={dogURL} alt="Random Dog"></img>
-                </Warning>
-            );
+            return {
+                type: 'warning',
+                message: 'dog',
+                content: <img src={dogURL} alt="Random Dog" className="max-h-[350px] w-auto" />
+            };
         } catch (error) {
             console.error('Fetch error:', error);
-            return <Warning message={`Error fetching dog image: ${error instanceof Error ? error.message : 'Unknown error'}`}></Warning>;
+            return {
+                type: 'warning',
+                message: `Error fetching dog image: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                content: null
+            };
         }
     },
-    marketType: async (): Promise<UtilityCommandResponse> => {
+    marketType: async (): Promise<CommandResponse> => {
         const data = await sendCommandToDatabase(`market type`);
         console.log(data);
         if (typeof data.message == "string") {
-            return `market type: ${data.message}`;
+            return {
+                type: "output",
+                message: "",
+                content: <>market type: ${data.message}</>
+            };
         } else {
-            return "error in getting market type"
+            return {
+                type: "output",
+                message: "",
+                content: <>error in getting market type</>
+            }
         }
     }
 };

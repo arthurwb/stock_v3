@@ -1,7 +1,8 @@
 # TODO
 
 ## **Things to do/try**
-* !!IMPORTANT!! Worker closing 20 seconds after container is opened, container closing?
+* !!SOLVED!! Worker closing 20 seconds after container is opened, container closing?
+SOLUTION: Too many connections in go sql thing, needed to start and kill the connection in the main loop.
 	1) Try running the docker file locally and see if it does the same thing.
  	2) Honestly, might not even need the dockerfile. That might be creating some kind of weird container issue. There might be an issue with the file structure if you go with no DOCKERFILE but that could be fixed by shmooving the main.go file down a level, the packs should still be able to be found easily enough. But, if there is no dockerfile then the assumption is that how it works locally should line up 1:1 with how it works in prod. Nixpacks says they are able to build anything with no problems but that doesnt seem right.
   	3) There is a chance that the logs might be messing with things, might need to default to fmt rather than logs (or vice-versa, I cant remeber) and that might help with its health check stuff.

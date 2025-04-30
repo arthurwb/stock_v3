@@ -4,6 +4,8 @@ import { interpretCommand } from "../utility/commandInterpreter.tsx";
 import utilityCommands from "../utility/commands/utilityCommands.tsx";
 
 import { UserData } from "../types/UserData.tsx";
+import { CommandResponse } from "../types/CommandResponse.tsx";
+import Warning from "./Warning.tsx";
 
 interface TerminalInputProps {
   onCommandOutput: (output: React.ReactNode) => void;
@@ -21,6 +23,9 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
     const [isBarVisible, setIsBarVisible] = useState(true);
     const [caretPosition, setCaretPosition] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [showWarning, setShowWarning] = useState(false);
+    const [warningMessage, setWarningMessage] = useState<string | null>(null);
+    const [warningContent, setWarningContent] = useState<React.ReactNode>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     // Expose focus method to parent component
@@ -72,22 +77,29 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
       setLoading(true);
       const [command] = inputValue.trim().split(" ");
       if (command in utilityCommands) {
-        const output = utilityCommands[command](clearOutputs);
-        console.log(await output);
+        const output = await utilityCommands[command](clearOutputs);
+        console.log(await output.content);
         if (command !== "clear") {
-          onCommandOutput(
-            <div>
-              <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>
-              <div>{await output}</div>
-            </div>
-          );
+          if (output.type === "output") {
+            onCommandOutput(
+              <div>
+                <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>
+                <div>{[output.content]}</div>
+              </div>
+            );
+          } else if (output.type === "warning") {
+            setWarningMessage(output.message);
+            setWarningContent(output.content);
+            setShowWarning(true);
+          }
         }
       } else {
         const commandOutput = await interpretCommand(inputValue, clearOutputs);
+        console.log(commandOutput);
         onCommandOutput(
           <div>
             <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>
-            <div>{commandOutput}</div>
+            <div>{commandOutput!.content}</div>
           </div>
         );
       }
@@ -98,6 +110,18 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
 
     return (
       <div className="basis-1/12 flex items-center border-1 border-solid">
+        {showWarning && warningMessage && (
+            <Warning
+              message={warningMessage}
+              onClose={() => {
+                setShowWarning(false);
+                setWarningMessage(null);
+                setWarningContent(null);
+              }}
+            >
+              {warningContent}
+            </Warning>
+          )}
         <div className="flex flex-row items-center h-full w-full text-white lg:text-2xl md:text-sm overflow-x-auto">
           <span className="px-2 text-orange">{renderUserData()}$-:</span>
           <div className="flex-1 h-12 flex items-center relative">

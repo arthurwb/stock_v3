@@ -1,219 +1,248 @@
 import React from 'react';
 import parse from "html-react-parser";
 import utilityCommands from './commands/utilityCommands.tsx';
-import userCommands from './commands/userCommands.ts';
+import userCommands from './commands/userCommands.tsx';
 import optionCommands from './commands/optionCommands.tsx';
 import sendCommandToDatabase from './commands/util.ts';
 
-// Define clearOutputs function type
-type ClearOutputs = () => void;
+import { CommandResponse } from '../types/CommandResponse.tsx';
 
-// Define command handler type with proper typing
-type CommandHandler = (clearOutputs: ClearOutputs, ...args: string[]) => Promise<React.ReactNode | null> | React.ReactNode | null;
-
-// Interface for command definitions
-interface CommandDefinition {
-  handler: CommandHandler;
-  minArgs?: number;
-  description?: string;
-  subcommands?: Record<string, CommandDefinition>;
-}
-
-// Command registry
-const commandRegistry: Record<string, CommandDefinition> = {
-  // Clear commands
-  'clear': {
-    handler: (clearOutputs: ClearOutputs) => {
+/**
+ * Interpret and execute commands from user input
+ * @param command - The command string entered by the user
+ * @param clearOutputs - Function to clear terminal outputs
+ * @returns ReactNode or null to render as output
+ */
+export async function interpretCommand(command: string, clearOutputs: () => void): Promise<CommandResponse | null> {
+  // Split the command into parts
+  const parts = command.trim().split(" ");
+  const mainCommand = parts[0].toLowerCase();
+  const subCommand = parts.length > 1 ? parts[1].toLowerCase() : "";
+  const args = parts.slice(2);
+  
+  // Handle commands using simple case statements
+  switch (mainCommand) {
+    // Clear terminal commands
+    case 'clear':
+    case 'c':
       clearOutputs();
       return null;
-    },
-    description: 'Clear the terminal'
-  },
-  'c': { handler: (clearOutputs: ClearOutputs) => commandRegistry['clear'].handler(clearOutputs) },
-  
-  // Help commands
-  'help': { handler: (clearOutputs: ClearOutputs) => utilityCommands.help() },
-  '--help': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
-  '-h': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
-  'h': { handler: (clearOutputs: ClearOutputs) => commandRegistry['help'].handler(clearOutputs) },
-
-  // Utility commands
-  'market': { 
-    handler: (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
-      if (!subcommand) {
-        return <>Market command missing 1 argument</>;
+    
+    // Help commands
+    case 'help':
+    case '--help':
+    case '-h':
+    case 'h':
+      return utilityCommands.help();
+    
+    // Market commands
+    case 'market':
+      if (subCommand === 'type') {
+        return utilityCommands.marketType();
       }
-      
-      const subcommandDef = commandRegistry['market'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect get command: {subcommand}</>;
+      return {
+        type: "output",
+        message: "",
+        content: <>Market command requires a subcommand: type</>
+      };
+    
+    case 'mt':
+      // Shortcut for market type
+      return utilityCommands.marketType();
+    
+    // Fun commands
+    case 'dog':
+      return utilityCommands.dog();
+    
+    // Get commands
+    case 'get':
+    case 'g':
+      switch (subCommand) {
+        case 'options':
+        case 'os':
+          return optionCommands.getOptions();
+        
+        case 'option':
+        case 'op':
+          if (args.length === 0) {
+            return {
+              type: "output",
+              message: "",
+              content: <>Get option command requires an ID</>
+            };
+          }
+          return optionCommands.getOption(args[0]);
+        
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown get subcommand: {subCommand}</>
+          };
       }
-      
-      return subcommandDef.handler(clearOutputs, ...args);
-    },
-    subcommands: {
-      'type': { handler: (clearOutputs: ClearOutputs) => utilityCommands.marketType() },
-    },
-  },
-  'mt': { handler: (clearOutputs: ClearOutputs) => utilityCommands.marketType() },
-  
-  // Fun commands
-  'dog': { handler: (clearOutputs: ClearOutputs) => utilityCommands.dog() },
-  
-  // Get commands
-  'get': {
-    handler: (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
-      if (!subcommand) {
-        return <>Get command missing 1 argument</>;
+    
+    // Get options shortcut
+    case 'gos':
+      return optionCommands.getOptions();
+    
+    // Get specific option shortcut
+    case 'gop':
+      if (parts.length < 2) {
+        return {
+          type: "output",
+          message: "",
+          content: <>Get option command requires an ID</>
+        };
       }
-      
-      const subcommandDef = commandRegistry['get'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect get command: {subcommand}</>;
+      return optionCommands.getOption(parts[1]);
+    
+    // Buy commands
+    case 'buy':
+    case 'b':
+      switch (subCommand) {
+        case 'option':
+        case 'op':
+          if (args.length === 0) {
+            return {
+              type: "output",
+              message: "",
+              content: <>Buy option command requires an ID</>
+            };
+          }
+          const buyResult = await optionCommands.buyOption(args[0]);
+          return {
+            type: "output",
+            message: "",
+            content: <>{buyResult.message}</>
+          };
+        
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown buy subcommand: {subCommand}</>
+          };
       }
-      
-      return subcommandDef.handler(clearOutputs, ...args);
-    },
-    subcommands: {
-      'options': { handler: (clearOutputs: ClearOutputs) => optionCommands.getOptions() },
-      'os': { handler: (clearOutputs: ClearOutputs) => optionCommands.getOptions() },
-      'option': { handler: (clearOutputs: ClearOutputs, id: string) => optionCommands.getOption(id) },
-      'op': { handler: (clearOutputs: ClearOutputs, id: string) => optionCommands.getOption(id) }
-    }
-  },
-  'g': { handler: (clearOutputs: ClearOutputs, ...args: string[]) => commandRegistry['get'].handler(clearOutputs, ...args) },
-  
-  // Shortcut commands
-  'gop': { handler: (clearOutputs: ClearOutputs, id: string) => optionCommands.getOption(id) },
-  'gos': { handler: (clearOutputs: ClearOutputs) => optionCommands.getOptions() },
-  
-  // Buy commands
-  'buy': {
-    handler: async (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
-      if (!subcommand) {
-        return <>Buy command missing 1 argument</>;
+    
+    // Buy option shortcut
+    case 'bop':
+      if (parts.length < 2) {
+        return {
+          type: "output",
+          message: "",
+          content: <>Buy option command requires an ID</>
+        };
       }
-      
-      const subcommandDef = commandRegistry['buy'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect buy command: {subcommand}</>;
+      const bopResult = await optionCommands.buyOption(parts[1]);
+      return {
+        type: "output",
+        message: "",
+        content: <>{bopResult.message}</>
+      };
+    
+    // Sell commands
+    case 'sell':
+    case 's':
+      switch (subCommand) {
+        case 'option':
+        case 'op':
+          if (args.length === 0) {
+            return {
+              type: "output",
+              message: "",
+              content: <>Sell option command requires an ID</>
+            };
+          }
+          return optionCommands.sellOption(args[0]);
+        
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown sell subcommand: {subCommand}</>
+          };
       }
-      
-      return subcommandDef.handler(clearOutputs, ...args);
-    },
-    subcommands: {
-      'option': { 
-        handler: async (clearOutputs: ClearOutputs, id: string) => {
-          const res = await optionCommands.buyOption(id);
-          return <>{res.message}</>;
-        } 
-      },
-      'op': { 
-        handler: async (clearOutputs: ClearOutputs, id: string) => {
-          const res = await optionCommands.buyOption(id);
-          return <>{res.message}</>;
-        }
+    
+    // Sell option shortcut
+    case 'sop':
+      if (parts.length < 2) {
+        return {
+          type: "output",
+          message: "",
+          content: <>Sell option command requires an ID</>
+        };
       }
-    }
-  },
-  'b': { handler: (clearOutputs: ClearOutputs, ...args: string[]) => commandRegistry['buy'].handler(clearOutputs, ...args) },
-  'bop': { 
-    handler: async (clearOutputs: ClearOutputs, id: string) => {
-      const res = await optionCommands.buyOption(id);
-      return <>{res.message}</>;
-    }
-  },
-
-  // Sell commands
-  'sell': {
-    handler: (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
-      if (!subcommand) {
-        return <>Get command missing 1 argument</>;
+      const sopResult = await optionCommands.sellOption(parts[1]);
+      return {
+        type: "output",
+        message: "",
+        content: <>{sopResult.message}</>
+      };
+    
+    // My commands
+    case 'my':
+      switch (subCommand) {
+        case 'options':
+        case 'op':
+          return optionCommands.myOptions();
+        
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown my subcommand: {subCommand}</>
+          };
       }
-      
-      const subcommandDef = commandRegistry['sell'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect get command: {subcommand}</>;
+    
+    // My options shortcut
+    case 'mop':
+      return optionCommands.myOptions();
+    
+    // User account commands
+    case 'login':
+      if (parts.length < 3) {
+        return {
+          type: "output",
+          message: "",
+          content: <>Login requires username and password</>
+        };
       }
-      
-      return subcommandDef.handler(clearOutputs, ...args);
-    },
-    subcommands: {
-      'option': { handler: (clearOutputs: ClearOutputs, id: string) => optionCommands.sellOption(id) },
-      'op': { handler: (clearOutputs: ClearOutputs, id: string) => optionCommands.sellOption(id) }
-    }
-  },
-  's': { handler: (clearOutputs: ClearOutputs, ...args: string[]) => commandRegistry['sell'].handler(clearOutputs, ...args) },
-  'sop': {
-    handler: async (clearOutputs: ClearOutputs, id: string) => {
-      const res = await optionCommands.sellOption(id);
-      return <>{res.message}</>
-    }
-  },
-  
-  // My commands
-  'my': {
-    handler: (clearOutputs: ClearOutputs, subcommand: string) => {
-      if (!subcommand) {
-        return <>My command missing 1 argument</>;
+      return userCommands.login(parts[1], parts[2]);
+    
+    case 'logout':
+      return userCommands.logout();
+    
+    // Create commands
+    case 'create':
+    case 'cr':
+      switch (subCommand) {
+        case 'user':
+        case 'u':
+          if (args.length < 3) {
+            return {
+              type: "output",
+              message: "",
+              content: <>Create user requires username, email, and password</>
+            };
+          }
+          return userCommands.createUser(args[0], args[1], args[2]);
+        
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown create subcommand: {subCommand}</>
+          };
       }
-      
-      const subcommandDef = commandRegistry['my'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect my command: {subcommand}</>;
-      }
-      
-      return subcommandDef.handler(clearOutputs);
-    },
-    subcommands: {
-      'options': { handler: (clearOutputs: ClearOutputs) => optionCommands.myOptions() },
-      'op': { handler: (clearOutputs: ClearOutputs) => optionCommands.myOptions() }
-    }
-  },
-  'mop': { handler: (clearOutputs: ClearOutputs) => optionCommands.myOptions() },
-  
-  // User commands
-  'login': { 
-    handler: (clearOutputs: ClearOutputs, username: string, password: string) => userCommands.login(username, password) 
-  },
-  'logout': { 
-    handler: (clearOutputs: ClearOutputs) => userCommands.logout() 
-  },
-  'create': {
-    handler: (clearOutputs: ClearOutputs, subcommand: string, ...args: string[]) => {
-      if (!subcommand) {
-        return <>Create command missing 1 argument</>;
-      }
-      
-      const subcommandDef = commandRegistry['create'].subcommands?.[subcommand];
-      if (!subcommandDef) {
-        return <>Incorrect create command: {subcommand}</>;
-      }
-      
-      return subcommandDef.handler(clearOutputs, ...args);
-    },
-    subcommands: {
-      'user': { handler: (clearOutputs: ClearOutputs, username: string, email: string, password: string) => userCommands.createUser(username, email, password) },
-      'u': { handler: (clearOutputs: ClearOutputs, username: string, email:string, password: string) => userCommands.createUser(username, email, password) }
-    }
-  },
-  'cr': { handler: (clearOutputs: ClearOutputs, ...args: string[]) => commandRegistry['create'].handler(clearOutputs, ...args) }
-};
-
-// The refactored interpret command function
-export async function interpretCommand(command: string, clearOutputs: () => void): Promise<React.ReactNode | null> {
-  const trimmedCommand = command.trim();
-  const commandArray = trimmedCommand.split(" ");
-  const mainCommand = commandArray[0];
-  
-  // Look up the command in registry
-  const commandDefinition = commandRegistry[mainCommand];
-  
-  if (commandDefinition) {
-    return commandDefinition.handler(clearOutputs, ...commandArray.slice(1));
-  } else {
-    // Default handler for unknown commands
-    const responseMessage = await sendCommandToDatabase(trimmedCommand);
-    return <>{parse(responseMessage.message)}</>;
+    
+    // Default case for unknown commands
+    default:
+      // Send to database if not recognized
+      const responseMessage = await sendCommandToDatabase(command);
+      return {
+        type: "output",
+        message: "",
+        content: <>{parse(responseMessage.message)}</>
+      };
   }
 }
