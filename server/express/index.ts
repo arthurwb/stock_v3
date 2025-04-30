@@ -4,9 +4,10 @@ import expressSession from 'express-session';
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
-import { interpretCommands } from "./command_interpreter";
-
 import session from "express-session";
+
+import { interpretCommands } from "./command_interpreter";
+import { alert_watch } from "./util/alert_watch";
 
 // Get the Railway-provided URL or fall back to localhost
 const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
@@ -42,21 +43,26 @@ export async function extendExpressApp(app: Express, context: Context) {
         res.status(200).send({ status: 'ok' });
     });
 
-    app.get('/events', (req, res) => {
+    app.get('/events', async (req, res) => {
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
 
-        const intervalId = setInterval(() => {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const currentTime = `${hours}:${minutes}`;
-            if (currentTime) {
-                const message = { data: 'Hello from server?' };
-                res.write(`data: ${JSON.stringify(message)}\n\n`);
+        let prevMarket = await context.prisma.tMarket.findFirst({
+            where: {
+                mName: "current"
             }
-        }, 20000);
+        });
+        let changeFlag: boolean = false;
+
+        const intervalId = setInterval(async () => {
+            let changeValue: any;
+            [changeFlag, changeValue, prevMarket] = await alert_watch(context, prevMarket);
+            if (changeFlag) {
+                const message = { data: `Market Changed! New Market Mode: ${changeValue}` };
+                res.write(`data: ${JSON.stringify(message)}\n\n`)
+            }
+        }, 5000);
 
         req.on('close', () => {
             clearInterval(intervalId);
