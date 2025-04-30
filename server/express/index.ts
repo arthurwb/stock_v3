@@ -41,6 +41,28 @@ export async function extendExpressApp(app: Express, context: Context) {
     app.get('/health', (req, res) => {
         res.status(200).send({ status: 'ok' });
     });
+
+    app.get('/events', (req, res) => {
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        const intervalId = setInterval(() => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+            if (currentTime) {
+                const message = { data: 'Hello from server?' };
+                res.write(`data: ${JSON.stringify(message)}\n\n`);
+            }
+        }, 20000);
+
+        req.on('close', () => {
+            clearInterval(intervalId);
+            res.end();
+        })
+    })
     
     // Rest of your routes...
     app.get("/dog", async (req: any, res: any) => {

@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+
 import BorderedSection from "./components/BorderedSection.tsx";
 import TerminalInput, { TerminalInputHandle } from "./components/TerminalInput.tsx";
 import TerminalOutput from "./components/TerminalOutput.tsx";
+import NewsTicker from "./components/Ticker.tsx";
 
 import { UserData } from "./types/UserData.tsx";
-import NewsTicker from "./components/Ticker.tsx";
+
+import useSSE from "./utility/useSSE.ts";
+import Warning from "./components/Warning.tsx";
 
 function App() {
   const [commandOutputs, setCommandOutputs] = useState<React.ReactNode[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showWarning, setShowWarning] = useState(false);
+
   const terminalInputRef = useRef<TerminalInputHandle>(null);
+
+  // replace with env url later
+  const { data, sseError } = useSSE('http://localhost:8080/events', setShowWarning)
 
   // Function to fetch user data from the server
   const fetchUserData = async () => {
@@ -118,6 +127,8 @@ function App() {
         <div className="flex flex-row basis-2/12 p-2">
           <div className="basis-5/12 m-2">
             <p>--help: show commands</p>
+            {sseError && <p>{sseError}</p>}
+            {showWarning && data ? <Warning message={data.data} onClose={() => setShowWarning(false)}></Warning> : <p>Waiting for updates...</p>}
           </div>
           <div className="basis-2/12 m-2 text-center">
             <img src="/exchange-logo.svg" className="mx-auto" style={{ width: 100, height: 100 }}></img>

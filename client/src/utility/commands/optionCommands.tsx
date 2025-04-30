@@ -4,28 +4,47 @@ import parse from "html-react-parser";
 import sendCommandToDatabase from './util.ts'
 import OptionChart from "../../components/OptionChart.tsx";
 
+import { CommandResponse } from "../../types/CommandResponse.tsx";
+
 const optionCommands = {
-    getOptions: async () => {
+    getOptions: async (): Promise<CommandResponse> => {
         const res = await sendCommandToDatabase("get options");
-        return (<>{parse(res.message)}</>);
+        return {
+            type: "output",
+            message: "",
+            content: <>{parse(res.message)}</>
+        }
     },
-    getOption: async (option) => {
-        return (
-            <OptionChart option={option}></OptionChart>
-        )
+    getOption: async (option): Promise<CommandResponse> => {
+        return {
+            type: "output",
+            message: "",
+            content: <OptionChart option={option}></OptionChart>
+        }
     },
-    buyOption: async (option) => {
+    buyOption: async (option): Promise<CommandResponse> => {
         const res = await sendCommandToDatabase(`buy option ${option}`);
-        console.log(res);
-        return res;
+        return {
+            type: "output",
+            message: "",
+            content: res
+        };
     },
-    sellOption: async (option) => {
+    sellOption: async (option): Promise<CommandResponse> => {
         const res = await sendCommandToDatabase(`sell option ${option}`);
-        return res
+        return {
+            type: "output",
+            message: "",
+            content: res
+        };
     },
-    myOptions: async () => {
+    myOptions: async (): Promise<CommandResponse> => {
         const res = await sendCommandToDatabase("my options");
-        return (<>{parse(res.message)}</>);
+        return {
+            type: "output",
+            message: "",
+            content: <>{parse(res.message)}</>
+        };
     }
 }
 
