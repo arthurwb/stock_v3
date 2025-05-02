@@ -124,5 +124,16 @@ export const lists = {
       mType: text({ validation: { isRequired: true }}),
       mActiveEvent: text({ validation: { isRequired: false }}),
     }
+  }),
+  tBlog: list({
+    access: allowAll,
+    graphql: {
+      plural: "BlogList",
+    },
+    fields: {
+      bTitle: text({ validation: { isRequired: true }}),
+      bSubTitle: text(),
+      bContent: text({ validation: { isRequired: true }}),
+    }
   })
 };

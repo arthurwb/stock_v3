@@ -234,7 +234,19 @@ export async function interpretCommand(command: string, clearOutputs: () => void
             content: <>Unknown create subcommand: {subCommand}</>
           };
       }
-    
+    case 'find':
+    case 'f':
+      switch (subCommand) {
+        case 'event':
+        case 'ev':
+          return utilityCommands.eventStatus();
+        default:
+          return {
+            type: "output",
+            message: "",
+            content: <>Unknown find subcommand: {subCommand}</>
+          };
+      }
     // Default case for unknown commands
     default:
       // Send to database if not recognized

@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Context } from ".keystone/types";
 import bcrypt from 'bcryptjs';  
 import keystone from '../keystone';
+import nextEvent from './util/next_event';
 
 const prisma = new PrismaClient();
 
@@ -395,6 +396,10 @@ const commands = {
     marketType: async () => {
         const marketDetails = await prisma.tMarket.findFirst()
         return marketDetails?.mType
+    },
+    eventStatus: async () => {
+        const event = await nextEvent(prisma)
+        return [event?.eqType, event?.eqStartDate]
     }
 };
 
@@ -445,6 +450,9 @@ export async function interpretCommands(command: string, context: Context, req: 
     }
     if (commandArray[0] === "market" && commandArray[1] === "type") {
         return commands.marketType();
+    }
+    if (commandArray[0] === "event" && commandArray[1] === "status") {
+        return commands.eventStatus()
     }
 
     return `Unknown command: ${command}`;

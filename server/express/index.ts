@@ -8,6 +8,7 @@ import session from "express-session";
 
 import { interpretCommands } from "./command_interpreter";
 import { alert_watch } from "./util/alert_watch";
+import nextEvent from "./util/next_event";
 
 // Get the Railway-provided URL or fall back to localhost
 const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';

@@ -94,13 +94,34 @@ const utilityCommands = {
             return {
                 type: "output",
                 message: "",
-                content: <>market type: ${data.message}</>
+                content: <>market type: {data.message}</>
             };
         } else {
             return {
                 type: "output",
                 message: "",
                 content: <>error in getting market type</>
+            }
+        }
+    },
+    eventStatus: async (): Promise<CommandResponse> => {
+        const data = await sendCommandToDatabase(`event status`);
+        if (Array.isArray(data.message)) {
+            console.log(data.message[1]);
+            const date = new Date(data.message[1].toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+            const day = date.getDay()
+            const hour = date.getHours()
+            const second = date.getSeconds()
+            return {
+                type: "output",
+                message: "",
+                content: <>{`${data.message[0]}`}:#{day}D::{hour}H::{second}S</>
+            };
+        } else {
+            return {
+                type: "output",
+                message: "",
+                content: <>The void does not scream back</>
             }
         }
     }

@@ -599,6 +599,51 @@ input tMarketCreateInput {
   mActiveEvent: String
 }
 
+type tBlog {
+  id: ID!
+  bTitle: String
+  bSubTitle: String
+  bContent: String
+}
+
+input tBlogWhereUniqueInput {
+  id: ID
+}
+
+input tBlogWhereInput {
+  AND: [tBlogWhereInput!]
+  OR: [tBlogWhereInput!]
+  NOT: [tBlogWhereInput!]
+  id: IDFilter
+  bTitle: StringFilter
+  bSubTitle: StringFilter
+  bContent: StringFilter
+}
+
+input tBlogOrderByInput {
+  id: OrderDirection
+  bTitle: OrderDirection
+  bSubTitle: OrderDirection
+  bContent: OrderDirection
+}
+
+input tBlogUpdateInput {
+  bTitle: String
+  bSubTitle: String
+  bContent: String
+}
+
+input tBlogUpdateArgs {
+  where: tBlogWhereUniqueInput!
+  data: tBlogUpdateInput!
+}
+
+input tBlogCreateInput {
+  bTitle: String
+  bSubTitle: String
+  bContent: String
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -647,6 +692,12 @@ type Mutation {
   updateMarketList(data: [tMarketUpdateArgs!]!): [tMarket]
   deletetMarket(where: tMarketWhereUniqueInput!): tMarket
   deleteMarketList(where: [tMarketWhereUniqueInput!]!): [tMarket]
+  createtBlog(data: tBlogCreateInput!): tBlog
+  createBlogList(data: [tBlogCreateInput!]!): [tBlog]
+  updatetBlog(where: tBlogWhereUniqueInput!, data: tBlogUpdateInput!): tBlog
+  updateBlogList(data: [tBlogUpdateArgs!]!): [tBlog]
+  deletetBlog(where: tBlogWhereUniqueInput!): tBlog
+  deleteBlogList(where: [tBlogWhereUniqueInput!]!): [tBlog]
   endSession: Boolean!
   authenticatetUsersWithPassword(userUsername: String!, userPassword: String!): tUsersAuthenticationWithPasswordResult
 }
@@ -684,6 +735,9 @@ type Query {
   tMarket(where: tMarketWhereUniqueInput!): tMarket
   marketList(where: tMarketWhereInput! = {}, orderBy: [tMarketOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tMarketWhereUniqueInput): [tMarket!]
   marketListCount(where: tMarketWhereInput! = {}): Int
+  tBlog(where: tBlogWhereUniqueInput!): tBlog
+  blogList(where: tBlogWhereInput! = {}, orderBy: [tBlogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tBlogWhereUniqueInput): [tBlog!]
+  blogListCount(where: tBlogWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

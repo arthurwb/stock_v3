@@ -87,3 +87,10 @@ model tMarket {
   mType        String @default("")
   mActiveEvent String @default("")
 }
+
+model tBlog {
+  id        String @id @default(cuid())
+  bTitle    String @default("")
+  bSubTitle String @default("")
+  bContent  String @default("")
+}
