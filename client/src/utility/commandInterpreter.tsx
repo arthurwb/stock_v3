@@ -26,7 +26,11 @@ export async function interpretCommand(command: string, clearOutputs: () => void
     case 'clear':
     case 'c':
       clearOutputs();
-      return null;
+      return {
+        type: "output",
+        message: "",
+        content: <></>
+      };
     
     // Help commands
     case 'help':

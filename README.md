@@ -1,6 +1,6 @@
 # TODO
 
-## **Things to do/try**
+## **Things to do/try** 
 * !!SOLVED!! Worker closing 20 seconds after container is opened, container closing?
 SOLUTION: Too many connections in go sql thing, needed to start and kill the connection in the main loop.
 	1) Try running the docker file locally and see if it does the same thing.
