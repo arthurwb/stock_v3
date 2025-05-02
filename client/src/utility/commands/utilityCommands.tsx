@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import Warning from "../../components/Warning.tsx";
 import sendCommandToDatabase, { getNews } from "./util.ts";
@@ -25,6 +26,7 @@ const utilityCommands = {
                         <pre>help.........................................show list of commands</pre>
                         <pre>dog..........................................dog</pre>
                         <pre>market type..................................view the current market type</pre>
+                        <pre>feed.........................................navigate to feed</pre>
                     </div>
                 </div>
 
@@ -106,8 +108,7 @@ const utilityCommands = {
     },
     eventStatus: async (): Promise<CommandResponse> => {
         const data = await sendCommandToDatabase(`event status`);
-        if (Array.isArray(data.message)) {
-            console.log(data.message[1]);
+        if (Array.isArray(data.message) && !data.message.includes(null)) {
             const date = new Date(data.message[1].toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
             const day = date.getDay()
             const hour = date.getHours()
@@ -124,6 +125,9 @@ const utilityCommands = {
                 content: <>The void does not scream back</>
             }
         }
+    },
+    feed: () => {
+        window.location.href = "/feed";
     }
 };
 

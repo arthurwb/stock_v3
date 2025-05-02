@@ -95,7 +95,6 @@ const TerminalInput = forwardRef<TerminalInputHandle, TerminalInputProps>(
         }
       } else {
         const commandOutput = await interpretCommand(inputValue, clearOutputs);
-        console.log(commandOutput);
         onCommandOutput(
           <div>
             <p className="text-green-400">{renderUserData()}$-: {inputValue}</p>

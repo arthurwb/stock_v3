@@ -44,6 +44,7 @@ const userCommands = {
     createUser: async (username: string, email:string, password: string): Promise<CommandResponse> => {
         const data = await sendCommandToDatabase(`create user ${username} ${email} ${password}`)
         if (typeof data.message == "string") {
+            console.log(data.message)
             return {
                 type: "output",
                 message: "",

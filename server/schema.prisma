@@ -77,7 +77,7 @@ model tEventQueue {
   eqEffects          String     @default("")
   eqEfectedOptionIds tOptions[] @relation("tEventQueue_eqEfectedOptionIds")
   eqStartDate        DateTime
-  eqCreationData     DateTime   @default(now())
+  eqCreationDate     DateTime   @default(now())
   eqComplete         Boolean    @default(false)
 }
 
@@ -89,8 +89,9 @@ model tMarket {
 }
 
 model tBlog {
-  id        String @id @default(cuid())
-  bTitle    String @default("")
-  bSubTitle String @default("")
-  bContent  String @default("")
+  id            String   @id @default(cuid())
+  bTitle        String   @default("")
+  bSubTitle     String   @default("")
+  bContent      String?  @mysql.LongText
+  bCreationDate DateTime @default(now())
 }

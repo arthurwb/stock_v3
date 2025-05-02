@@ -472,7 +472,7 @@ type tEventQueue {
   eqEfectedOptionIds(where: tOptionsWhereInput! = {}, orderBy: [tOptionsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tOptionsWhereUniqueInput): [tOptions!]
   eqEfectedOptionIdsCount(where: tOptionsWhereInput! = {}): Int
   eqStartDate: DateTime
-  eqCreationData: DateTime
+  eqCreationDate: DateTime
   eqComplete: Boolean
 }
 
@@ -489,7 +489,7 @@ input tEventQueueWhereInput {
   eqEffects: StringFilter
   eqEfectedOptionIds: tOptionsManyRelationFilter
   eqStartDate: DateTimeFilter
-  eqCreationData: DateTimeFilter
+  eqCreationDate: DateTimeFilter
   eqComplete: BooleanFilter
 }
 
@@ -515,7 +515,7 @@ input tEventQueueOrderByInput {
   eqType: OrderDirection
   eqEffects: OrderDirection
   eqStartDate: OrderDirection
-  eqCreationData: OrderDirection
+  eqCreationDate: OrderDirection
   eqComplete: OrderDirection
 }
 
@@ -524,7 +524,7 @@ input tEventQueueUpdateInput {
   eqEffects: String
   eqEfectedOptionIds: tOptionsRelateToManyForUpdateInput
   eqStartDate: DateTime
-  eqCreationData: DateTime
+  eqCreationDate: DateTime
   eqComplete: Boolean
 }
 
@@ -545,7 +545,7 @@ input tEventQueueCreateInput {
   eqEffects: String
   eqEfectedOptionIds: tOptionsRelateToManyForCreateInput
   eqStartDate: DateTime
-  eqCreationData: DateTime
+  eqCreationDate: DateTime
   eqComplete: Boolean
 }
 
@@ -604,6 +604,7 @@ type tBlog {
   bTitle: String
   bSubTitle: String
   bContent: String
+  bCreationDate: DateTime
 }
 
 input tBlogWhereUniqueInput {
@@ -617,7 +618,22 @@ input tBlogWhereInput {
   id: IDFilter
   bTitle: StringFilter
   bSubTitle: StringFilter
-  bContent: StringFilter
+  bContent: StringNullableFilter
+  bCreationDate: DateTimeFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: StringNullableFilter
 }
 
 input tBlogOrderByInput {
@@ -625,12 +641,14 @@ input tBlogOrderByInput {
   bTitle: OrderDirection
   bSubTitle: OrderDirection
   bContent: OrderDirection
+  bCreationDate: OrderDirection
 }
 
 input tBlogUpdateInput {
   bTitle: String
   bSubTitle: String
   bContent: String
+  bCreationDate: DateTime
 }
 
 input tBlogUpdateArgs {
@@ -642,6 +660,7 @@ input tBlogCreateInput {
   bTitle: String
   bSubTitle: String
   bContent: String
+  bCreationDate: DateTime
 }
 
 """

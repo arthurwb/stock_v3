@@ -157,6 +157,15 @@ export async function extendExpressApp(app: Express, context: Context) {
         returnArray.push("THE HAND IS FEELING CLAMMY");
         res.status(200).json(returnArray);
     });
+
+    app.get("/feed", async (req, res) => {
+        const feed = await context.prisma.tBlog.findMany({
+            orderBy: {
+                bCreationDate: "desc"
+            }
+        });
+        res.status(200).json(feed);
+    })
     
     // Change to POST instead of GET
     app.post("/command", async (req: any, res: any) => {

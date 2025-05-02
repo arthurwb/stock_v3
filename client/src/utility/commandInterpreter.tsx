@@ -251,6 +251,8 @@ export async function interpretCommand(command: string, clearOutputs: () => void
             content: <>Unknown find subcommand: {subCommand}</>
           };
       }
+    case 'feed':
+      
     // Default case for unknown commands
     default:
       // Send to database if not recognized

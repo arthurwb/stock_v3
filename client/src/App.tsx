@@ -10,6 +10,7 @@ import { UserData } from "./types/UserData.tsx";
 
 import useSSE from "./utility/useSSE.ts";
 import Warning from "./components/Warning.tsx";
+import { Link } from "react-router-dom";
 
 function App() {
   const [commandOutputs, setCommandOutputs] = useState<React.ReactNode[]>([]);
@@ -127,8 +128,9 @@ function App() {
         <div className="flex flex-row basis-2/12 p-2">
           <div className="basis-5/12 m-2">
             <p>--help: show commands</p>
+            <Link to="/feed">link:Feed</Link>
             {sseError && <p>{sseError}</p>}
-            {showWarning && data ? <Warning message={data.data} onClose={() => setShowWarning(false)}></Warning> : <p>Waiting for updates...</p>}
+            {showWarning && data ? <Warning message={data.data} onClose={() => setShowWarning(false)}></Warning> : <p>Connected to database...</p>}
           </div>
           <div className="basis-2/12 m-2 text-center">
             <img src="/exchange-logo.svg" className="mx-auto" style={{ width: 100, height: 100 }}></img>

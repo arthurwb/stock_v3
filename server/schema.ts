@@ -105,7 +105,7 @@ export const lists = {
         many: true,
       }),
       eqStartDate: timestamp({ validation: { isRequired: true } }),
-      eqCreationData: timestamp({ 
+      eqCreationDate: timestamp({ 
         validation: { isRequired: true },
         defaultValue: { kind: 'now' },
       }),
@@ -133,7 +133,17 @@ export const lists = {
     fields: {
       bTitle: text({ validation: { isRequired: true }}),
       bSubTitle: text(),
-      bContent: text({ validation: { isRequired: true }}),
+      bContent: text({ 
+        validation: { isRequired: true },
+        db: {
+          isNullable: true,
+          nativeType: 'LongText',
+        }
+      }),
+      bCreationDate: timestamp({ 
+        validation: { isRequired: true },
+        defaultValue: { kind: 'now' },
+      }),
     }
   })
 };

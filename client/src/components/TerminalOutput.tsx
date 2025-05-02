@@ -14,7 +14,7 @@ export default function TerminalOutput({ outputs }: TerminalOutputProps) {
   }, [outputs]);  // Trigger when outputs change, including additions and updates
 
   return (
-    <div ref={containerRef} className="flex flex-col space-y-2 overflow-y-auto">
+    <div ref={containerRef} className="flex flex-col space-y-2 overflow-y-scroll no-scrollbar">
       {outputs.map((output, index) => (
         <div key={index} className="whitespace-pre-wrap">
           {output}
