@@ -75,7 +75,5 @@ func DatabaseConnect() (*sql.DB, error) {
     if err := tx.Commit(); err != nil {
         return nil, fmt.Errorf("error committing transaction: %v", err)
     }
-    
-    log.Println("Successfully connected to the database!")
     return db, nil
 }

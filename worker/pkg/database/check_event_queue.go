@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	// "os"
+
+	"exchange.com/m/v3/pkg/database/events"
 )
 
 func CheckEventQueue(db *sql.DB) (error) {
-	log.Println("Starting event queue")
 	query := `SELECT eq.id, eq.eqType, o.id AS effectedOptionId, eq.eqEffects, eq.eqStartDate, eq.eqCreationData, eq.eqComplete 
 				FROM tEventQueue eq 
 				LEFT JOIN _tEventQueue_eqEfectedOptionIds m 
@@ -20,11 +20,14 @@ func CheckEventQueue(db *sql.DB) (error) {
 
 	rows, err := db.Query(query)
 	if err != nil {
-		return fmt.Errorf("Error querying event queue: %v", err)
+		return fmt.Errorf("error querying event queue: %v", err)
 	}
 	defer rows.Close()
 
 	tx, err := db.Begin()
+	if err != nil {
+		return fmt.Errorf("error starting database: %v", err)
+	}
 
 	for rows.Next() {
 		var id, eqType, eqEffects string
@@ -42,23 +45,15 @@ func CheckEventQueue(db *sql.DB) (error) {
 			continue
 		}
 
-		// event := map[string]interface{}{
-		// 	"id":               id,
-		// 	"eqType":           eqType,
-		// 	"effectedOptionId": effectedOptionId,
-		// 	"eqEffects":        eqEffects,
-		// 	"eqStartDate":      eqStartDate,
-		// 	"eqCreationData":   eqCreationData,
-		// 	"eqComplete":       eqComplete,
-		// }
-
+		complete := false
 		switch eqType {
-		case "bull": updateMarket(tx, "bull")
-		case "bear": updateMarket(tx, "bear")
-		case "squirrel": updateMarket(tx, "squirrel")
-		case "dragon": updateMarket(tx, "dragon")
+		case "market": complete = events.MarketChange(tx, eqEffects, eqStartDate)
 		default: 
 			log.Printf("Unknown queue type for item %s: %s", id, eqType)
+			continue
+		}
+
+		if !complete {
 			continue
 		}
 
@@ -72,17 +67,5 @@ func CheckEventQueue(db *sql.DB) (error) {
 		tx.Commit()
 	}
 
-	log.Println("Finished event queue")
 	return nil
-}
-
-func updateMarket(tx *sql.Tx, marketType string) {
-	marketQuery := `UPDATE tMarket
-					SET mType = ?`
-	_, err := tx.Exec(marketQuery, marketType)
-	if err != nil {
-		log.Println("Unable to update market type:", err)
-		return
-	}
-	log.Printf("Market has become a %s market!", marketType)
 }

@@ -35,7 +35,6 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to connect to database: %v", err)
 		}
-		log.Println("Starting scheduled tasks...")
 		
 		if err := database.CheckUserQueue(db); err != nil {
 			log.Printf("Error checking user queue: %v", err)

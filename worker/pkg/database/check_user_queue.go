@@ -11,7 +11,6 @@ import (
 )
 
 func CheckUserQueue(db *sql.DB) (error) {
-    log.Println("Starting user queue")
     // Query to select all incomplete user queue entries ordered by transaction date (oldest first)
     query := `SELECT id, uqType, uqOptionId, uqUserId, uqCount,
               uqTransactionDate, uqComplete FROM tUserQueue 
@@ -74,7 +73,6 @@ func CheckUserQueue(db *sql.DB) (error) {
         log.Printf("Error iterating over user queue rows: %v", err)
     }
 
-    log.Println("Finished user queue")
     return nil
 }
 
