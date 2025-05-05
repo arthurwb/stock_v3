@@ -27,7 +27,7 @@ const NewPage: React.FC = () => {
 
     return (
         <div className="relative flex flex-col px-4 min-h-screen bg-black text-white text-center">
-            <Link to="/" className='pb-4 mx-[40%] border'>Return...</Link>
+            <Link to="/" className='pb-4 mx-[30%] border'>Return...</Link>
             
             <h1 className='font-bold mt-8'>Posts</h1>
             
@@ -46,7 +46,7 @@ const NewPage: React.FC = () => {
                                 hour: '2-digit',
                                 minute: '2-digit',
                             })}</p>
-                            <p className='px-40'>{post.bContent}</p>
+                            <p className=''>{post.bContent}</p>
                         </div>
                     ))}
                 </div>
