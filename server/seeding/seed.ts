@@ -6,6 +6,7 @@ import { Decimal } from '@keystone-6/core/types';
 
 import { populateCarrots } from './populateCarrots';
 import { populateHistoricalPrices } from './populateHP';
+import { isConstructorDeclaration } from 'typescript';
 
 const bcrypt = require('bcrypt');
 
@@ -29,29 +30,26 @@ async function tableExists(tableName: string): Promise<boolean> {
 async function seed() {
   console.log("starting seeding process...");
 
-  // Clear existing data (optional, for testing)
-  if (await tableExists("tCarrots")) { 
-    console.log("Deleting carrots table");
-    await prisma.tCarrots.deleteMany({}); 
-  }
-  if (await tableExists("tHistoricalPrices")) { 
-    console.log("Deleting historical prices table");
-    await prisma.tHistoricalPrices.deleteMany({}); 
-  }
   if (await tableExists("tOptions")) { 
     console.log("Deleting options table");
     await prisma.tOptions.deleteMany({}); 
   }
+
   if (await tableExists("tUsers")) { 
     console.log("Deleting users table");
     await prisma.tUsers.deleteMany({});
+  }
+
+  if (await tableExists("tMarket")) {
+    console.log("Deleting market table")
+    await prisma.tMarket.deleteMany({})
   }
 
   const hashedAdminPassword = await bcrypt.hash('admin123', 10);
   const hashedSamplePassword = await bcrypt.hash('password', 10);
 
   // Seed sample users
-  const adminUser = await prisma.tUsers.create({
+  await prisma.tUsers.create({
     data: {
       userEmail: 'admin@exchange.com',
       userUsername: 'admin',
@@ -60,7 +58,7 @@ async function seed() {
     },
   });
 
-  const sampleUser = await prisma.tUsers.create({
+  await prisma.tUsers.create({
     data: {
         userEmail: 'sampleUser@exchange.com',
         userUsername: 'sample',
@@ -70,39 +68,72 @@ async function seed() {
   });
 
   // Seed sample options
-  const googleOption = await prisma.tOptions.create({
+  await prisma.tOptions.create({
     data: {
-      optionName: 'google',
-      optionPrice: 500,
+      optionName: 'groogle',
+      optionShort: 'goog',
+      optionDescription: 'Groogle is a global technology company that specializes in internet services, including search, advertising, cloud computing, and software development. It also develops products like Android, Groogle Clrome, and Groogle Subordinate, revolutionizing how people access information and interact with technology.',
+      optionPrice: 166.85,
+      optionBankruptcy: false,
     },
   });
 
-  const microsoftOption = await prisma.tOptions.create({
+  await prisma.tOptions.create({
     data: {
-      optionName: 'microsoft',
-      optionPrice: 500,
+      optionName: 'canadian express',
+      optionShort: 'cnex',
+      optionDescription: 'Canadian Express is a leading banking institution offering a wide range of financial services, including personal banking, business banking, and investment solutions. With a commitment to customer-centric innovation, the company provides secure, efficient, and accessible banking options for individuals and businesses across Canada.',
+      optionPrice: 281.19,
+      optionBankruptcy: false,
     },
   });
 
-  const amazonOption = await prisma.tOptions.create({
+  await prisma.tOptions.create({
     data: {
-      optionName: 'amazon',
-      optionPrice: 500,
+      optionName: 'cuviax',
+      optionShort: 'cuva',
+      optionDescription: 'CuviaX is a cutting-edge tech company specializing in the design and development of advanced chipsets and high-performance computer hardware. With a focus on innovation and precision, CuviaX empowers industries to push the boundaries of computing, delivering powerful and efficient solutions for the next generation of technology.',
+      optionPrice: 113.89,
+      optionBankruptcy: false,
     },
   });
 
-  // Seed sample carrots
-  const users = {
-    admin: adminUser,
-    sample: sampleUser
-  };
-  const options = {
-    google: googleOption,
-    microsoft: microsoftOption,
-    amazon: amazonOption
-  };
-  populateCarrots(prisma, options, users);
-  populateHistoricalPrices(prisma, options);
+  await prisma.tOptions.create({
+    data: {
+      optionName: 'michaelsoft',
+      optionShort: 'msft',
+      optionDescription: 'Michael Soft is a global technology powerhouse founded and led by a single visionary, Michael, specializing in software development, cloud services, and cutting-edge digital solutions. With a focus on innovation and user-centric products, Michael Soft competes with industry giants to transform the way people and businesses interact with technology on a global scale.',
+      optionPrice: 439.43,
+      optionBankruptcy: false,
+    },
+  });
+
+  await prisma.tOptions.create({
+    data: {
+      optionName: 'appalachia',
+      optionShort: 'apla',
+      optionDescription: 'Appalachia is a leading online marketplace that offers a wide variety of name-brand products, ranging from electronics to home goods, all sourced from the Appalachian region. With a focus on quality and customer satisfaction, Appalachia provides a seamless shopping experience, delivering top-tier products from one of the most abundant and diverse areas in the country.',
+      optionPrice: 187.98,
+      optionBankruptcy: false,
+    },
+  });
+
+  await prisma.tOptions.create({
+    data: {
+      optionName: 'lockhead technologies',
+      optionShort: 'lock',
+      optionDescription: 'Lockhead Technologies is a global defense contractor specializing in the design and production of advanced weapons systems for major governments and military organizations worldwide. With a reputation for precision and innovation, the company also provides cutting-edge solutions to smaller, emerging nations seeking to enhance their defense capabilities.',
+      optionPrice: 472.20,
+      optionBankruptcy: false,
+    },
+  });
+
+  await prisma.tMarket.create({
+    data: {
+      mName: 'current',
+      mType: 'squirrel'
+    }
+  });
 
   console.log("Seeding completed!");
 }

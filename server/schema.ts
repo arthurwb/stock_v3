@@ -19,7 +19,13 @@ export const lists = {
     fields: {
       optionName: text({ validation: { isRequired: true } }),
       optionShort: text({ validation: { isRequired: true } }),
-      optionDescription: text({ validation: { isRequired: true } }),
+      optionDescription: text({ 
+        validation: { isRequired: true },
+        db: {
+          isNullable: true,
+          nativeType: 'LongText',
+        }
+      }),
       optionPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
       optionBankruptcy: checkbox({
         defaultValue: false
@@ -147,6 +153,15 @@ export const lists = {
         validation: { isRequired: true },
         defaultValue: { kind: 'now' },
       }),
+    }
+  }),
+  tHint: list({
+    access: allowAll,
+    graphql: {
+      plural: "HintList",
+    },
+    fields: {
+      hContent: text({ validation: { isRequired: true }}),
     }
   })
 };

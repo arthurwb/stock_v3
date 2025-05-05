@@ -24,10 +24,11 @@ const optionCommands = {
     },
     buyOption: async (option): Promise<CommandResponse> => {
         const res = await sendCommandToDatabase(`buy option ${option}`);
+        console.log(res.message);
         return {
             type: "output",
             message: "",
-            content: <>{parse(res.message)}</>
+            content: <>{res.message}</>
         };
     },
     sellOption: async (option): Promise<CommandResponse> => {

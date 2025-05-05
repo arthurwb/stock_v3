@@ -166,6 +166,10 @@ export async function extendExpressApp(app: Express, context: Context) {
             }
         });
         res.status(200).json(feed);
+    });
+
+    app.get("/hint", async (req, res) => {
+        
     })
     
     // Change to POST instead of GET
@@ -174,7 +178,6 @@ export async function extendExpressApp(app: Express, context: Context) {
             if (!req.body.command) {
                 return res.status(400).send({ error: "No command provided" });
             }
-            console.log(req.body.command)
             const response = await interpretCommands(req.body.command, context, req);
             res.send({ message: response });
         } catch (error) {

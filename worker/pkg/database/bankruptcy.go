@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 )
 
 func Bankruptcy(tx *sql.Tx, optionId string) {
@@ -29,7 +30,12 @@ func SetBankrupt(tx *sql.Tx, optionId string) {
 
 func Buyout(tx *sql.Tx, optionId string) {
 	// 1/x change of breaking out of bankruptcy
-	if rand.Intn(4) == 0 {
+	buyoutRate, err := strconv.Atoi(os.Getenv("BUYOUT_RATE"))
+	if err != nil {
+		log.Println("No Buyout rate set")
+		return
+	}
+	if rand.Intn(buyoutRate) == 0 {
 		log.Println("Buyout!:", optionId)
 		removeBankruptcyQuery := `UPDATE tOptions
 						SET optionBankruptcy = False, optionPrice = ?

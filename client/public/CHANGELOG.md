@@ -1,5 +1,6 @@
 **5:5:25**
 * Created Changelog
+* Did some bug fixes
 
 **5:4:25**
 * Added bankruptcy system

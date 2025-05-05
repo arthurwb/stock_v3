@@ -113,12 +113,7 @@ export async function interpretCommand(command: string, clearOutputs: () => void
               content: <>Buy option command requires an ID</>
             };
           }
-          const buyResult = await optionCommands.buyOption(args[0]);
-          return {
-            type: "output",
-            message: "",
-            content: <>{buyResult.message}</>
-          };
+          return await optionCommands.buyOption(args[0]);
         
         default:
           return {
@@ -137,12 +132,7 @@ export async function interpretCommand(command: string, clearOutputs: () => void
           content: <>Buy option command requires an ID</>
         };
       }
-      const bopResult = await optionCommands.buyOption(parts[1]);
-      return {
-        type: "output",
-        message: "",
-        content: <>{bopResult.message}</>
-      };
+      return await optionCommands.buyOption(parts[1]);
     
     // Sell commands
     case 'sell':
@@ -176,12 +166,7 @@ export async function interpretCommand(command: string, clearOutputs: () => void
           content: <>Sell option command requires an ID</>
         };
       }
-      const sopResult = await optionCommands.sellOption(parts[1]);
-      return {
-        type: "output",
-        message: "",
-        content: <>{sopResult.message}</>
-      };
+      return await optionCommands.sellOption(parts[1]);
     
     // My commands
     case 'my':

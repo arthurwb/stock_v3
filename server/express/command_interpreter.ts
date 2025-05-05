@@ -86,8 +86,6 @@ const commands = {
             }
         });
         
-        console.log("Created queue item:", queueItem);
-        
         // Poll the queue item until it's processed or timeout
         const queueItemId = queueItem.id;
         const maxAttempts = 30; // Maximum polling attempts
@@ -193,8 +191,6 @@ const commands = {
             }
         });
         
-        console.log("Created queue item:", queueItem);
-        
         // Poll the queue item until it's processed or timeout
         const queueItemId = queueItem.id;
         const maxAttempts = 30; // Maximum polling attempts
@@ -292,7 +288,6 @@ const commands = {
         }
     },    
     login: async (loginDetails: string[], context: Context, req: any) => {
-        console.log("login start");
         const username = loginDetails[1];
         const password = loginDetails[2];
     
@@ -306,8 +301,6 @@ const commands = {
         const userDetails = await prisma.tUsers.findFirst({
             where: { userUsername: username }
         });
-
-        console.log(userDetails)
     
         if (!userDetails) {
             return "User not found";
@@ -319,11 +312,8 @@ const commands = {
         if (!isPasswordValid) {
             return "Incorrect password";
         }
-
-        console.log(req.session.user)
         
         req.session.user = { username }
-        console.log(req.session.user)
         req.session.save();
         return userDetails;
     },
@@ -407,7 +397,6 @@ const commands = {
 
 export async function interpretCommands(command: string, context: Context, req: any): Promise<any> {
     const commandArray = command.trim().split(" ");
-    console.log(commandArray);
     
     if (commandArray[0] === "get") {
         if (commandArray[1] === "option") {
@@ -418,9 +407,7 @@ export async function interpretCommands(command: string, context: Context, req: 
         }
     }
     if (commandArray[0] === "buy" && commandArray[1] == "option") {
-        console.log(req.session.user);
         const optionName = commandArray.slice(2).join(" ");
-        // console.log(req.session.user);
         if (req.session.user == undefined) {
             return "Unable to buy options while not logged in.";
         } else {
@@ -429,7 +416,6 @@ export async function interpretCommands(command: string, context: Context, req: 
     }
     if (commandArray[0] === "sell" && commandArray[1] === "option") {
         const optionName = commandArray.slice(2).join(" ");
-        console.log(req.session.user);
         return commands.sellOption(optionName, req.session.user.username);
     }
     if (commandArray[0] === "my" && commandArray[1] === "options") {

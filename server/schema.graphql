@@ -31,7 +31,7 @@ input tOptionsWhereInput {
   id: IDFilter
   optionName: StringFilter
   optionShort: StringFilter
-  optionDescription: StringFilter
+  optionDescription: StringNullableFilter
   optionPrice: DecimalFilter
   optionBankruptcy: BooleanFilter
   historicalPrices: tHistoricalPricesManyRelationFilter
@@ -77,6 +77,20 @@ input NestedStringFilter {
   startsWith: String
   endsWith: String
   not: NestedStringFilter
+}
+
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: StringNullableFilter
 }
 
 input DecimalFilter {
@@ -627,20 +641,6 @@ input tBlogWhereInput {
   bCreationDate: DateTimeFilter
 }
 
-input StringNullableFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: StringNullableFilter
-}
-
 input tBlogOrderByInput {
   id: OrderDirection
   bTitle: OrderDirection
@@ -666,6 +666,41 @@ input tBlogCreateInput {
   bSubTitle: String
   bContent: String
   bCreationDate: DateTime
+}
+
+type tHint {
+  id: ID!
+  hContent: String
+}
+
+input tHintWhereUniqueInput {
+  id: ID
+}
+
+input tHintWhereInput {
+  AND: [tHintWhereInput!]
+  OR: [tHintWhereInput!]
+  NOT: [tHintWhereInput!]
+  id: IDFilter
+  hContent: StringFilter
+}
+
+input tHintOrderByInput {
+  id: OrderDirection
+  hContent: OrderDirection
+}
+
+input tHintUpdateInput {
+  hContent: String
+}
+
+input tHintUpdateArgs {
+  where: tHintWhereUniqueInput!
+  data: tHintUpdateInput!
+}
+
+input tHintCreateInput {
+  hContent: String
 }
 
 """
@@ -722,6 +757,12 @@ type Mutation {
   updateBlogList(data: [tBlogUpdateArgs!]!): [tBlog]
   deletetBlog(where: tBlogWhereUniqueInput!): tBlog
   deleteBlogList(where: [tBlogWhereUniqueInput!]!): [tBlog]
+  createtHint(data: tHintCreateInput!): tHint
+  createHintList(data: [tHintCreateInput!]!): [tHint]
+  updatetHint(where: tHintWhereUniqueInput!, data: tHintUpdateInput!): tHint
+  updateHintList(data: [tHintUpdateArgs!]!): [tHint]
+  deletetHint(where: tHintWhereUniqueInput!): tHint
+  deleteHintList(where: [tHintWhereUniqueInput!]!): [tHint]
   endSession: Boolean!
   authenticatetUsersWithPassword(userUsername: String!, userPassword: String!): tUsersAuthenticationWithPasswordResult
 }
@@ -762,6 +803,9 @@ type Query {
   tBlog(where: tBlogWhereUniqueInput!): tBlog
   blogList(where: tBlogWhereInput! = {}, orderBy: [tBlogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tBlogWhereUniqueInput): [tBlog!]
   blogListCount(where: tBlogWhereInput! = {}): Int
+  tHint(where: tHintWhereUniqueInput!): tHint
+  hintList(where: tHintWhereInput! = {}, orderBy: [tHintOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tHintWhereUniqueInput): [tHint!]
+  hintListCount(where: tHintWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

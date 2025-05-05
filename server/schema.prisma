@@ -15,7 +15,7 @@ model tOptions {
   id                String              @id @default(cuid())
   optionName        String              @default("")
   optionShort       String              @default("")
-  optionDescription String              @default("")
+  optionDescription String?             @mysql.LongText
   optionPrice       Decimal             @mysql.Decimal(10, 2)
   optionBankruptcy  Boolean             @default(false)
   historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
@@ -95,4 +95,9 @@ model tBlog {
   bSubTitle     String   @default("")
   bContent      String?  @mysql.LongText
   bCreationDate DateTime @default(now())
+}
+
+model tHint {
+  id       String @id @default(cuid())
+  hContent String @default("")
 }
