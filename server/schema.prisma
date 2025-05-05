@@ -17,6 +17,7 @@ model tOptions {
   optionShort       String              @default("")
   optionDescription String              @default("")
   optionPrice       Decimal             @mysql.Decimal(10, 2)
+  optionBankruptcy  Boolean             @default(false)
   historicalPrices  tHistoricalPrices[] @relation("tHistoricalPrices_optionId")
   optionCarrots     tCarrots[]          @relation("tCarrots_optionId")
   userQueue         tUserQueue[]        @relation("tUserQueue_uqOptionId")

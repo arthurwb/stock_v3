@@ -19,6 +19,8 @@ func Entropy(db *sql.DB) (error) {
 		return fmt.Errorf("Database connection is nil. Please check your connection.")
 	}
 
+	tx, err := db.Begin()
+
 	query := "SELECT Id, optionName, optionPrice FROM tOptions"
 	rows, err := db.Query(query)
 	if err != nil {
@@ -39,6 +41,11 @@ func Entropy(db *sql.DB) (error) {
 			continue
 		}
 
+		if (optionPrice == 0) {
+			database.Buyout(tx, Id)
+			continue
+		}
+
 		// Calculate the new price
 		lowerLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_LOWER"), 64)
 		upperLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_UPPER"), 64)
@@ -46,29 +53,40 @@ func Entropy(db *sql.DB) (error) {
 		newPrice := strconv.FormatFloat(optionPrice + (func(lower, upper float64) float64 { 
 			if (market["mType"] == "bear") {
 				if rand.Intn(4) <= 3 { 
-					return -(lower + rand.Float64()*(upper-lower))
+					return -(rand.Float64() * upperLimit)
 				} 
-				return lower + rand.Float64()*(upper-lower) 
+				return rand.Float64() * upperLimit
 			} else if (market["mType"] == "bull") {
 				if rand.Intn(4) >= 3 { 
-					return -(lower + rand.Float64()*(upper-lower))
+					return -(rand.Float64() * upperLimit)
 				} 
-				return lower + rand.Float64()*(upper-lower) 
+				return rand.Float64() * upperLimit
 			} else if (market["mType"] == "dragon") {
 				if rand.Intn(2) == 0 { 
-					return -(lower + rand.Float64()*(upper-lower))
+					return -(rand.Float64() * (upperLimit * 3))
 				} 
-				return (lower + rand.Float64()*(upper-lower)) * 3
+				return rand.Float64() * (upperLimit * 3)
 			} else {
 				if rand.Intn(2) == 0 { 
-					return -(lower + rand.Float64()*(upper-lower))
+					return -(rand.Float64() * upperLimit)
 				} 
-				return lower + rand.Float64()*(upper-lower) 
+				return rand.Float64() * upperLimit
 			}
 		}(lowerLimit, upperLimit)), 'f', 2, 64)
 
-		// Update the price in the database
-		database.UpdatePrice(db, Id, newPrice)
+		floatNewPrice, _ := strconv.ParseFloat(newPrice, 64)
+		
+		if (floatNewPrice < 0) {
+			database.Bankruptcy(tx, Id)
+		} else {
+			database.UpdatePrice(tx, Id, newPrice)
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("Error running entropy: %v", err)
+		return err
 	}
 
 	// Check for errors after iteration

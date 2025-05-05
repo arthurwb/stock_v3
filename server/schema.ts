@@ -21,6 +21,9 @@ export const lists = {
       optionShort: text({ validation: { isRequired: true } }),
       optionDescription: text({ validation: { isRequired: true } }),
       optionPrice: decimal({ precision: 10, scale: 2, validation: { isRequired: true } }),
+      optionBankruptcy: checkbox({
+        defaultValue: false
+      }),
       historicalPrices: relationship({ ref: 'tHistoricalPrices.optionId', many: true }),
       optionCarrots: relationship({ ref: 'tCarrots.optionId', many: true }),
       userQueue: relationship({ ref: 'tUserQueue.uqOptionId', many: true }),

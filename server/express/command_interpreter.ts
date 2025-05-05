@@ -376,6 +376,8 @@ const commands = {
             // Hash the password with bcrypt
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            const standard = process.env.STANDARD ? parseInt(process.env.STANDARD) : 200
             
             // Create user with the hashed password
             const user = await prisma.tUsers.create({
@@ -383,7 +385,7 @@ const commands = {
                     userEmail: email,
                     userUsername: username,
                     userPassword: hashedPassword,
-                    userWallet: 0
+                    userWallet: standard
                 }
             });
             

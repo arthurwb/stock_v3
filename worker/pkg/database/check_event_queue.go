@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-
-	"exchange.com/m/v3/pkg/database/events"
 )
 
 func CheckEventQueue(db *sql.DB) (error) {
-	query := `SELECT eq.id, eq.eqType, o.id AS effectedOptionId, eq.eqEffects, eq.eqStartDate, eq.eqCreationData, eq.eqComplete 
+	query := `SELECT eq.id, eq.eqType, o.id AS effectedOptionId, eq.eqEffects, eq.eqStartDate, eq.eqCreationDate, eq.eqComplete 
 				FROM tEventQueue eq 
 				LEFT JOIN _tEventQueue_eqEfectedOptionIds m 
 				ON eq.id = m.A 
@@ -47,7 +45,7 @@ func CheckEventQueue(db *sql.DB) (error) {
 
 		complete := false
 		switch eqType {
-		case "market": complete = events.MarketChange(tx, eqEffects, eqStartDate)
+		case "market": complete = MarketChange(tx, eqEffects, eqStartDate)
 		default: 
 			log.Printf("Unknown queue type for item %s: %s", id, eqType)
 			continue
@@ -64,8 +62,9 @@ func CheckEventQueue(db *sql.DB) (error) {
 		if err != nil {
 			log.Printf("Error in completing event: %e", err)
 		}
-		tx.Commit()
 	}
+
+	tx.Commit()
 
 	return nil
 }

@@ -46,6 +46,8 @@ SOLUTION: Too many connections in go sql thing, needed to start and kill the con
   	* Get rid of all the comments, it makes it look AI generated.
 * Small features
 	* Add some ASCII art that pops up when you open the page or refresh.
+* Env -> Database
+	* It would be a good idea to move as many env variables as we can (stuff that isnt secret) into the database so they can be changed on the fly without needing to restart the service
 
 ## **User Purchase**
 * The code for this should already be in the repo, just unused. 

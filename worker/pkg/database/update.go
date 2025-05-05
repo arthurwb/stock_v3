@@ -8,16 +8,9 @@ import (
 )
 
 // UpdatePrice updates the current price of an option and records the historical price.
-func UpdatePrice(db *sql.DB, Id string, optionPrice string) {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Printf("Error starting transaction: %v", err)
-		return
-	}
-
-	// Update the current option price
+func UpdatePrice(tx *sql.Tx, Id string, optionPrice string) {
 	query := "UPDATE tOptions SET optionPrice = ? WHERE Id = ?"
-	_, err = tx.Exec(query, optionPrice, Id)
+	_, err := tx.Exec(query, optionPrice, Id)
 	if err != nil {
 		tx.Rollback()
 		log.Printf("Error updating option ID %d: %v", Id, err)
@@ -27,13 +20,6 @@ func UpdatePrice(db *sql.DB, Id string, optionPrice string) {
 	// Record the historical price
 	if err := UpdateHistoricalPrices(tx, Id, optionPrice); err != nil {
 		tx.Rollback()
-		return
-	}
-
-	// Commit the transaction
-	err = tx.Commit()
-	if err != nil {
-		log.Printf("Error committing transaction for option ID %d: %v", Id, err)
 		return
 	}
 }
@@ -74,4 +60,15 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) err
 	}
 
 	return nil
+}
+
+func UpdateMarket(tx *sql.Tx, marketType string) {
+	marketQuery := `UPDATE tMarket
+					SET mType = ?`
+	_, err := tx.Exec(marketQuery, marketType)
+	if err != nil {
+		log.Println("Unable to update market type:", err)
+		return
+	}
+	log.Printf("Market has become a %s market!", marketType)
 }

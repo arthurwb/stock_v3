@@ -54,13 +54,14 @@ export async function extendExpressApp(app: Express, context: Context) {
                 mName: "current"
             }
         });
+        let prevOptions = await context.prisma.tOptions.findMany()
         let changeFlag: boolean = false;
 
         const intervalId = setInterval(async () => {
-            let changeValue: any;
-            [changeFlag, changeValue, prevMarket] = await alert_watch(context, prevMarket);
+            let changeValues: any[];
+            [changeFlag, changeValues, prevMarket, prevOptions] = await alert_watch(context, prevMarket, prevOptions);
             if (changeFlag) {
-                const message = { data: `Market Changed! New Market Mode: ${changeValue}` };
+                const message = { data: `Market Alert: ${changeValues}` };
                 res.write(`data: ${JSON.stringify(message)}\n\n`)
             }
         }, 5000);

@@ -7,6 +7,7 @@ type tOptions {
   optionShort: String
   optionDescription: String
   optionPrice: Decimal
+  optionBankruptcy: Boolean
   historicalPrices(where: tHistoricalPricesWhereInput! = {}, orderBy: [tHistoricalPricesOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tHistoricalPricesWhereUniqueInput): [tHistoricalPrices!]
   historicalPricesCount(where: tHistoricalPricesWhereInput! = {}): Int
   optionCarrots(where: tCarrotsWhereInput! = {}, orderBy: [tCarrotsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: tCarrotsWhereUniqueInput): [tCarrots!]
@@ -32,6 +33,7 @@ input tOptionsWhereInput {
   optionShort: StringFilter
   optionDescription: StringFilter
   optionPrice: DecimalFilter
+  optionBankruptcy: BooleanFilter
   historicalPrices: tHistoricalPricesManyRelationFilter
   optionCarrots: tCarrotsManyRelationFilter
   userQueue: tUserQueueManyRelationFilter
@@ -88,6 +90,11 @@ input DecimalFilter {
   not: DecimalFilter
 }
 
+input BooleanFilter {
+  equals: Boolean
+  not: BooleanFilter
+}
+
 input tHistoricalPricesManyRelationFilter {
   every: tHistoricalPricesWhereInput
   some: tHistoricalPricesWhereInput
@@ -118,6 +125,7 @@ input tOptionsOrderByInput {
   optionShort: OrderDirection
   optionDescription: OrderDirection
   optionPrice: OrderDirection
+  optionBankruptcy: OrderDirection
 }
 
 enum OrderDirection {
@@ -130,6 +138,7 @@ input tOptionsUpdateInput {
   optionShort: String
   optionDescription: String
   optionPrice: Decimal
+  optionBankruptcy: Boolean
   historicalPrices: tHistoricalPricesRelateToManyForUpdateInput
   optionCarrots: tCarrotsRelateToManyForUpdateInput
   userQueue: tUserQueueRelateToManyForUpdateInput
@@ -174,6 +183,7 @@ input tOptionsCreateInput {
   optionShort: String
   optionDescription: String
   optionPrice: Decimal
+  optionBankruptcy: Boolean
   historicalPrices: tHistoricalPricesRelateToManyForCreateInput
   optionCarrots: tCarrotsRelateToManyForCreateInput
   userQueue: tUserQueueRelateToManyForCreateInput
@@ -427,11 +437,6 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
-}
-
-input BooleanFilter {
-  equals: Boolean
-  not: BooleanFilter
 }
 
 input tUserQueueOrderByInput {
