@@ -1,0 +1,764 @@
+commit 744464868ce47d17a241b1330d6b59cdc378cc07
+Date:   Mon May 5 01:45:48 2025 +0000
+
+    added bankruptcy
+
+commit 3c46417db171c8a0de93ce583171d580da17ede0
+Date:   Fri May 2 20:17:48 2025 +0000
+
+    add new page for blog stuff
+
+commit 514b6fc9cfc298ce17b4e2854bcfb4b9dcb26547
+Merge: 569f7e3 3d317b8
+Date:   Fri May 2 17:00:15 2025 +0000
+
+    Merge branch 'main' into develop
+
+commit 569f7e3344d096f86220c28a5580fb04f2771cb0
+Date:   Fri May 2 17:00:10 2025 +0000
+
+    in dev
+
+commit b7d7f38d6f4b1c2157f1ecd82ca643f20f2d5553
+Date:   Fri May 2 15:50:58 2025 +0000
+
+    remove logs and fix the event queue watcher
+
+commit 3d317b88d23ffbb0a806421704eb11a8db56bf8a
+Merge: f5e85ea 11cadfd
+Date:   Wed Apr 30 12:52:33 2025 -0400
+
+    Merge pull request #9 from warthur12/patch-8
+
+commit 11cadfd7d32be95386e174bdc23e986155ab2101
+Date:   Wed Apr 30 12:51:44 2025 -0400
+
+    update user command content
+
+commit f5e85ea24dd34527514678c74b0ad8c865b1d030
+Merge: a4a0d23 d00ee0a
+Date:   Wed Apr 30 12:26:45 2025 -0400
+
+    Merge pull request #8 from warthur12/patch-7
+
+commit d00ee0a47043411cf45546ebd0a0a8e30e3c0397
+Date:   Wed Apr 30 12:26:21 2025 -0400
+
+    fix clear maybe?
+
+commit a4a0d23970e28257cd975362ec48e9d0471eeb12
+Merge: cc244e7 2b06adb
+Date:   Wed Apr 30 12:16:40 2025 -0400
+
+    Merge pull request #7 from warthur12/patch-6
+
+commit 2b06adb2b462f8b1050878881b124756c53e4ac4
+Date:   Wed Apr 30 12:16:14 2025 -0400
+
+    data.message issue
+
+commit cc244e75285db6bd6961e11a8167621b096becf0
+Merge: 299648d 87da4de
+Date:   Wed Apr 30 12:02:10 2025 -0400
+
+    Merge pull request #6 from warthur12/patch-5
+
+commit 87da4de4e97ef21b561c8f10190820c12b5227cc
+Date:   Wed Apr 30 12:01:26 2025 -0400
+
+    update event uri
+
+commit 299648d6c9f31ed1e1ab7efe301a2356147bafd8
+Date:   Wed Apr 30 11:49:25 2025 -0400
+
+    Update README.md
+
+commit 1d052099850f206bc651ab8b3538d4008874c6d2
+Merge: 6deccf5 4e576d8
+Date:   Wed Apr 30 11:42:03 2025 -0400
+
+    Merge pull request #5 from arthurwb/develop
+
+commit 4e576d8d3af1983dddca400c14c5aa0e1aeeaad7
+Date:   Wed Apr 30 04:29:13 2025 +0000
+
+    update user when market changes
+
+commit 1739641c073c70bb3263dd767d5136914a960c75
+Date:   Wed Apr 30 00:26:08 2025 +0000
+
+    server to client alert system now in place
+
+commit 6deccf5beadd9878ddea288c6c0c4b6fefec598f
+Date:   Tue Apr 29 19:35:46 2025 +0000
+
+    moving the connection into the loop
+
+commit e3ea1f332482f3697beb138c5bfa927fba754da3
+Date:   Tue Apr 29 19:11:15 2025 +0000
+
+    more logs
+
+commit 3e43cd91ebf16d8eb42fcbe39f0a0e9b64343adc
+Date:   Tue Apr 29 18:44:28 2025 +0000
+
+    more logs
+
+commit 2d29b4c1c4cb8fde176dcc0b23f27f867272e2d0
+Date:   Tue Apr 29 18:39:28 2025 +0000
+
+    update imports
+
+commit 1bfad1b9f25616faf59475da181c699346b1e5a2
+Date:   Tue Apr 29 18:37:26 2025 +0000
+
+    replace fmt with log
+
+commit d2ba887cd9e28ba41bc73dcfa53a2373cc70e627
+Date:   Tue Apr 29 18:16:04 2025 +0000
+
+    add duration
+
+commit a1cafcf3fa0235ec4810cc0ea88e519dd94c44fd
+Date:   Tue Apr 29 18:12:03 2025 +0000
+
+    lol forgot the rate
+
+commit e732220dc387ba91ac7194510db84d34cecee5ed
+Date:   Tue Apr 29 17:40:28 2025 +0000
+
+    remove fatal error
+
+commit bb1ce64e362a340672f5a05a456f9adda3a57e5c
+Date:   Tue Apr 29 17:26:15 2025 +0000
+
+    add entropy logging
+
+commit b2e066994c618258cca7405c2a8290c139a2fe02
+Date:   Tue Apr 29 17:18:28 2025 +0000
+
+    add some logging
+
+commit 80430792e30a9d87399b31e212b27273c964fb04
+Date:   Tue Apr 29 17:11:29 2025 +0000
+
+    woops
+
+commit 6c20105b4fcc1b08a4778781c342e00dfc820521
+Date:   Tue Apr 29 17:10:32 2025 +0000
+
+    simpilify worker
+
+commit 686ad1f4c9a8f65860c6d4aeea6073c88d09c00d
+Date:   Tue Apr 29 17:02:15 2025 +0000
+
+    add back the dockerfile
+
+commit d24fb09722417c460975433ebd8560a9c9d3a0dc
+Date:   Tue Apr 29 16:57:26 2025 +0000
+
+    update worker main
+
+commit d23c0ecf17f0a295a05e27a4cbc3eec29b386f64
+Date:   Tue Apr 29 16:41:03 2025 +0000
+
+    move worker main
+
+commit 7e0067e396547efbe6639f728e49f03576518f4a
+Date:   Tue Apr 29 16:39:10 2025 +0000
+
+    remove worker dockerfile
+
+commit 3f5da2962d29a7880b9c44329e335c02b9347536
+Merge: bb2596e 5615670
+Date:   Mon Apr 28 16:22:21 2025 -0400
+
+    Merge pull request #4 from warthur12/patch-4
+
+commit 56156702e3215a3696bc278bf58a89e742aa3825
+Date:   Mon Apr 28 16:19:03 2025 -0400
+
+    Update README.md
+
+commit bb2596e757adbf3a4a219eafe08f75f914df8154
+Merge: 4552300 73c840e
+Date:   Mon Apr 28 14:08:18 2025 -0400
+
+    Merge pull request #3 from warthur12/patch-3
+
+commit 73c840e713bfca46412a7a6869d6c60a8cbdb152
+Date:   Mon Apr 28 14:07:26 2025 -0400
+
+    Update README.md
+
+commit 4552300cb34749f15a9db54c8c65eddf271acaa9
+Date:   Thu Apr 24 19:46:21 2025 +0000
+
+    change the loop
+
+commit 783176ccf6610aecea20fe3b12743a43c0d0f1b7
+Date:   Thu Apr 24 19:32:23 2025 +0000
+
+    add some logging and database pinging to worker
+
+commit dae2a9b9fa64fabd0d336dfc5200a370d63e847b
+Merge: 2fb47df c72cf90
+Date:   Thu Apr 24 18:37:55 2025 +0000
+
+    worker env stuff
+
+commit c72cf90c8ba946c57649286620951903a6d1add3
+Date:   Thu Apr 24 18:28:19 2025 +0000
+
+    remove env for prod?
+
+commit 2fb47dfd9f789eca0ce70b70d75662274126c0b0
+Date:   Thu Apr 24 17:07:25 2025 +0000
+
+    update woker env?
+
+commit c5ad8db2f0ccd417f79ade85403f0265eba9873a
+Merge: 1975f71 f13a1d3
+Date:   Thu Apr 24 17:00:27 2025 +0000
+
+    Merge branch 'main' of repo
+
+commit 1975f710cbf9bb112273d23fd44a3743606235c7
+Date:   Thu Apr 24 17:00:15 2025 +0000
+
+    error handling in the worker
+
+commit f13a1d38723a6bf5155afcfbee9c6ad4a32e3a7e
+Date:   Thu Apr 24 12:36:24 2025 -0400
+
+    Add files via upload
+
+commit 145c0d72249605724cc4b1addf4c16740a2ebb62
+Date:   Thu Apr 24 12:29:13 2025 -0400
+
+    Add files via upload
+
+commit 68cc9258f1072fa7d400f45e23cd7c90fea122b3
+Date:   Thu Apr 24 12:19:52 2025 -0400
+
+    Add files via upload
+
+commit 514a8effa7bf15f4584b76c3ad8c49694cd35d66
+Date:   Thu Apr 24 16:16:17 2025 +0000
+
+    cleanup
+
+commit fb70803a9b15eab054e42301d38dcf9f59a10a03
+Date:   Thu Apr 24 15:45:07 2025 +0000
+
+    fixes
+
+commit cd24b4eab44903af2d1bb389dc75fed2741a20f1
+Date:   Thu Apr 24 15:27:35 2025 +0000
+
+    in progress stuff for event alerts
+
+commit fb8fc7ade9164274dd3620c101ba1047a5b35ab9
+Date:   Sat Apr 19 23:45:37 2025 +0000
+
+    added ticker
+
+commit bbe4bdd882c9fead6f962c3bc2a9a115b0cbc441
+Date:   Sat Apr 19 17:06:12 2025 +0000
+
+    updaing my stuff hold on
+
+commit ae90e429ec1bb27d515d12f5d8b3e675fa4e1d0e
+Date:   Sat Apr 19 03:10:07 2025 +0000
+
+    migrations
+
+commit ee9813a8dab456c9c775354a5e1f83c2b5420df6
+Date:   Sat Apr 19 03:06:07 2025 +0000
+
+    get rid of comment
+
+commit 2d0687d655514fb92c03853acf7c8c5fd9d9d309
+Date:   Sat Apr 19 03:02:15 2025 +0000
+
+    added client side market type lookup
+
+commit c7bc7b842b773f162bb457276a511e553fb00a40
+Date:   Sat Apr 19 02:37:20 2025 +0000
+
+    feat(worker): added events!
+
+commit a28131f502e9936eb6d457f863542450d6e62eb2
+Date:   Fri Apr 18 23:27:29 2025 +0000
+
+    refactor(server): remove comments
+
+commit 1974d6994d191e13d91d57c8f1447ef91e6b32f7
+Date:   Fri Apr 18 23:26:18 2025 +0000
+
+    fix(client): fix word wrapping
+
+commit 613f82d2fee6f7eaba5275c3f58958a848ece519
+Date:   Fri Apr 18 15:45:20 2025 +0000
+
+    ahhh
+
+commit 524a06561511a08b79c9fc814e1d0e61a4b2ad23
+Date:   Fri Apr 18 15:44:04 2025 +0000
+
+    refactor(worker): remove some logs
+
+commit d84bf98d1d90eac8df9957d2c4759b8ece284516
+Date:   Fri Apr 18 15:35:27 2025 +0000
+
+    no more iosredis
+
+commit 70310864cb532d951421a6e6a45a73c6740a4738
+Date:   Fri Apr 18 15:29:36 2025 +0000
+
+    g
+
+commit fa9763aaeec0055001adb04cf5685a6b79009f33
+Date:   Fri Apr 18 15:18:50 2025 +0000
+
+    testing some session stuff
+
+commit 04c2e804ccfe5c9291ecf53bec090ab224afb8f7
+Date:   Wed Apr 9 17:13:29 2025 +0000
+
+    dont connect before build
+
+commit f2293af0779eaea898e9464b14fda766c2e62cd5
+Date:   Wed Apr 9 17:05:08 2025 +0000
+
+    add redis url env
+
+commit 724edc49cf278e5d83407c40c8209930818b2b17
+Date:   Wed Apr 9 16:48:50 2025 +0000
+
+    added redis stuff for server
+
+commit 93f3ac81236223245b84052fd19ba5b34c4045dc
+Date:   Tue Apr 8 19:28:33 2025 +0000
+
+    login logs
+
+commit 8c44c0fff318665e5bd17438a4085b7d36c7be5c
+Date:   Tue Apr 8 19:23:12 2025 +0000
+
+    remove log
+
+commit 5648b185cff79035d60b7f021843ed430e7cc154
+Date:   Tue Apr 8 19:21:45 2025 +0000
+
+    added user input stuff and fixed dog
+
+commit e0dbab777099a08a8c530f14d78f072d0da86d7e
+Date:   Tue Apr 8 17:13:30 2025 +0000
+
+    updated tab icon
+
+commit fc7a705878df50a796ef40fb135bdeb73975bb61
+Date:   Tue Apr 8 17:05:33 2025 +0000
+
+    added logo
+
+commit 5c08525c3425d84d19676dfd93cbacf992a0bb5a
+Date:   Tue Apr 8 13:04:29 2025 -0400
+
+    Add files via upload
+
+commit a30e84fe43d1ba0ad871441a143431e27392d65b
+Date:   Tue Apr 8 13:03:38 2025 -0400
+
+    Add files via upload
+
+commit ce045d5a45ce0125e00f30b5751591340fe8f621
+Date:   Tue Apr 8 12:54:48 2025 -0400
+
+    Add files via upload
+
+commit 0844273af3134ee7fb859fcd41aa037a197798c7
+Date:   Tue Apr 8 16:11:01 2025 +0000
+
+    I was stupid
+
+commit 3b3097f21f4c5ad32b1d0a245ea1e742d746a838
+Date:   Tue Apr 8 16:07:51 2025 +0000
+
+    update the database connection code
+
+commit d7de2620068b3ee36e0cc4d7d9a79d0638646df6
+Date:   Tue Apr 8 15:57:41 2025 +0000
+
+    update worker src location
+
+commit fa655c0f9a43d0880cd3f59adeb3d2e555032330
+Date:   Tue Apr 8 15:54:01 2025 +0000
+
+    update go version
+
+commit 2a9fbaea857bebc60b63c4eb27199c2ca8f650cf
+Date:   Tue Apr 8 15:50:43 2025 +0000
+
+    setting up dockerfile for worker
+
+commit fba46ae3c9a397501f4aef2404323929554d297d
+Date:   Tue Apr 8 15:42:17 2025 +0000
+
+    set up worker env
+
+commit 5d5c4afa62ec63d3932cd4b5b40da020e853aa3c
+Date:   Tue Apr 8 15:31:29 2025 +0000
+
+    remove build and migrate
+
+commit f0245af91a49ddd93f3385a35bd3ccb432e97551
+Date:   Tue Apr 8 15:27:47 2025 +0000
+
+    migrate dev to deploy
+
+commit d6bd559371cc3d6422a744d015c37e5cad0841b5
+Date:   Tue Apr 8 15:20:50 2025 +0000
+
+    added migrations
+
+commit e64ba8a37d89896cda2633c04d22269f87b118a7
+Date:   Tue Apr 8 15:08:58 2025 +0000
+
+    more cors stuff
+
+commit 6639c72a1151a757d6b586a0406e2d56afe77008
+Date:   Tue Apr 8 02:06:01 2025 +0000
+
+    s
+
+commit fdc7dd7e60725d910ba4e9a55c08ba4ea9cd94b5
+Date:   Tue Apr 8 02:02:40 2025 +0000
+
+    remove port
+
+commit 2fbc932c90cbc8e007c99d62b28ac7e46347bc19
+Date:   Tue Apr 8 01:58:49 2025 +0000
+
+    maybe add the port?
+
+commit 281e9548b5aa862dad278d5564a2e34c67ba50e2
+Date:   Tue Apr 8 01:49:06 2025 +0000
+
+    cors stuff again
+
+commit 7e270175a69c21d9eda36a7f58288cbbaf35e53e
+Date:   Tue Apr 8 01:44:05 2025 +0000
+
+    just work
+
+commit 895435d6deeaaa0f4ec63230f38d310d05e8d8b6
+Date:   Tue Apr 8 01:31:28 2025 +0000
+
+    cors stuff?
+
+commit d8f5fd0e4ded188b6b5d7401c309fa0032731714
+Date:   Tue Apr 8 01:20:20 2025 +0000
+
+    when I am president I will abolish all computers
+
+commit fcfc152d64209d1d51d30bb22cb80c4c58743903
+Date:   Tue Apr 8 01:01:24 2025 +0000
+
+    debug 1
+
+commit 5dc006cc6c10833c6a93b0ea902d39cd43a2c82a
+Date:   Tue Apr 8 00:52:13 2025 +0000
+
+    u
+
+commit c4fb26252c81d60f9712da8cc4ff93da3949074c
+Date:   Tue Apr 8 00:02:12 2025 +0000
+
+    I dont even know anymore
+
+commit 12f3138e214bbcf2461736ba17d96c45d560d35b
+Date:   Mon Apr 7 02:34:59 2025 +0000
+
+    create the tables I guess
+
+commit 20b945ee72f97f7877e651420b7be39633864df7
+Date:   Mon Apr 7 02:22:27 2025 +0000
+
+    please god just work
+
+commit ceeab4911b83adad5e23e8d17929fb1f65aa14da
+Date:   Mon Apr 7 02:18:03 2025 +0000
+
+    just use a try catch I guess
+
+commit c39c5362ec8b207d3e86bd6e05f9b66494bb6dd2
+Date:   Mon Apr 7 02:12:50 2025 +0000
+
+    this is it, if this doesnt work Im going to sleep
+
+commit 139f66fb58e78c76d18ee21905d86595f2f516ad
+Date:   Mon Apr 7 02:06:39 2025 +0000
+
+    please
+
+commit 56c76ebf9b7a5e46b224206037358317d3ab6c17
+Date:   Mon Apr 7 02:02:05 2025 +0000
+
+    SEED
+
+commit 8fbc371c321f72d000dea9604cf237ba0924712e
+Date:   Mon Apr 7 01:56:08 2025 +0000
+
+    uuuugggghhhhh
+
+commit 8d5f062596ccc8798ad4bdb9ce2bfe3bf4a5b5b7
+Date:   Mon Apr 7 01:27:51 2025 +0000
+
+    a
+
+commit 8f57bb9c7b89c9e349161d6a0a9ce4edbcad2541
+Date:   Mon Apr 7 00:47:53 2025 +0000
+
+    ugh
+
+commit aa865e3817a589cddccf928c253dbe0799468ee6
+Date:   Mon Apr 7 00:39:03 2025 +0000
+
+    remove seed on build :(
+
+commit 6500fbe1c39640b060a245f221542a15c38698b8
+Date:   Mon Apr 7 00:32:11 2025 +0000
+
+    feat(server): check if database exists in seeding
+
+commit c759d3a10d09237f3d51906716066dafe4d791ef
+Date:   Mon Apr 7 00:24:16 2025 +0000
+
+    feat(server): seed and build
+
+commit 588ad349db2204e55e44e1d0952acbac210ea3ce
+Date:   Mon Apr 7 00:14:13 2025 +0000
+
+    getting the client to talk witht the server
+
+commit baef3f817acd2c7738ec0c23fe953a793ca2ca23
+Date:   Mon Apr 7 00:05:56 2025 +0000
+
+    client port stuff
+
+commit 49b4684fda60ad3ce3ed9ae455eff3f99e10722c
+Date:   Sun Apr 6 23:36:00 2025 +0000
+
+    worker dockerfile was in the server...
+
+commit 9d0177ae736706ef03cfefb5483673a0b8b8246a
+Date:   Sun Apr 6 23:24:02 2025 +0000
+
+    update client start script
+
+commit 56a6b6b1365ecf17be1fa9f00f499cc0174f364c
+Date:   Sun Apr 6 22:46:39 2025 +0000
+
+    some more more more more railway stuff
+
+commit d8a43c2818d679126f1210e82d11e9a517ecf3d0
+Date:   Sun Apr 6 22:45:10 2025 +0000
+
+    some more more more railway stuff
+
+commit 241278f3d4c69355a2828b578da85f7f2063e9dc
+Date:   Sun Apr 6 22:42:29 2025 +0000
+
+    some more more railway stuff
+
+commit 4455b8b978b9c243403b7d3e86646d8922916f60
+Date:   Sun Apr 6 22:40:20 2025 +0000
+
+    some more railway stuff
+
+commit 509e7486f8c349a7e4994d0a2cb55621a5f1021e
+Date:   Sun Apr 6 22:29:05 2025 +0000
+
+    moved dev container
+
+commit e6d7e6dd874c1e8ea18cf5f2b23e3109e9770dcc
+Date:   Sun Apr 6 22:25:52 2025 +0000
+
+    feat(devops): some railway stuff
+
+commit 283a5d6841a027df3512069559d4f8e14186cb4d
+Date:   Sun Apr 6 00:52:11 2025 +0000
+
+    feat(server): fix some stuff and add some seed scripts
+
+commit af65c80093746e6452de5f003440a50023e04ca2
+Date:   Sat Apr 5 23:55:32 2025 +0000
+
+    not sure why this worked on my laptop??????
+
+commit 3d9693eacfff1a3933ea46541efa74ac58b3cc4f
+Merge: e9a7b46 be42067
+Date:   Sat Apr 5 23:53:29 2025 +0000
+
+    Merge branch 'home'
+
+commit e9a7b469a9c5963a687b6062bdbf12d7e2e0dddf
+Date:   Sat Apr 5 23:51:35 2025 +0000
+
+    feat(server): update some mop issues
+
+commit be420675ff9f82162d72ef7a6f267e4665a64657
+Date:   Sat Apr 5 23:49:33 2025 +0000
+
+    feat(all): add selling babyyyyyy
+
+commit ea29558c421d9d9c358ad4257071d9f4f4fceb02
+Date:   Sat Apr 5 23:24:41 2025 +0000
+
+    feat(worker): update mop to get average of all purchases
+
+commit b4ab8f62ce47f87268e01a4b43413c964c1093bb
+Date:   Fri Apr 4 23:46:03 2025 +0000
+
+    feat(server): create user implemented
+
+commit 501afe55a6c857071be841f83f52a5fca2ec5ab4
+Date:   Mon Mar 24 03:10:36 2025 +0000
+
+    feat(all): viewing bought options
+
+commit f1d87beb1033d8719863ee3c84d880adc50ff409
+Date:   Mon Mar 24 02:38:52 2025 +0000
+
+    feat(client): added new short cuts
+
+commit 98d9f218215ad4f8e6907711b13656a159106273
+Date:   Mon Mar 24 02:35:31 2025 +0000
+
+    feat(client, worker): implemented buy
+
+commit c5e3af66c39d05e27ec3f1e7753687d3a2012de4
+Date:   Mon Mar 24 01:32:24 2025 +0000
+
+    feat(all): buy option is set up in client and server
+
+commit 0ad8eacdc52c222798e192206fe5512eaf1f12a9
+Date:   Mon Mar 24 00:38:47 2025 +0000
+
+    fix(server): ts bs
+
+commit 70b5a01330984186bb0489db9da2ed65a721ad29
+Date:   Mon Mar 24 00:38:06 2025 +0000
+
+    feat(client, server): get options implemented
+
+commit cf764ab9f379fa3b1ed8a36cae7dd8f05f6c6875
+Date:   Mon Mar 24 00:15:47 2025 +0000
+
+    fix(client): non command handling
+
+commit 94a9406a610906c9a57b3c2ca3c9c84b6aa3b66b
+Date:   Mon Mar 24 00:06:42 2025 +0000
+
+    feat(worker): added user queue I guess
+
+commit ec32d9ad75fa8e73162b8429791a506e5277b9bc
+Date:   Mon Mar 10 02:55:39 2025 +0000
+
+    feat(server): provided wallet details to client
+
+commit fb198e40a3897159963ac61279593855a8d9e3a9
+Date:   Mon Mar 10 02:30:04 2025 +0000
+
+    updated some worker stuff and client input focusing
+
+commit df9905df2e14f73280191e4b250f1cc13321b5ee
+Merge: bda09f7 a8ac420
+Date:   Thu Mar 6 21:55:50 2025 +0000
+
+    Merge branch 'main' of repo
+
+commit bda09f7bcba2f668a806a98764aa0b88885a0553
+Date:   Thu Mar 6 21:54:42 2025 +0000
+
+    feat(all): added login logout
+
+commit a8ac420a5c0b182165460221033919d7c1b2b635
+Merge: d408543 5d59bff
+Date:   Wed Mar 5 11:38:45 2025 -0500
+
+    Merge pull request #2 from warthur12/patch-2
+
+commit 5d59bffc0b658187056e16e8a578476005a37dbd
+Date:   Wed Mar 5 11:38:16 2025 -0500
+
+    Update README.md
+
+commit d4085431d453bf0947a310fba1ea38b4a960644e
+Merge: 9000057 761e3a9
+Date:   Wed Mar 5 11:21:46 2025 -0500
+
+    Merge pull request #1 from warthur12/patch-1
+
+commit 761e3a91f2a5efdd3da40610da633946358dead6
+Date:   Wed Mar 5 11:20:40 2025 -0500
+
+    Update README.md
+
+commit 90000571fcefb578a9bbacaa88252036ee90bcc1
+Date:   Tue Mar 4 15:08:59 2025 -0500
+
+    feat(all): client retrieves option data and displays it
+
+commit 3b2f9c016ab6d48eecef3ef79cdb09bcdad5cc94
+Date:   Thu Feb 13 15:38:49 2025 -0500
+
+    client server talking
+
+commit 9e27ca29252002f2654f0dfb9f7763001b6c19c3
+Date:   Tue Feb 11 13:13:09 2025 -0500
+
+    server and solver working
+
+commit 7b4a10229c3372ec8c73c6036350dafcbfb3ce33
+Date:   Tue Feb 4 22:52:51 2025 +0000
+
+    feat(dev-container): make it work
+
+commit 7c0f5749809d8355e81747d8ef96c8c5a4ca608c
+Merge: deafc9d 258d222
+Date:   Thu Jan 23 23:33:21 2025 +0000
+
+    Merge branch 'main' of repo
+
+commit deafc9dc3341fd20810d1ba85886fe3fd51db6fe
+Date:   Thu Jan 23 23:31:36 2025 +0000
+
+    fix(devcontainer): bind
+
+commit 258d2222d112afe183924b22f6e1ace88f437599
+Date:   Thu Jan 16 20:47:20 2025 +0000
+
+    feat(worker): sample runner
+
+commit 564fb32cb98bad221193aad86708adda492b0774
+Date:   Thu Jan 16 12:22:04 2025 -0500
+
+    added ketstone server and go template
+
+commit 79e8a85b37f63e8fdd16ec8b0f2fa653ead719e3
+Date:   Thu Dec 26 17:29:36 2024 +0000
+
+    feat(client): client in relative working state
+
+commit 65b172b9ddc95ae0719fb41c55beaea04a4d8174
+Date:   Thu Dec 19 20:54:39 2024 -0500
+
+    init
+
+commit 0c4ee80209974ce0bc07c496df69778ad551854e
+Date:   Thu Dec 19 20:43:26 2024 -0500
+
+    Initial commit

@@ -27,6 +27,7 @@ const utilityCommands = {
                         <pre>dog..........................................dog</pre>
                         <pre>market type..................................view the current market type</pre>
                         <pre>feed.........................................navigate to feed</pre>
+                        <pre>changelog....................................navigate to changelog</pre>
                     </div>
                 </div>
 
@@ -126,8 +127,21 @@ const utilityCommands = {
             }
         }
     },
-    feed: () => {
+    feed: async (): Promise<CommandResponse> => {
         window.location.href = "/feed";
+        return {
+            type: "output",
+            message: "",
+            content: <>See you space cowboy</>
+        }
+    },
+    changelog: async (): Promise<CommandResponse> => {
+        window.location.href = "/changelog";
+        return {
+            type: "output",
+            message: "",
+            content: <>See you space cowboy</>
+        }
     }
 };
 

@@ -13,7 +13,7 @@ import { CommandResponse } from '../types/CommandResponse.tsx';
  * @param clearOutputs - Function to clear terminal outputs
  * @returns ReactNode or null to render as output
  */
-export async function interpretCommand(command: string, clearOutputs: () => void): Promise<CommandResponse | null> {
+export async function interpretCommand(command: string, clearOutputs: () => void): Promise<CommandResponse | null>{
   // Split the command into parts
   const parts = command.trim().split(" ");
   const mainCommand = parts[0].toLowerCase();
@@ -252,7 +252,9 @@ export async function interpretCommand(command: string, clearOutputs: () => void
           };
       }
     case 'feed':
-      
+      return utilityCommands.feed();
+    case 'changelog':
+      return utilityCommands.changelog();
     // Default case for unknown commands
     default:
       // Send to database if not recognized

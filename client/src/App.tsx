@@ -128,7 +128,8 @@ function App() {
         <div className="flex flex-row basis-2/12 p-2">
           <div className="basis-5/12 m-2">
             <p>--help: show commands</p>
-            <Link to="/feed">link:Feed</Link>
+            <p><Link to="/feed">link:Feed</Link></p>
+            <p><Link to="/changelog">link:Changelog</Link></p>
             {sseError && <p>{sseError}</p>}
             {showWarning && data ? <Warning message={data.data} onClose={() => setShowWarning(false)}></Warning> : <p>Connected to database...</p>}
           </div>
