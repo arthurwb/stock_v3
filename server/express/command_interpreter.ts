@@ -70,6 +70,15 @@ const commands = {
         } else if (optionId === "") {
             return "Unable to find option data";
         }
+
+        console.log(user.userWallet);
+        console.log(option?.optionPrice);
+
+        if (option?.optionPrice) {
+            if (option?.optionPrice > user.userWallet) {
+                return `Insufficient funds...`
+            }
+        }
         
         // Create the queue item
         const queueItem = await prisma.tUserQueue.create({
