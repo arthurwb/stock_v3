@@ -2,11 +2,14 @@ package database
 
 import (
 	"database/sql"
+	"log"
 	"time"
 )
 
 func MarketChange(tx *sql.Tx, eqEffects string, eqStartDate string) (bool) {
 	timeNow := time.Now().Truncate(time.Minute).Format("2006-01-02T15:04:05Z")
+	log.Println(timeNow)
+	log.Println(eqStartDate)
 	if (timeNow == eqStartDate) {
 		switch eqEffects {
 			case "bull": UpdateMarket(tx, "bull")
