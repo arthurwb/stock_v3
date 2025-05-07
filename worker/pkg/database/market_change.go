@@ -29,8 +29,6 @@ func MarketChange(tx *sql.Tx, eqEffects string, eqStartDate string) (bool) {
     currentUnix := currentTime.Unix()
     startUnix := startDate.Unix()
     
-    log.Println("Current Unix time:", currentUnix)
-    log.Println("Start date Unix time:", startUnix)
 	if (currentUnix == startUnix) {
 		switch eqEffects {
 			case "bull": UpdateMarket(tx, "bull")
