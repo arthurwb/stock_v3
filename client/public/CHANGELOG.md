@@ -1,3 +1,9 @@
+**5:8:25**
+* Did some cleanup
+* Fixed possible sell loop error
+* Updated help command
+* Created Discord
+
 **5:5:25**
 * Created Changelog
 * Did some bug fixes

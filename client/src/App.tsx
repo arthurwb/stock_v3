@@ -36,7 +36,6 @@ function App() {
         }
       });
 
-      // KEY FIX: Reset userData to null if user is not authenticated
       if (response.status === 401 || response.status === 404) {
         setUserData(null);
         return;
@@ -48,7 +47,6 @@ function App() {
 
       const data = await response.json();
       
-      // If user is not present, set userData to null
       if (!data.userPresent) {
         setUserData(null);
         return;
@@ -59,46 +57,36 @@ function App() {
     } catch (err) {
       console.error('Error fetching user data:', err);
       setError('Failed to load user data');
-      // Also reset user data in case of errors
       setUserData(null);
     } finally {
-      // Always set loading to false after fetch completes
       setLoading(false);
     }
   };
 
-  // Function to handle the output from TerminalInput
   const handleCommandOutput = (output: React.ReactNode) => {
     setCommandOutputs((prevOutputs) => [...prevOutputs, output]);
    
-    // Refresh user data after each command
     fetchUserData();
   };
 
-  // Function to clear outputs
   const clearOutputs = () => {
     setCommandOutputs([]);
   };
 
-  // Function to focus the terminal input
   const focusTerminalInput = () => {
     terminalInputRef.current?.focus();
   };
 
-  // Initial data fetch when component mounts
   useEffect(() => {
     setLoading(true);
     fetchUserData();
    
-    // Optional: Set up polling to refresh data periodically
     const intervalId = setInterval(() => {
       fetchUserData();
     }, 5000); // Refresh every 5 seconds
    
-    return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
 
-  // Render user data
   const renderUserData = () => {
     if (loading && !userData) {
       return <div>Loading user data...</div>;
@@ -146,9 +134,8 @@ function App() {
         </div>
         <div 
           className="flex flex-col basis-10/12 px-2 pt-2 border-green border-x-1 border-t-1 border-solid overflow-hidden"
-          onClick={focusTerminalInput} // Add click handler here
+          onClick={focusTerminalInput}
         >
-          {/* Terminal Content (Outputs + Input) */}
           <div className="flex flex-col flex-1 overflow-y-auto">
             <TerminalOutput outputs={commandOutputs} />
             <TerminalInput 

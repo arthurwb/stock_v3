@@ -11,7 +11,6 @@ import (
 )
 
 func CheckUserQueue(db *sql.DB) (error) {
-    // Query to select all incomplete user queue entries ordered by transaction date (oldest first)
     query := `SELECT id, uqType, uqOptionId, uqUserId, uqCount,
               uqTransactionDate, uqComplete FROM tUserQueue 
               WHERE uqComplete = FALSE
@@ -23,7 +22,6 @@ func CheckUserQueue(db *sql.DB) (error) {
     }
     defer rows.Close()
     
-    // Process each queue item
     for rows.Next() {
         var id, uqType string
         var uqOptionId, uqUserId sql.NullString
@@ -31,7 +29,6 @@ func CheckUserQueue(db *sql.DB) (error) {
         var uqTransactionDateStr sql.NullString
         var uqComplete bool
         
-        // Scan the row into variables
         err := rows.Scan(&id, &uqType, &uqOptionId, &uqUserId,
                        &uqCount, &uqTransactionDateStr, &uqComplete)
         if err != nil {
@@ -39,12 +36,10 @@ func CheckUserQueue(db *sql.DB) (error) {
             continue
         }
         
-        // Skip if already complete or missing required fields
         if uqComplete || !uqOptionId.Valid || !uqUserId.Valid {
             continue
         }
         
-        // Process based on queue type
         switch uqType {
         case "buy":
             err = processBuyQueueItem(db, id, uqOptionId.String, uqUserId.String, uqCount)
@@ -60,7 +55,6 @@ func CheckUserQueue(db *sql.DB) (error) {
             continue
         }
         
-        // Mark the queue item as complete
         updateQuery := "UPDATE tUserQueue SET uqComplete = TRUE WHERE id = ?"
         _, err = db.Exec(updateQuery, id)
         if err != nil {
@@ -68,7 +62,6 @@ func CheckUserQueue(db *sql.DB) (error) {
         }
     }
     
-    // Check for errors from iterating over rows
     if err = rows.Err(); err != nil {
         log.Printf("Error iterating over user queue rows: %v", err)
     }
@@ -77,20 +70,17 @@ func CheckUserQueue(db *sql.DB) (error) {
 }
 
 func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseCount sql.NullInt32) error {
-    // Start a transaction
     tx, err := db.Begin()
     if err != nil {
         log.Printf("Error starting transaction: %v", err)
         return err
     }
     
-    // Set default purchase count if null
     count := int32(1)
     if purchaseCount.Valid {
         count = purchaseCount.Int32
     }
     
-    // Get current option price
     var optionPrice float64
     priceQuery := "SELECT optionPrice FROM tOptions WHERE id = ?"
     err = tx.QueryRow(priceQuery, optionId).Scan(&optionPrice)
@@ -100,10 +90,8 @@ func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseC
         return err
     }
     
-    // Calculate total cost
     totalCost := optionPrice * float64(count)
     
-    // Get current user wallet balance
     var userWallet float64
     walletQuery := "SELECT userWallet FROM tUsers WHERE id = ?"
     err = tx.QueryRow(walletQuery, userId).Scan(&userWallet)
@@ -113,14 +101,12 @@ func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseC
         return err
     }
     
-    // Check if user has enough funds
     if userWallet < totalCost {
         tx.Rollback()
         log.Printf("Insufficient funds for user %s. Required: %f, Available: %f", userId, totalCost, userWallet)
         return errors.New("insufficient funds")
     }
     
-    // Update user wallet
     newBalance := userWallet - totalCost
     updateWalletQuery := "UPDATE tUsers SET userWallet = ? WHERE id = ?"
     _, err = tx.Exec(updateWalletQuery, newBalance, userId)
@@ -130,12 +116,9 @@ func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseC
         return err
     }
     
-    // Create carrot entries for each purchase
     for i := 0; i < int(count); i++ {
-        // Generate a new UUID for the carrot
         carrotId := uuid.New().String()
         
-        // Insert carrot record
         insertCarrotQuery := `INSERT INTO tCarrots 
                              (id, userId, optionId, carrotPurchasePrice, carrotDatePurchased) 
                              VALUES (?, ?, ?, ?, NOW())`
@@ -147,7 +130,6 @@ func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseC
         }
     }
     
-    // Commit the transaction
     err = tx.Commit()
     if err != nil {
         log.Printf("Error committing transaction for queue item %s: %v", queueId, err)
@@ -160,20 +142,17 @@ func processBuyQueueItem(db *sql.DB, queueId, optionId, userId string, purchaseC
 }
 
 func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCount sql.NullInt32) error {
-    // Start a transaction
     tx, err := db.Begin()
     if err != nil {
         log.Printf("Error starting transaction: %v", err)
         return err
     }
     
-    // Set default sell count if null
     count := int32(1)
     if sellCount.Valid {
         count = sellCount.Int32
     }
     
-    // Get current option price
     var optionPrice float64
     priceQuery := "SELECT optionPrice FROM tOptions WHERE id = ?"
     err = tx.QueryRow(priceQuery, optionId).Scan(&optionPrice)
@@ -182,10 +161,8 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         return err
     }
     
-    // Calculate total sale value
     totalSaleValue := optionPrice * float64(count)
     
-    // Verify user owns enough carrots of this option
     var carrots []string
     findCarrotsQuery := `SELECT id FROM tCarrots 
                         WHERE userId = ? AND optionId = ? 
@@ -199,7 +176,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         return err
     }
     
-    // Collect carrot IDs
     for rows.Next() {
         var carrotId string
         if err := rows.Scan(&carrotId); err != nil {
@@ -211,15 +187,13 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
     }
     rows.Close()
     
-    // Check if we found enough carrots
     if len(carrots) < int(count) {
         tx.Rollback()
         log.Printf("User %s doesn't own enough carrots of option %s. Required: %d, Found: %d", 
                   userId, optionId, count, len(carrots))
-        return errors.New("insufficient carrots owned")
+        return nil
     }
     
-    // Get current user wallet balance
     var userWallet float64
     walletQuery := "SELECT userWallet FROM tUsers WHERE id = ?"
     err = tx.QueryRow(walletQuery, userId).Scan(&userWallet)
@@ -229,7 +203,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         return err
     }
     
-    // Update user wallet with sale proceeds
     newBalance := userWallet + totalSaleValue
     updateWalletQuery := "UPDATE tUsers SET userWallet = ? WHERE id = ?"
     _, err = tx.Exec(updateWalletQuery, newBalance, userId)
@@ -239,7 +212,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         return err
     }
     
-    // Delete sold carrots
     for _, carrotId := range carrots {
         deleteCarrotQuery := "DELETE FROM tCarrots WHERE id = ?"
         _, err = tx.Exec(deleteCarrotQuery, carrotId)
@@ -250,7 +222,6 @@ func processSellQueueItem(db *sql.DB, queueId, optionId, userId string, sellCoun
         }
     }
     
-    // Commit the transaction
     err = tx.Commit()
     if err != nil {
         log.Printf("Error committing transaction for queue item %s: %v", queueId, err)

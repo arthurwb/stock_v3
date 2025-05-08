@@ -7,14 +7,11 @@ import (
 )
 
 func MarketChange(tx *sql.Tx, eqEffects string, eqStartDate string) (bool) {
-	// Parse eqStartDate - try multiple formats to handle both cases
     var startDate time.Time
     var err error
     
-    // Try ISO 8601 format first (with T and Z)
     startDate, err = time.Parse(time.RFC3339, eqStartDate)
     if err != nil {
-        // Try space-separated format with milliseconds
         startDate, err = time.Parse("2006-01-02 15:04:05.000", eqStartDate)
         if err != nil {
             log.Println("Error parsing date:", err)
@@ -22,10 +19,8 @@ func MarketChange(tx *sql.Tx, eqEffects string, eqStartDate string) (bool) {
         }
     }
     
-    // Get current time and truncate to minutes
     currentTime := time.Now().Truncate(time.Minute)
     
-    // Convert both to Unix time (seconds since epoch)
     currentUnix := currentTime.Unix()
     startUnix := startDate.Unix()
     

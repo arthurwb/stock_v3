@@ -10,7 +10,6 @@ import { interpretCommands } from "./command_interpreter";
 import { alert_watch } from "./util/alert_watch";
 import nextEvent from "./util/next_event";
 
-// Get the Railway-provided URL or fall back to localhost
 const appUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
 
 export async function extendExpressApp(app: Express, context: Context) {
@@ -24,14 +23,12 @@ export async function extendExpressApp(app: Express, context: Context) {
         })
     );
     
-    // Update CORS settings to match keystone.ts
     app.use(cors({
         origin: [
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'https://exchange.up.railway.app',
             appUrl,
-            // Allow any Railway subdomains
             /\.up\.railway\.app$/
         ],
         credentials: true,
@@ -39,7 +36,6 @@ export async function extendExpressApp(app: Express, context: Context) {
     
     app.get("/status", (_, res: any) => res.send("Ready"));
     
-    // Health check endpoint for Railway
     app.get('/health', (req, res) => {
         res.status(200).send({ status: 'ok' });
     });
@@ -72,7 +68,6 @@ export async function extendExpressApp(app: Express, context: Context) {
         })
     })
     
-    // Rest of your routes...
     app.get("/dog", async (req: any, res: any) => {
         try {
             const dogResponse = await fetch('https://dog.ceo/api/breeds/image/random');
@@ -172,7 +167,6 @@ export async function extendExpressApp(app: Express, context: Context) {
         
     })
     
-    // Change to POST instead of GET
     app.post("/command", async (req: any, res: any) => {
         try {
             if (!req.body.command) {

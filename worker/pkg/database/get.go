@@ -7,10 +7,8 @@ import (
 )
 
 func GetAllOptions(db *sql.DB) (map[string]map[string]interface{}, error) {
-    // Initialize the result map
     optionsMap := make(map[string]map[string]interface{})
     
-    // Query to select all options based on the updated schema
     query := "SELECT id, optionName, optionDescription, optionPrice FROM tOptions"
     rows, err := db.Query(query)
     if err != nil {
@@ -19,30 +17,25 @@ func GetAllOptions(db *sql.DB) (map[string]map[string]interface{}, error) {
     }
     defer rows.Close()
     
-    // Iterate through the results
     for rows.Next() {
         var id, optionName, optionDescription string
         var optionPrice float64
         
-        // Scan the row into variables
         err := rows.Scan(&id, &optionName, &optionDescription, &optionPrice)
         if err != nil {
             log.Printf("Error scanning option row: %v", err)
             continue
         }
         
-        // Create a map for this option
         optionData := map[string]interface{}{
             "optionName":        optionName,
             "optionDescription": optionDescription,
             "optionPrice":       optionPrice,
         }
         
-        // Add the option to the results map
         optionsMap[id] = optionData
     }
     
-    // Check for errors from iterating over rows
     if err = rows.Err(); err != nil {
         log.Printf("Error iterating over option rows: %v", err)
         return nil, err
@@ -53,10 +46,8 @@ func GetAllOptions(db *sql.DB) (map[string]map[string]interface{}, error) {
 }
 
 func GetOneOption(tx *sql.Tx, optionId string) (map[string]interface{}, error) {
-    // Initialize the result map
     optionMap := make(map[string]interface{})
 
-    // Query to select a single option by ID
     query := "SELECT id, optionName, optionDescription, optionPrice, optionBankruptcy FROM tOptions WHERE id = ?"
     row := tx.QueryRow(query, optionId)
 
@@ -64,7 +55,6 @@ func GetOneOption(tx *sql.Tx, optionId string) (map[string]interface{}, error) {
     var optionBankruptcy bool
     var optionPrice float64
 
-    // Scan the result into variables
     err := row.Scan(&id, &optionName, &optionDescription, &optionPrice, &optionBankruptcy)
     if err != nil {
         if err == sql.ErrNoRows {
@@ -75,7 +65,6 @@ func GetOneOption(tx *sql.Tx, optionId string) (map[string]interface{}, error) {
         return nil, err
     }
 
-    // Populate the result map
     optionMap["id"] = id
     optionMap["optionName"] = optionName
     optionMap["optionDescription"] = optionDescription

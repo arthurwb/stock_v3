@@ -3,11 +3,10 @@ package database
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"  // Add this import to generate UUIDs
+	"github.com/google/uuid"
 	"log"
 )
 
-// UpdatePrice updates the current price of an option and records the historical price.
 func UpdatePrice(tx *sql.Tx, Id string, optionPrice string) {
 	query := "UPDATE tOptions SET optionPrice = ? WHERE Id = ?"
 	_, err := tx.Exec(query, optionPrice, Id)
@@ -17,7 +16,6 @@ func UpdatePrice(tx *sql.Tx, Id string, optionPrice string) {
 		return
 	}
 
-	// Record the historical price
 	if err := UpdateHistoricalPrices(tx, Id, optionPrice); err != nil {
 		tx.Rollback()
 		return
@@ -25,7 +23,6 @@ func UpdatePrice(tx *sql.Tx, Id string, optionPrice string) {
 }
 
 func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) error {
-	// Check the total number of rows in tHistoricalPrices
 	var rowCount int
 	countQuery := "SELECT COUNT(*) FROM tHistoricalPrices"
 	err := tx.QueryRow(countQuery).Scan(&rowCount)
@@ -34,7 +31,6 @@ func UpdateHistoricalPrices(tx *sql.Tx, optionId string, optionPrice string) err
 		return err
 	}
 
-	// If more than 1000 rows exist, delete the oldest entry
 	if rowCount >= 1000 {
 		deleteQuery := `
 			DELETE t1

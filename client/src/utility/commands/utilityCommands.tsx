@@ -26,8 +26,10 @@ const utilityCommands = {
                         <pre>help.........................................show list of commands</pre>
                         <pre>dog..........................................dog</pre>
                         <pre>market type..................................view the current market type</pre>
+                        <pre>find event...................................search for info on the next event</pre>
                         <pre>feed.........................................navigate to feed</pre>
                         <pre>changelog....................................navigate to changelog</pre>
+                        <pre>discord......................................navigate to the community discord</pre>
                     </div>
                 </div>
 
@@ -37,6 +39,7 @@ const utilityCommands = {
                     <div className="ml-4 space-y-1">
                         <pre>get option [option name].....................show details on given option</pre>
                         <pre>get options..................................displays all available options and their current price</pre>
+                        <pre>sell option [option name]....................sell an option that you own at its current price</pre>
                         <pre>buy option [option name].....................purchase an option at its current price</pre>
                         <pre>my options...................................display a list of all user owned options</pre>
                     </div>
@@ -137,6 +140,14 @@ const utilityCommands = {
     },
     changelog: async (): Promise<CommandResponse> => {
         window.location.href = "/changelog";
+        return {
+            type: "output",
+            message: "",
+            content: <>See you space cowboy</>
+        }
+    },
+    discord: async (): Promise<CommandResponse> => {
+        window.open('https://discord.gg/RHZ5MNSm')
         return {
             type: "output",
             message: "",

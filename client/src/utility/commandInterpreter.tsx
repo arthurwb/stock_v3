@@ -240,6 +240,8 @@ export async function interpretCommand(command: string, clearOutputs: () => void
       return utilityCommands.feed();
     case 'changelog':
       return utilityCommands.changelog();
+    case 'discord':
+      return utilityCommands.discord();
     // Default case for unknown commands
     default:
       // Send to database if not recognized

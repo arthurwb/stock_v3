@@ -45,7 +45,6 @@ const commands = {
         return data.join("")
     },
     buyOption: async (input: string, username: string) => {
-        // Find the option by name
         const option = await prisma.tOptions.findFirst({
             where: { 
                 OR: [
@@ -56,7 +55,6 @@ const commands = {
         });
         const optionId = option?.id ?? "";
         
-        // Find the user by username
         const user: any = await prisma.tUsers.findFirst({
             where: {
                 userUsername: username
@@ -64,7 +62,6 @@ const commands = {
         });
         const userId = user?.id ?? "";
         
-        // Validate option and user exist
         if (userId === "") {
             return "Unable to find user data";
         } else if (optionId === "") {
@@ -95,33 +92,26 @@ const commands = {
             }
         });
         
-        // Poll the queue item until it's processed or timeout
         const queueItemId = queueItem.id;
-        const maxAttempts = 30; // Maximum polling attempts
-        const pollingInterval = 500; // Polling interval in milliseconds
+        const maxAttempts = 30;
+        const pollingInterval = 500;
         
-        // Define a function to wait between polling attempts
         const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
         
-        // Poll the queue item
         let attempts = 0;
         while (attempts < maxAttempts) {
-            // Get the latest queue item state
             const updatedQueueItem = await prisma.tUserQueue.findUnique({
                 where: {
                     id: queueItemId
                 }
             });
             
-            // If the queue item is complete, check if the carrot was created
             if (updatedQueueItem?.uqComplete) {
-                // Verify the carrot was created by checking the tCarrots table
                 const carrot = await prisma.tCarrots.findFirst({
                     where: {
                         userIdId: userId,
                         optionIdId: optionId,
                         carrotDatePurchased: {
-                            // Look for carrots created in the last minute
                             gte: new Date(Date.now() - 60000)
                         }
                     },
@@ -137,16 +127,13 @@ const commands = {
                 return "Buy processed";
             }
             
-            // Wait before next polling attempt
             await wait(pollingInterval);
             attempts++;
         }
         
-        // If we've reached here, the queue item hasn't been processed within our timeout
         return "Buy request submitted, but processing is taking longer than expected. Please check your purchases later.";
     },
     sellOption: async (input: string, username: string) => {
-        // Find the option by name
         const option: any = await prisma.tOptions.findFirst({
             where: { 
                 OR: [
@@ -157,7 +144,6 @@ const commands = {
         });
         const optionId = option?.id ?? "";
         
-        // Find the user by username
         const user: any = await prisma.tUsers.findFirst({
             where: {
                 userUsername: username
@@ -165,14 +151,12 @@ const commands = {
         });
         const userId = user?.id ?? "";
         
-        // Validate option and user exist
         if (userId === "") {
             return "Unable to find user data";
         } else if (optionId === "") {
             return "Unable to find option data";
         }
         
-        // Verify user owns the carrot they're trying to sell
         const carrotOwned = await prisma.tCarrots.findFirst({
             where: {
                 userId: { id: userId },
@@ -184,7 +168,6 @@ const commands = {
             return "You don't own this option to sell";
         }
         
-        // Create the queue item
         const queueItem = await prisma.tUserQueue.create({
             data: {
                 uqType: "sell",
@@ -200,27 +183,21 @@ const commands = {
             }
         });
         
-        // Poll the queue item until it's processed or timeout
         const queueItemId = queueItem.id;
-        const maxAttempts = 30; // Maximum polling attempts
-        const pollingInterval = 500; // Polling interval in milliseconds
+        const maxAttempts = 30; 
+        const pollingInterval = 500;
         
-        // Define a function to wait between polling attempts
         const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
         
-        // Poll the queue item
         let attempts = 0;
         while (attempts < maxAttempts) {
-            // Get the latest queue item state
             const updatedQueueItem = await prisma.tUserQueue.findUnique({
                 where: {
                     id: queueItemId
                 }
             });
             
-            // If the queue item is complete, check if the carrot was sold
             if (updatedQueueItem?.uqComplete) {
-                // Check if the carrot has been removed
                 const carrotStillOwned = await prisma.tCarrots.findFirst({
                     where: {
                         userId: { id: userId },
@@ -229,7 +206,6 @@ const commands = {
                 });
                 
                 if (!carrotStillOwned || carrotStillOwned.id !== carrotOwned.id) {
-                    // Check for updated wallet balance
                     const updatedUser = await prisma.tUsers.findUnique({
                         where: { id: userId }
                     });
@@ -240,17 +216,14 @@ const commands = {
                 return "Sell processed";
             }
             
-            // Wait before next polling attempt
             await wait(pollingInterval);
             attempts++;
         }
         
-        // If we've reached here, the queue item hasn't been processed within our timeout
         return "Sell request submitted, but processing is taking longer than expected. Please check your transactions later.";
     },
     myOptions: async (username: string) => {
         try {
-            // Find the user by username
             const user = await prisma.tUsers.findFirst({
                 where: { userUsername: username }
             });
@@ -259,7 +232,6 @@ const commands = {
                 return "User not found";
             }
     
-            // Get all carrots for the user, including option details
             const userCarrots = await prisma.tCarrots.findMany({
                 where: { userIdId: user.id },
                 include: {
@@ -271,7 +243,6 @@ const commands = {
                 return "You don't have any options in your account.";
             }
     
-            // Group by option name and calculate average
             const optionGroups: { [optionName: string]: number[] } = {};
     
             for (const carrot of userCarrots) {
@@ -283,7 +254,6 @@ const commands = {
                 optionGroups[optionName].push(price);
             }
     
-            // Format the output with average prices
             const result = Object.entries(optionGroups).map(([optionName, prices]) => {
                 const total = prices.reduce((sum, p) => sum + p, 0);
                 const average = total / prices.length;
@@ -306,7 +276,6 @@ const commands = {
             return "Password not provided";
         }
     
-        // Fetch user details from the database
         const userDetails = await prisma.tUsers.findFirst({
             where: { userUsername: username }
         });
@@ -315,7 +284,6 @@ const commands = {
             return "User not found";
         }
     
-        // Check if the entered password matches the hashed password in the database
         const isPasswordValid = await bcrypt.compare(password, userDetails.userPassword);
     
         if (!isPasswordValid) {
@@ -344,13 +312,11 @@ const commands = {
             return "Password not provided";
         }
         
-        // Email format validation
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
             return "Invalid email format";
         }
         
-        // Password complexity validation
         const uppercaseRegex = /[A-Z]/;
         const numberRegex = /[0-9]/;
         
@@ -362,7 +328,6 @@ const commands = {
             return "Password must contain at least one number";
         }
         
-        // Check if user already exists
         const userDetails = await prisma.tUsers.findFirst({
             where: { userUsername: username }
         });
@@ -372,13 +337,11 @@ const commands = {
         }
         
         try {
-            // Hash the password with bcrypt
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
 
             const standard = process.env.STANDARD ? parseInt(process.env.STANDARD) : 200
             
-            // Create user with the hashed password
             const user = await prisma.tUsers.create({
                 data: {
                     userEmail: email,

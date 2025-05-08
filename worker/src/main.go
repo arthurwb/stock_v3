@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// load environment variables
 	inDevelopment := os.Getenv("RAILWAY_ENVIRONMENT") == ""
 	if inDevelopment {
 		godotenv.Load(".env") // Only for local

@@ -13,7 +13,6 @@ import (
 	"exchange.com/m/v3/pkg/database"
 )
 
-// Entropy updates option prices in the tOptions table
 func Entropy(db *sql.DB) (error) {
 	if db == nil {
 		return fmt.Errorf("Database connection is nil. Please check your connection.")
@@ -46,7 +45,6 @@ func Entropy(db *sql.DB) (error) {
 			continue
 		}
 
-		// Calculate the new price
 		lowerLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_LOWER"), 64)
 		upperLimit, _ := strconv.ParseFloat(os.Getenv("ENTROPY_UPPER"), 64)
 
@@ -89,7 +87,6 @@ func Entropy(db *sql.DB) (error) {
 		return err
 	}
 
-	// Check for errors after iteration
 	if err := rows.Err(); err != nil { 
 		return fmt.Errorf("Error during row iteration: %v", err)
 	}
